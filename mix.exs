@@ -2,13 +2,17 @@ defmodule FloUI.MixProject do
   use Mix.Project
 
   @version "0.1.0-alpha"
+  @github "https://github.com/vacarsu/flo_ui"
 
   def project do
     [
       app: :flo_ui,
+      name: "FloUI",
       version: @version,
       elixir: "~> 1.12",
+      package: package(),
       description: description(),
+      source_url: @github,
       docs: docs(),
       start_permanent: Mix.env() == :prod,
       deps: deps()
@@ -49,13 +53,13 @@ defmodule FloUI.MixProject do
       contributors: ["Alex Lopez"],
       maintainers: ["Alex Lopez"],
       licenses: ["MIT"],
-      # links: %{Github: @github},
+      links: %{Github: @github},
       files: [
         # only include *.ex files
         "lib/**/*.ex",
         "mix.exs",
         "README.md",
-        # "LICENSE"
+        "LICENSE"
       ]
     ]
   end
@@ -120,7 +124,7 @@ defmodule FloUI.MixProject do
         ]
       ],
       source_ref: "v#{@version}",
-      # source_url: @github
+      source_url: @github
     ]
   end
 end
