@@ -11,7 +11,7 @@ defmodule FloUI.Modal.Layout do
     `width: :integer`
     `height: :integer`
     `show_check: :boolean`
-    `frame_close: :boolean`
+    `show_close: :boolean`
 
   ``` elixir
   <%= graph font_size: 20 %>

@@ -4,10 +4,12 @@ defmodule FloUI.Modal.Background do
 
   Render this behind a modal if you want to block input to primitive render under it.
 
+  ``` elixir
   <%= component FloUI.Modal.Background,
       nil,
       id: :modal_background
   %>
+  ```
   """
 
   use SnapFramework.Component,

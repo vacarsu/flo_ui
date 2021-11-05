@@ -6,10 +6,12 @@ defmodule FloUI.Icon do
 
   data is a tuple representing the asset.
 
+  ``` elixir
   <%= component FloUI.Icon,
       {:flo_ui, "path_to_asset"},
       id: :icon
   %>
+  ```
   """
 
   use SnapFramework.Component,

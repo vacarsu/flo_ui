@@ -14,7 +14,7 @@ defmodule FloUI.Modal.ScrollLayout do
     `content_height: :integer`
     `content_width: :integer`
     `show_check: :boolean`
-    `frame_close: :boolean`
+    `show_close: :boolean`
 
   ``` elixir
   <%= graph font_size: 20 %>

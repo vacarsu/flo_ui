@@ -6,6 +6,7 @@ defmodule FloUI.Icon.Button do
 
   data is a string for the tooltip.
 
+  ``` elixir
   <%= component FloUI.Icon.Button,
       "tooltip text",
       id: :btn_icon
@@ -14,6 +15,7 @@ defmodule FloUI.Icon.Button do
         {:flo_ui, "path_to_icon"}
     %>
   <% end %>
+  ```
   """
 
   use SnapFramework.Component,

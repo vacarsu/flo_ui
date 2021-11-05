@@ -7,6 +7,7 @@ defmodule FloUI.Grid do
 
   data is a map in the form of ` elixir %{start_xy: {0, 0}, max_xy: {100, 100}}`
 
+  ``` elixir
   <%= component FloUI.Grid, %{
           start_xy: {0, 0},
           max_xy: {48 * 3, 48}
@@ -25,6 +26,7 @@ defmodule FloUI.Grid do
           <%= component FloUI.Icon, {:flo_ui, "icons/clear_white.png"} %>
       <% end %>
   <% end %>
+  ```
   """
 
   use SnapFramework.Component,
