@@ -1,0 +1,16 @@
+<%= graph font_size: 20 %>
+
+<%= component Scenic.Component.Input.TextField,
+    @data,
+    id: :text_input,
+    hint: @hint,
+    hint_color: @hint_color,
+    width: @width,
+    height: @height,
+    type: @type,
+    filter: @filter
+%>
+
+<%= component FloUI.Icon.Button, "clear", id: :btn_clear, translate: {@width-48, @height/2-24}, hidden: not @show_clear do %>
+    <%= component FloUI.Icon, {:flo_ui, "icons/clear_white.png"}, [] %>
+<% end %>

@@ -1,0 +1,28 @@
+<%= graph font_size: 20 %>
+
+<%= primitive Scenic.Primitive.Text,
+    "Page 2",
+    id: :text,
+    translate: {20, 80}
+%>
+
+<%= component FloUI.Component.TextInput, @input_value, show_clear: true, id: :text_input, translate: {20, 200} %>
+
+<%= component FloUI.Grid, %{
+        start_xy: {0, 0},
+        max_xy: {48 * 5, 48}
+    },
+    translate: {20, 120}
+do %>
+    <%= component FloUI.Icon.Button, "Close", id: :icon_button, width: 48, height: 48, translate: {20, 120} do %>
+        <%= component FloUI.Icon, {:flo_ui, "icons/clear_white.png"} %>
+    <% end %>
+
+    <%= component FloUI.Icon.Button, "Close", id: :icon_button, width: 48, height: 48, translate: {20, 120} do %>
+        <%= component FloUI.Icon, {:flo_ui, "icons/clear_white.png"} %>
+    <% end %>
+
+    <%= component FloUI.Icon.Button, "Close", id: :icon_button, width: 48, height: 48, translate: {20, 120} do %>
+        <%= component FloUI.Icon, {:flo_ui, "icons/clear_white.png"} %>
+    <% end %>
+<% end %>

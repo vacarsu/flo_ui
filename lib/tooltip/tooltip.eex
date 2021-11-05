@@ -1,0 +1,12 @@
+<%= graph font_size: 20 %>
+
+<%= primitive Scenic.Primitive.RoundedRectangle,
+    {@width, @height, 5}, 
+    translate: {0, 0}, 
+    fill: :black
+%>
+
+<%= primitive Scenic.Primitive.Text,
+    @data,
+    translate: {5, @height / 2 + 5}
+%>

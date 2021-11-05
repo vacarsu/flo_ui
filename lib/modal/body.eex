@@ -1,0 +1,6 @@
+<%= graph font_size: 20 %>
+
+<%= primitive Scenic.Primitive.Rectangle,
+    {@width, @height},
+    fill: :gainsboro
+%>

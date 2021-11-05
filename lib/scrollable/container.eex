@@ -1,0 +1,23 @@
+<%= graph font_size: 20 %>
+
+<%= primitive Scenic.Primitive.Rectangle,
+    {@frame.width, @frame.height},
+    input: :cursor_scroll
+%>
+
+<%= component FloUI.Scrollable.ContainerScrollBar,
+    %{
+        direction: :vertical,
+        content_size: {@content.width, @content.height},
+        width: 15,
+        height: @frame.height,
+        scroll_position: @scroll_position
+    },
+    id: :vertical_scroll_bar,
+    translate: {@frame.width, 0},
+    scroll_buttons: @scroll_bars.vertical_scroll_bar[:scroll_buttons],
+    scroll_bar_theme: Scenic.Primitive.Style.Theme.preset(:dark),
+    scroll_bar_border: 1,
+    scroll_bar_radius: 3,
+    scroll_bar_thickness: 15
+%>

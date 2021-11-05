@@ -1,0 +1,8 @@
+<%= graph font_size: 20 %>
+
+<%= primitive Scenic.Primitive.Rectangle,
+    {48, 48}, 
+    fill: {:image, @data},
+    scale: 0.5 
+%>
+    

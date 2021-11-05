@@ -1,0 +1,12 @@
+<%= graph font_size: 20 %>
+
+<%= for {_label, cmp} <- @tabs do %>
+    <%= component cmp,
+        nil,
+        id: cmp,
+        translate: {0, 50},
+        hidden: if(cmp == @active_tab, do: false, else: true)
+    %>
+<% end %>
+
+<%= @children %>

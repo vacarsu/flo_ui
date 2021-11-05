@@ -1,0 +1,15 @@
+<%= graph font_size: 20 %>
+
+<%= component Scenic.Primitive.Rectangle,
+    {@width, @height},
+    id: :box,
+    input: [:cursor_button, :cursor_pos],
+    fill: if(@selected or @hovered, do: :steel_blue, else: :gainsboro)
+%>
+
+<%= component Scenic.Primitive.Text,
+    @label,
+    id: :text,
+    fill: if(@selected or @hovered, do: :white, else: :black),
+    translate: {15, 25}
+%>

@@ -1,0 +1,7 @@
+<%= graph font_size: 20 %>
+
+<%= primitive Scenic.Primitive.Rectangle,
+    {5000, 5000},
+    fill: {:black, 100},
+    input: [:cursor_pos, :cursor_button]
+ %>

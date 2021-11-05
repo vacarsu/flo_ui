@@ -1,0 +1,22 @@
+<%= graph font_size: 20 %>
+
+<%= component Scenic.Component.Button,
+    @btn_text,
+    id: :btn_update
+%>
+
+<%= component FloUI.Scrollable.ScrollableContainer,
+    %{
+        frame: {250, 300},
+        content: {200, 300}
+    },
+    content_builder: &Basic.Component.Page4.add_to_graph(&1, nil, []),
+    scroll_position: {0, 0},
+    translate: {20, 60},
+    scroll_bars: %{
+        vertical_scroll_bar: [
+            scroll_buttons: true,
+            scroll_bar_theme: Scenic.Primitive.Style.Theme.preset(:dark),
+            scroll_bar_thickness: 15
+        ]
+    } %>

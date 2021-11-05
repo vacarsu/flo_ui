@@ -1,0 +1,19 @@
+<%= graph font_size: 20 %>
+
+<%= component FloUI.Tabs, {@active_tab, @tabs}, id: :tabs do %>
+    <%= component FloUI.Grid,
+        %{
+            start_xy: {0, 0},
+            max_xy: {400, 40}
+        } do %>
+        <%= for {{label, cmp}, i} <- Enum.with_index @tabs do %>
+            <%= component FloUI.Tab,
+                {label, cmp},
+                selected?: if(cmp === @active_tab, do: true, else: false),
+                id: :"#{i}_tab",
+                width: 100,
+                height: 40
+            %>
+        <% end %>
+    <% end %>
+<% end %>

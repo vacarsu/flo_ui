@@ -1,0 +1,14 @@
+<%= graph font_size: 20 %>
+
+<%= component FloUI.Modal.ScrollLayout,
+    {"Test Scroll", Basic.Component.Page4, nil, []},
+    id: :scroll_layout,
+    width: 500,
+    height: 500,
+    frame_width: 480,
+    frame_height: 500,
+    content_width: 800,
+    content_height: 800,
+    show_check: true,
+    show_close: true
+%>

@@ -1,0 +1,16 @@
+<%= graph font_size: 20 %>
+
+<%= component FloUI.Modal.Body,
+    nil,
+    translate: {0, 50},
+    width: @width,
+    height: @height
+%>
+
+<%= component FloUI.Modal.Header,
+    @data,
+    width: @width,
+    show_check: @show_check,
+    show_close: @show_close
+%>
+

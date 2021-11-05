@@ -1,0 +1,11 @@
+<%= graph font_size: 20 %>
+
+<%= Enum.map(Enum.with_index(@items), fn {{label, _value, key} = item, i} -> %>
+    <%= component FloUI.SelectionListItem,
+        item,
+        id: key,
+        width: @width,
+        selected: @selected == key,
+        translate: {0, i * 50}
+    %>
+<% end) %>
