@@ -15,12 +15,14 @@
         vertical: %{
             show: true,
             show_buttons: false,
-            thickness: 15
+            thickness: 15,
+            theme: FloUI.Theme.preset(:scrollbar)
         },
         horizontal: %{
             show: true,
             show_buttons: false,
-            thickness: 15
+            thickness: 15,
+            theme: FloUI.Theme.preset(:scrollbar)
         }
     } do %>
 

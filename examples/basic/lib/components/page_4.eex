@@ -10,5 +10,6 @@
 <%= component FloUI.Dropdown,
     @dropdown_opts,
     id: :scroll_dropdown,
-    theme: FloUI.Theme.preset(:base)
+    theme: FloUI.Theme.preset(:base),
+    scroll_bar_theme: FloUI.Theme.preset(:scrollbar)
 %>
