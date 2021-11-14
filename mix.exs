@@ -90,18 +90,9 @@ defmodule FloUI.MixProject do
           FloUI.Modal.Layout,
           FloUI.Modal.ScrollLayout
         ],
-        Scrollbar: [
-          FloUI.Scrollable,
-          FloUI.ScrollBars,
-          FloUI.Scrollable.ScrollBars,
-          FloUI.Scrollable.ScrollBar,
-          FloUI.Scrollable.Components,
-          FloUI.Scrollable.Acceleration,
-          FloUI.Scrollable.Direction,
-          FloUI.Scrollable.Drag,
-          FloUI.Scrollable.Hotkeys,
-          FloUI.Scrollable.PositionCap,
-          FloUI.Scrollable.Wheel
+        Scrollable: [
+          FloUI.Scrollable.Container,
+          FloUI.Scrollable.ScrollBar
         ],
         SelectionList: [
           FloUI.SelectionList,
