@@ -27,7 +27,7 @@ defmodule Basic.MixProject do
       {:truetype_metrics, "~> 0.5"},
       {:dialyxir, "~> 1.1", only: :dev, runtime: false},
       {:flo_ui, path: Path.relative_to_cwd("../..")},
-      {:snap_framework, "~> 0.1.0-alpha.2"}
+      {:snap_framework, "~> 0.1.0-alpha.3"}
     ]
   end
 end
