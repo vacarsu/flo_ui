@@ -8,14 +8,14 @@
 %>
 
 <%= primitive Scenic.Primitive.RoundedRectangle,
-    {@width + 20, 50, 5},
+    {@background_width, @height, 5},
     id: :bg,
     fill: @theme.background,
     input: [:cursor_button]
 %>
 
 <%= primitive Scenic.Primitive.RoundedRectangle,
-    {@width + 20, @frame_height + 20, 4},
+    {@background_width, @background_height, 4},
     id: :dropdown_bg,
     translate: {0, 43},
     hidden: true,
@@ -32,14 +32,16 @@
     hidden: true,
     scroll_bars: %{
         vertical: %{
-            show: true,
+            show: @show_vertical_scroll,
             show_buttons: true,
-            thickness: 15
+            thickness: 15,
+            theme: @opts[:scroll_bar_theme]
         },
         horizontal: %{
             show: false,
             show_buttons: true,
-            thickness: 15
+            thickness: 15,
+            theme: @opts[:scroll_bar_theme]
         }
     }
 do %>
@@ -54,4 +56,11 @@ do %>
     id: :selected_label,
     fill: @theme.text,
     translate: {5, 30}
+%>
+
+<%= component FloUI.Icon,
+    {:flo_ui, "icons/arrow_drop_down_white.png"},
+    translate: {@width - 48 / 2, @height / 2 - 48 / 2},
+    pin: {48 / 2, 48 / 2},
+    id: :icon
 %>

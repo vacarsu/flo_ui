@@ -4,13 +4,17 @@ defmodule FloUI.Scrollable.ScrollBar do
 
   The following events are sent.
 
-  `{:register_scroll_bar, direction, scroll_bar_state}`
-  `{:drag_changed, direction, scroll_bar_state}`
-  `{:scroll_bar_state_changed, direction, scroll_bar_state}`
+  ``` elixir
+  {:register_scroll_bar, direction, scroll_bar_state}
+  {:drag_changed, direction, scroll_bar_state}
+  {:scroll_bar_state_changed, direction, scroll_bar_state}
+  ```
 
   additionally you can cast a vector2 offset to a scroll bar
 
-  `GenServer.cast(scroll_bar_pid, {update_cursor_scroll, offset})
+  ``` elixir
+  GenServer.cast(scroll_bar_pid, {:update_cursor_scroll, offset})
+  ```
 
   data is an object in the form of
 

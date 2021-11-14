@@ -3,6 +3,6 @@
 <%= primitive Scenic.Primitive.Rectangle,
     {48, 48}, 
     fill: {:image, @data},
-    scale: 0.5 
+    scale: 0.5
 %>
     

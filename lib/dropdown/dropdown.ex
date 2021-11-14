@@ -36,7 +36,7 @@ defmodule FloUI.Dropdown do
   %>
   ```
   """
-  @default_height 100
+  @default_height 50
   @default_max_height 300
   @default_theme FloUI.Theme.preset(:base)
 
@@ -60,17 +60,26 @@ defmodule FloUI.Dropdown do
   ]
 
   def setup(%{assigns: %{data: {items, selected} = data, opts: opts}} = scene) do
+    frame_height = get_frame_height(data, opts)
+    content_height = get_content_height(items)
+    show_vertical_scroll = content_height > frame_height
+    IO.puts("frame_height - #{inspect frame_height}")
+    IO.puts("content_height - #{inspect content_height}")
+
     assign(scene,
       items: items,
       selected_label: "",
       selected_key: nil,
       selected: selected,
       open?: false,
+      background_width: if(show_vertical_scroll, do: get_width(data, opts) + 20, else: get_width(data, opts)),
+      background_height: frame_height + 15,
       width: get_width(data, opts),
       height: opts[:height] || @default_height,
       max_height: opts[:max_height] || @default_max_height,
-      frame_height: get_frame_height(data, opts),
-      content_height: get_content_height(items),
+      frame_height: frame_height,
+      content_height: content_height,
+      show_vertical_scroll: show_vertical_scroll,
       theme: opts[:theme] || @default_theme
     )
   end

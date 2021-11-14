@@ -1,7 +1,7 @@
 defmodule FloUI.MixProject do
   use Mix.Project
 
-  @version "0.1.0-alpha.1"
+  @version "0.1.0-alpha.2"
   @github "https://github.com/vacarsu/flo_ui"
 
   def project do
@@ -70,15 +70,17 @@ defmodule FloUI.MixProject do
           FloUI,
           FloUI.Theme
         ],
-        Buttons: [
-          FloUI.Icon.Button,
-          FloUI.Icon.ButtonController
-        ],
         Icons: [
+          FloUI.Icon.Button,
+          FloUI.Icon.ButtonController,
           FloUI.Icon
         ],
         Dropdown: [
-          FloUI.Dropdown
+          FloUI.Dropdown,
+          FloUI.Dropdown.Items,
+          FloUI.Dropdown.Item,
+          FloUI.DropdownController,
+          FloUI.Dropdown.ItemController,
         ],
         Layout: [
           FloUI.Grid
@@ -87,12 +89,19 @@ defmodule FloUI.MixProject do
           FloUI.Modal.Background,
           FloUI.Modal.Body,
           FloUI.Modal.Header,
-          FloUI.Modal.Layout,
-          FloUI.Modal.ScrollLayout
+          FloUI.Modal.Layout
         ],
         Scrollable: [
           FloUI.Scrollable.Container,
-          FloUI.Scrollable.ScrollBar
+          FloUI.Scrollable.ScrollBar,
+          FloUI.Scrollable.Direction,
+          FloUI.Scrollable.Drag,
+          FloUI.Scrollable.Hotkeys,
+          FloUI.Scrollable.PositionCap,
+          FloUI.Scrollable.Wheel,
+          FloUI.Scrollable.Acceleration,
+          FloUI.Scrollable.ScrollBarController,
+          FloUI.Scrollable.ScrollableContainerController
         ],
         SelectionList: [
           FloUI.SelectionList,

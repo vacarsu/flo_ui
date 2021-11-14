@@ -1,33 +1,36 @@
 defmodule FloUI.Grid do
   @moduledoc """
-  ## Usage in SnapFramework
-
-  Render this with children passed to it to automatically lay the children out in the grid.
-  The children must be given width and height styles for it to work. Inspired by https://github.com/BWheatie/scenic_layout_o_matic
-
-  data is a map in the form of ` elixir %{start_xy: {0, 0}, max_xy: {100, 100}}`
-
-  ``` elixir
-  <%= component FloUI.Grid, %{
-          start_xy: {0, 0},
-          max_xy: {48 * 3, 48}
-      },
-      translate: {20, 120}
-  do %>
-      <%= component FloUI.Icon.Button, "Close", id: :icon_button, width: 48, height: 48, translate: {20, 120} do %>
-          <%= component FloUI.Icon, {:flo_ui, "icons/clear_white.png"} %>
-      <% end %>
-
-      <%= component FloUI.Icon.Button, "Close", id: :icon_button, width: 48, height: 48, translate: {20, 120} do %>
-          <%= component FloUI.Icon, {:flo_ui, "icons/clear_white.png"} %>
-      <% end %>
-
-      <%= component FloUI.Icon.Button, "Close", id: :icon_button, width: 48, height: 48, translate: {20, 120} do %>
-          <%= component FloUI.Icon, {:flo_ui, "icons/clear_white.png"} %>
-      <% end %>
-  <% end %>
-  ```
+  DEPRECATED - use SnapFramework layouts instead.
   """
+  # @moduledoc """
+  # ## Usage in SnapFramework
+
+  # Render this with children passed to it to automatically lay the children out in the grid.
+  # The children must be given width and height styles for it to work. Inspired by https://github.com/BWheatie/scenic_layout_o_matic
+
+  # data is a map in the form of ` elixir %{start_xy: {0, 0}, max_xy: {100, 100}}`
+
+  # ``` elixir
+  # <%= component FloUI.Grid, %{
+  #         start_xy: {0, 0},
+  #         max_xy: {48 * 3, 48}
+  #     },
+  #     translate: {20, 120}
+  # do %>
+  #     <%= component FloUI.Icon.Button, "Close", id: :icon_button, width: 48, height: 48, translate: {20, 120} do %>
+  #         <%= component FloUI.Icon, {:flo_ui, "icons/clear_white.png"} %>
+  #     <% end %>
+
+  #     <%= component FloUI.Icon.Button, "Close", id: :icon_button, width: 48, height: 48, translate: {20, 120} do %>
+  #         <%= component FloUI.Icon, {:flo_ui, "icons/clear_white.png"} %>
+  #     <% end %>
+
+  #     <%= component FloUI.Icon.Button, "Close", id: :icon_button, width: 48, height: 48, translate: {20, 120} do %>
+  #         <%= component FloUI.Icon, {:flo_ui, "icons/clear_white.png"} %>
+  #     <% end %>
+  # <% end %>
+  # ```
+  # """
 
   use SnapFramework.Component,
     name: :grid,

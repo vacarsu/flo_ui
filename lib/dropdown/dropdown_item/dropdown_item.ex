@@ -39,13 +39,13 @@ defmodule FloUI.Dropdown.Item do
       selected: selected,
       hovered: false,
       width: opts[:width],
-      height: @default_height,
+      height: get_height(),
       theme: opts[:theme] || @default_theme
     )
   end
 
   def bounds({_, _}, opts) do
-    {0.0, 0.0, opts[:width], opts[:height]}
+    {0.0, 0.0, opts[:width], get_height()}
   end
 
   def process_input({:cursor_button, {:btn_left, 0, _, _}}, :bg, scene) do
@@ -69,5 +69,9 @@ defmodule FloUI.Dropdown.Item do
 
   def process_cast(:deselect, scene) do
     {:noreply, assign(scene, selected: false)}
+  end
+
+  def get_height() do
+    FloUI.Util.FontMetricsHelper.get_text_height(20)
   end
 end

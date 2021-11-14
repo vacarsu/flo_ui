@@ -3,18 +3,25 @@ defmodule FloUI.Theme do
   Basic theme for sets for FloUI
 
   ``` elixir
-  :base
-  :dark
-  :light
-  :primary
-  :scrollbar
-  :secondary
-  :success
-  :danger
-  :warning
-  :info
+  :base,
+  :dark,
+  :light,
+  :primary,
+  :scrollbar,
+  :secondary,
+  :success,
+  :danger,
+  :warning,
+  :info,
   :text
   ```
+
+  Pick a preset
+
+  ``` elixir
+  FloUI.Theme.preset(:primary)
+  ```
+
   """
 
   alias Scenic.Primitive.Style.Paint.Color

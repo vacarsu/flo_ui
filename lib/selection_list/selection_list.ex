@@ -4,7 +4,10 @@ defmodule FloUI.SelectionList do
 
   Selection lists are a convenient way to have selectable options in list form.
 
-  data is a tuple in the form of ` elixir {[{label, value, key}], selected}`
+  data is a tuple in the form of
+  ``` elixir
+  {[{label, value, key}], selected}
+  ```
 
   ``` elixir
   <%= graph font_size: 20 %>

@@ -44,7 +44,7 @@ defmodule FloUI.Dropdown.Items do
     {0.0, 0.0, get_width(items), get_height(items, opts[:max_height] || @default_max_height)}
   end
 
-  def process_event({:click, id, {_, key} = data}, _, %{assigns: %{selected: selected}} = scene) do
+  def process_event({:click, _id, {_, key} = data}, _, %{assigns: %{selected: selected}} = scene) do
     case child(scene, selected) do
       {:ok, [selected_pid]} ->
         GenServer.cast(selected_pid, :deselect)
@@ -62,15 +62,13 @@ defmodule FloUI.Dropdown.Items do
   end
 
   def get_height(items, max_height \\ @default_max_height) do
-    height =
-      Enum.reduce(items, 0, fn {{label, _}, _}, acc ->
-        FloUI.Util.FontMetricsHelper.get_text_height(20) + acc
-      end)
+    height = get_content_height(items)
 
     if(height > max_height, do: max_height, else: height)
   end
 
   def get_content_height(items) do
-    length(items) * 50
+    height = FloUI.Dropdown.Item.get_height()
+    length(items) * height + 10
   end
 end

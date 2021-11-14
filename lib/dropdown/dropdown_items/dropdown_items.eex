@@ -1,13 +1,13 @@
 <%= graph font_size: 20 %>
 
-<%= layout width: @width, height: @max_height, translate: {0, 5} do %>
+<%= layout width: @width + 20, height: @max_height, translate: {0, 0} do %>
     <%= for {_, key} = item <- @items do %>
         <%= component FloUI.Dropdown.Item,
             item,
             id: key,
             selected: @selected == key,
             width: @width,
-            height: 50 
+            height: 50
         %>
     <% end %>
 <% end %>

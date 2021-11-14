@@ -4,7 +4,10 @@ defmodule FloUI.SelectionListItem do
 
   A selection list item used by SelectionList.
 
-  data is a tuple in the form of ` elixir {label, value, id}`
+  data is a tuple in the form of
+  ``` elixir
+  {label, value, id}
+  ```
 
   ``` elixir
   <%= graph font_size: 20 %>

@@ -1,7 +1,7 @@
 <%= graph font_size: 20 %>
 
 <%= primitive Scenic.Primitive.Rectangle,
-    {@width, @height},
+    {@width + 20, @height},
     id: :bg,
     fill: if(@selected or @hovered, do: @theme.thumb, else: @theme.background),
     input: [:cursor_pos, :cursor_button]
@@ -9,6 +9,6 @@
 
 <%= primitive Scenic.Primitive.Text,
     @label,
-    translate: {5, 30},
+    translate: {5, 25},
     fill: @theme.text
 %>
