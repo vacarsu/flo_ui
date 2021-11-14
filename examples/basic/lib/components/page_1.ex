@@ -15,13 +15,17 @@ defmodule Basic.Component.Page1 do
     ],
     opts: []
 
-  defcomponent :page_1, :any
+  defcomponent(:page_1, :any)
 
-  use_effect [assigns: [btn_text: :any]], [
+  use_effect([assigns: [btn_text: :any]],
     run: [:on_btn_text_change]
-  ]
+  )
 
   def process_event({:click, :btn_update}, _, scene) do
     {:noreply, assign(scene, btn_text: "Updated")}
+  end
+
+  def process_event(_, _, scene) do
+    {:noreply, scene}
   end
 end

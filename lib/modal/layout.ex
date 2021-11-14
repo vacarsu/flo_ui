@@ -43,7 +43,7 @@ defmodule FloUI.Modal.Layout do
     ],
     opts: []
 
-  defcomponent :layout, :string
+  defcomponent(:layout, :string)
 
   def setup(%{assigns: %{opts: opts}} = scene) do
     assign(scene,

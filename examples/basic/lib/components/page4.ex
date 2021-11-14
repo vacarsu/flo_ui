@@ -6,14 +6,14 @@ defmodule Basic.Component.Page4 do
     assigns: [
       dropdown_opts: {
         [
-            {%{label: "Select Item", value: nil}, :select},
-            {%{label: "Item 1", value: "Item 1"}, :item_1},
-            {%{label: "Item 2", value: "Item 2"}, :item_2},
-            {%{label: "Item 3", value: "Item 3"}, :item_3},
-            {%{label: "Item 4", value: "Item 4"}, :item_4},
-            {%{label: "Item 5", value: "Item 5"}, :item_5},
-            {%{label: "Item 6", value: "Item 6"}, :item_6},
-            {%{label: "Item 7", value: "Item 7"}, :item_7},
+          {{"Select Item", :select}, :select},
+          {{"Item 1", "Item 1"}, :item_1},
+          {{"Item 2", "Item 2"}, :item_2},
+          {{"Item 3", "Item 3"}, :item_3},
+          {{"Item 4", "Item 4"}, :item_4},
+          {{"Item 5", "Item 5"}, :item_5},
+          {{"Item 6", "Item 6"}, :item_6},
+          {{"Item 7", "Item 7"}, :item_7}
         ],
         :select
       },
@@ -28,5 +28,5 @@ defmodule Basic.Component.Page4 do
     ],
     opts: []
 
-  defcomponent :page_4, :any
+  defcomponent(:page_4, :any)
 end

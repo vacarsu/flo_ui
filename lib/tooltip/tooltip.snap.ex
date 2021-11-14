@@ -21,7 +21,7 @@ defmodule FloUI.Tooltip do
     assigns: [width: 0, height: 0],
     opts: []
 
-  defcomponent :tooltip, :any
+  defcomponent(:tooltip, :any)
 
   def setup(scene) do
     scene
@@ -29,8 +29,12 @@ defmodule FloUI.Tooltip do
     |> get_background_height
   end
 
+  def bound(data, opts) do
+    {0.0, 0.0, FontMetricsHelper.get_text_width(data, 20), FontMetricsHelper.get_text_height(20)}
+  end
+
   def get_background_width(%{assigns: %{data: data}} = scene) do
-    assign(scene, width: FontMetricsHelper.get_text_width(data, 20) + 10)
+    assign(scene, width: FontMetricsHelper.get_text_width(data, 20))
   end
 
   def get_background_height(scene) do

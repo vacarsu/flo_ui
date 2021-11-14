@@ -31,69 +31,74 @@ defmodule FloUI.Icon.Button do
     ],
     opts: []
 
-    defcomponent :icon_button, :any
+  defcomponent(:icon_button, :any)
 
-    watch [:children]
+  watch([:children])
 
-    use_effect [assigns: [showing_highlight: :any]], [
-      run: [:on_highlight_change]
-    ]
+  use_effect([assigns: [showing_highlight: :any]],
+    run: [:on_highlight_change]
+  )
 
-    use_effect [assigns: [showing_tooltip: :any]], [
-      run: [:on_show_tooltip_change]
-    ]
+  use_effect([assigns: [showing_tooltip: :any]],
+    run: [:on_show_tooltip_change]
+  )
 
-    # DEPRECATED
-    # use_effect [on_click: [@assigns[:id]]], :cont, []
+  # DEPRECATED
+  # use_effect [on_click: [@assigns[:id]]], :cont, []
 
-    @impl true
-    def setup(%{assigns: %{data: nil}} = scene) do
-      # Logger.debug(inspect state, pretty: true)
-      scene |> assign(id: scene.assigns.opts[:id] || nil)
-    end
+  @impl true
+  def setup(%{assigns: %{data: nil}} = scene) do
+    # Logger.debug(inspect state, pretty: true)
+    scene |> assign(id: scene.assigns.opts[:id] || nil)
+  end
 
-    @impl true
-    def setup(%{assigns: %{data: label}} = scene) do
-      request_input(scene, [:cursor_pos])
-      scene |> assign(id: scene.assigns.opts[:id] || nil, label: label)
-    end
+  @impl true
+  def setup(%{assigns: %{data: label}} = scene) do
+    request_input(scene, [:cursor_pos])
+    scene |> assign(id: scene.assigns.opts[:id] || nil, label: label)
+  end
 
-    @impl true
-    def process_update(data, opts, scene) do
-      {:noreply, assign(scene, data: data, children: opts[:children], opts: opts)}
-    end
+  @impl true
+  def bounds(_data, _opts) do
+    {0.0, 0.0, 50, 50}
+  end
 
-    @impl true
-    def process_input({:cursor_button, {:btn_left, 1, _, _}}, :btn, scene) do
-      {:noreply, scene}
-    end
+  @impl true
+  def process_update(data, opts, scene) do
+    {:noreply, assign(scene, data: data, children: opts[:children], opts: opts)}
+  end
 
-    @impl true
-    def process_input({:cursor_button, {:btn_left, 0, _, _}}, :btn, scene) do
-      send_parent_event(scene, {:click, scene.assigns.id})
-      {:noreply, scene}
-    end
+  @impl true
+  def process_input({:cursor_button, {:btn_left, 1, _, _}}, :btn, scene) do
+    {:noreply, scene}
+  end
 
-    @impl true
-    def process_input({:cursor_pos, _}, :btn,  %{assigns: %{label: nil}} = scene) do
-      capture_input(scene, [:cursor_pos])
-      {:noreply, assign(scene, showing_highlight: true, showing_tooltip: false)}
-    end
+  @impl true
+  def process_input({:cursor_button, {:btn_left, 0, _, _}}, :btn, scene) do
+    send_parent_event(scene, {:click, scene.assigns.id})
+    {:noreply, scene}
+  end
 
-    @impl true
-    def process_input({:cursor_pos, _}, :btn,  scene) do
-      capture_input(scene, [:cursor_pos])
-      {:noreply, assign(scene, showing_highlight: true, showing_tooltip: true)}
-    end
+  @impl true
+  def process_input({:cursor_pos, _}, :btn, %{assigns: %{label: nil}} = scene) do
+    capture_input(scene, [:cursor_pos])
+    {:noreply, assign(scene, showing_highlight: true, showing_tooltip: false)}
+  end
 
-    @impl true
-    def process_input({:cursor_pos, _}, _,  scene) do
-      release_input(scene)
-      {:noreply, assign(scene, showing_highlight: false, showing_tooltip: false)}
-    end
+  @impl true
+  def process_input({:cursor_pos, _}, :btn, scene) do
+    capture_input(scene, [:cursor_pos])
+    {:noreply, assign(scene, showing_highlight: true, showing_tooltip: true)}
+  end
 
-    @impl true
-    def process_input(_event, _, scene) do
-      {:noreply, scene}
-    end
+  @impl true
+  def process_input({:cursor_pos, _}, _, scene) do
+    release_input(scene)
+    {:noreply, assign(scene, showing_highlight: false, showing_tooltip: false)}
+  end
+
+  @impl true
+  def process_input(_event, _, scene) do
+    {:noreply, scene}
+  end
 end

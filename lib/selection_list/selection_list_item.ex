@@ -25,16 +25,17 @@ defmodule FloUI.SelectionListItem do
     ],
     opts: []
 
-  defcomponent :selection_list_item, :tuple
+  defcomponent(:selection_list_item, :tuple)
 
-  watch [:hovered]
+  watch([:hovered])
 
-  use_effect [assigns: [selected: :any]], [
+  use_effect([assigns: [selected: :any]],
     run: [:on_selected_change]
-  ]
+  )
 
   def setup(%{assigns: %{data: {label, value, key}, hovered: hovered, opts: opts}} = scene) do
     request_input(scene, [:cursor_pos])
+
     assign(scene,
       label: label,
       value: value,
@@ -43,6 +44,10 @@ defmodule FloUI.SelectionListItem do
       selected: opts[:selected] || false,
       hovered: hovered
     )
+  end
+
+  def bounds(_data, opts) do
+    {0.0, 0.0, opts[:width] || 500, 50}
   end
 
   def process_input({:cursor_pos, _}, :box, scene) do
@@ -54,19 +59,19 @@ defmodule FloUI.SelectionListItem do
   end
 
   def process_input(
-    {:cursor_button, {:btn_left, 1, _, _}},
-    :box,
-    %{assigns: %{key: key, label: label, value: value, selected: false}} = scene
-  ) do
+        {:cursor_button, {:btn_left, 1, _, _}},
+        :box,
+        %{assigns: %{key: key, label: label, value: value, selected: false}} = scene
+      ) do
     send_parent_event(scene, {:select, {label, value, key}})
     {:noreply, assign(scene, selected: true)}
   end
 
   def process_input(
-    {:cursor_button, {:btn_left, 1, _, _}},
-    :box,
-    %{assigns: %{selected: true}} = scene
-  ) do
+        {:cursor_button, {:btn_left, 1, _, _}},
+        :box,
+        %{assigns: %{selected: true}} = scene
+      ) do
     send_parent_event(scene, :deselect)
     {:noreply, assign(scene, selected: false)}
   end

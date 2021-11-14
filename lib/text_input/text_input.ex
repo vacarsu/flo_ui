@@ -29,15 +29,15 @@ defmodule FloUI.Component.TextInput do
     assigns: [],
     opts: []
 
-  defcomponent :text_input, :string
+  defcomponent(:text_input, :string)
 
-  use_effect [assigns: [data: :any]], [
+  use_effect([assigns: [data: :any]],
     run: [:on_data_change]
-  ]
+  )
 
-  use_effect [assigns: [clear_hidden: :any]], [
+  use_effect([assigns: [clear_hidden: :any]],
     run: [:on_clear_hidden_change]
-  ]
+  )
 
   def setup(%{assigns: %{opts: opts}} = scene) do
     assign(scene,
@@ -53,6 +53,11 @@ defmodule FloUI.Component.TextInput do
     )
   end
 
+  def bounds(_data, opts) do
+    {0.0, 0.0, opts[:width] || opts[:w] || @default_width,
+     opts[:height] || opts[:h] || @default_height}
+  end
+
   def process_update(data, opts, scene) do
     {:noreply, assign(scene, data: data, value: data, opts: opts)}
   end
@@ -63,6 +68,7 @@ defmodule FloUI.Component.TextInput do
 
   def process_event({:click, :btn_clear}, _, %{assigns: %{id: id}} = scene) do
     Scenic.Scene.update_child(scene, :text_input, "", [])
+
     scene =
       scene
       |> assign(data: "")

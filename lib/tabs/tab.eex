@@ -1,7 +1,7 @@
 <%= graph font_size: 20 %>
 
 <%= primitive Scenic.Primitive.Rectangle,
-    {FontMetricsHelper.get_text_width(@label, 20) + 10, 40},
+    {@width, 40},
     id: :bg,
     fill: if(@selected? or @hovered?, do: :steel_blue, else: :gainsboro),
     input: [:cursor_button, :cursor_pos]

@@ -6,7 +6,7 @@ defmodule Basic.Component.Page3 do
     assigns: [input_value: "Test"],
     opts: []
 
-  defcomponent :page_3, :any
+  defcomponent(:page_3, :any)
 
   def process_event(event, _, scene) do
     {:noreply, scene}

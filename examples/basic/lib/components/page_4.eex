@@ -3,12 +3,12 @@
 <%= component FloUI.SelectionList,
     @selection_list,
     id: :selection_list,
-    translate: {20, 300}
+    translate: {20, 300},
+    width: 200
 %>
 
 <%= component FloUI.Dropdown,
     @dropdown_opts,
     id: :scroll_dropdown,
-    width: 200,
-    height: 40
+    theme: FloUI.Theme.preset(:base)
 %>

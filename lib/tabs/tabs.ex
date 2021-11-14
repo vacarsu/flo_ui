@@ -41,11 +41,11 @@ defmodule FloUI.Tabs do
     ],
     opts: []
 
-  defcomponent :tabs, :any
+  defcomponent(:tabs, :any)
 
-  use_effect [assigns: [active_tab: :any]], [
+  use_effect([assigns: [active_tab: :any]],
     run: [:on_tab_change]
-  ]
+  )
 
   def setup(%{assigns: %{data: {active_tab, tabs}}} = scene) do
     scene |> assign(active_tab: active_tab, tabs: tabs)
@@ -56,11 +56,11 @@ defmodule FloUI.Tabs do
   end
 
   def process_event(
-    {:select_tab, cmp},
-    pid,
-    %{assigns: %{active_tab: active_tab, active_pid: active_pid}} = scene
-  )
-  when cmp != active_tab do
+        {:select_tab, cmp},
+        pid,
+        %{assigns: %{active_tab: active_tab, active_pid: active_pid}} = scene
+      )
+      when cmp != active_tab do
     GenServer.call(active_pid, {:put, false})
 
     scene =

@@ -2,22 +2,42 @@
 
 <%= primitive Scenic.Primitive.Rectangle,
     {@frame.width, @frame.height},
-    input: :cursor_scroll
+    id: :input_capture,
+    input: [:cursor_scroll]
 %>
 
-<%= component FloUI.Scrollable.ContainerScrollBar,
+<%= component FloUI.Scrollable.ScrollBar,
     %{
         direction: :vertical,
         content_size: {@content.width, @content.height},
-        width: 15,
+        width: @scroll_bars.vertical.thickness,
         height: @frame.height,
         scroll_position: @scroll_position
     },
     id: :vertical_scroll_bar,
+    hidden: not @scroll_bars.vertical.show,
     translate: {@frame.width, 0},
-    scroll_buttons: @scroll_bars.vertical_scroll_bar[:scroll_buttons],
-    scroll_bar_theme: Scenic.Primitive.Style.Theme.preset(:dark),
-    scroll_bar_border: 1,
-    scroll_bar_radius: 3,
-    scroll_bar_thickness: 15
+    show_buttons: @scroll_bars.vertical.show_buttons,
+    theme: Scenic.Primitive.Style.Theme.preset(:dark),
+    border: 1,
+    radius: 3,
+    thickness: @scroll_bars.vertical.thickness
+%>
+
+<%= component FloUI.Scrollable.ScrollBar,
+    %{
+        direction: :horizontal,
+        content_size: {@content.width, @content.height},
+        width: @frame.width,
+        height: @scroll_bars.horizontal.thickness,
+        scroll_position: @scroll_position
+    },
+    id: :horizontal_scroll_bar,
+    hidden: not @scroll_bars.horizontal.show,
+    translate: {0, @frame.height},
+    show_buttons: @scroll_bars.horizontal.show_buttons,
+    theme: Scenic.Primitive.Style.Theme.preset(:dark),
+    border: 1,
+    radius: 3,
+    thickness: @scroll_bars.horizontal.thickness
 %>

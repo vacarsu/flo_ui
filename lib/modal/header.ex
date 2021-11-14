@@ -13,7 +13,7 @@ defmodule FloUI.Modal.Header do
     ],
     opts: []
 
-  defcomponent :modal_header, :string
+  defcomponent(:modal_header, :string)
 
   def setup(%{assigns: %{opts: opts}} = scene) do
     assign(scene,

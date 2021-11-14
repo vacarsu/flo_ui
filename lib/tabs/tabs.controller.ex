@@ -6,9 +6,9 @@ defmodule FloUI.TabsController do
     graph =
       Enum.reduce(tabs, graph, fn {_label, cmp}, g ->
         if cmp == active_tab do
-          Graph.modify(g, cmp, &Primitive.put_style(&1, :hidden, :false))
+          Graph.modify(g, cmp, &Primitive.put_style(&1, :hidden, false))
         else
-          Graph.modify(g, cmp, &Primitive.put_style(&1, :hidden, :true))
+          Graph.modify(g, cmp, &Primitive.put_style(&1, :hidden, true))
         end
       end)
 

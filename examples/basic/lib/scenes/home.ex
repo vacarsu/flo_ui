@@ -20,10 +20,13 @@ defmodule Basic.Scene.Home do
       ]
     ]
 
-  # def setup(scene) do
-  #   Scenic.ViewPort.set_theme(scene.viewport, FloUI.Theme.preset(:primary))
-  #   scene
-  # end
+  def setup(scene) do
+    scene
+  end
+
+  def process_input({:viewport, {:reshape, size}}, _, scene) do
+    {:noreply, scene}
+  end
 
   def process_cast(_, scene) do
     {:noreply, scene}

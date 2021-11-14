@@ -28,7 +28,10 @@ defmodule FloUI.Icon.ButtonController do
   def on_show_tooltip_change(scene) do
     graph =
       scene.assigns.graph
-      |> Graph.modify(:tooltip, &Primitive.put_style(&1, :hidden, not scene.assigns.showing_tooltip))
+      |> Graph.modify(
+        :tooltip,
+        &Primitive.put_style(&1, :hidden, not scene.assigns.showing_tooltip)
+      )
 
     Scenic.Scene.assign(scene, graph: graph)
   end

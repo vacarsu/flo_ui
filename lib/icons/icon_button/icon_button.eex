@@ -10,7 +10,7 @@
 
 <%= primitive Scenic.Primitive.Rectangle, {48, 48}, id: :btn, input: :cursor_button %>
 
-<%= component FloUI.Tooltip, 
+<%= component FloUI.Tooltip,
     @label,
     id: :tooltip,
     translate: {10, 50},

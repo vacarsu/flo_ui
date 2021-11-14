@@ -1,10 +1,10 @@
 defmodule FloUI.Scrollable.Wheel do
-  @type drag_state :: :idle | :scrolling
+  @type wheel_state :: :idle | :scrolling
 
   @type t :: %__MODULE__{
-    wheel_state: drag_state,
-    offset: FloUI.Scrollable.Direction.t
-  }
+          wheel_state: wheel_state,
+          offset: FloUI.Scrollable.Direction.t()
+        }
 
   defstruct wheel_state: :idle,
             offset: {:horizontal, 0}
@@ -14,14 +14,14 @@ defmodule FloUI.Scrollable.Wheel do
 
   def scrolling?(%{wheel_state: :scrolling}), do: true
 
-  @spec start_scrolling(t, FloUI.Scrollable.Direction.t) :: t
+  @spec start_scrolling(t, FloUI.Scrollable.Direction.t()) :: t
   def start_scrolling(state, offset) do
     state
     |> Map.put(:wheel_state, :scrolling)
     |> Map.put(:offset, offset)
   end
 
-  @spec stop_scrolling(t, FloUI.Scrollable.Direction.t) :: t
+  @spec stop_scrolling(t, FloUI.Scrollable.Direction.t()) :: t
   def stop_scrolling(state, offset) do
     state
     |> Map.put(:wheel_state, :idle)

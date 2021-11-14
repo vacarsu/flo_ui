@@ -7,6 +7,8 @@
     height: @height
 %>
 
+<%= @children %>
+
 <%= component FloUI.Modal.Header,
     @data,
     width: @width,

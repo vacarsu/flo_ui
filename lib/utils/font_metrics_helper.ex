@@ -20,7 +20,9 @@ defmodule FloUI.Util.FontMetricsHelper do
   end
 
   def get_text_width(text, font_size \\ @default_font_size) do
-    FontMetrics.width(text, font_size, get_font_metrics())
+    ascent = get_font_ascent(font_size)
+    width = FontMetrics.width(text, font_size, get_font_metrics())
+    width + ascent + ascent
   end
 
   def get_text_height(font_size \\ @default_font_size) do

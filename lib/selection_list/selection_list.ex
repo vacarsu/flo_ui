@@ -25,7 +25,7 @@ defmodule FloUI.SelectionList do
     ],
     opts: []
 
-  defcomponent :selection_list, :tuple
+  defcomponent(:selection_list, :tuple)
 
   def setup(%{assigns: %{data: {list, selected}, opts: opts}} = scene) do
     assign(scene,
@@ -37,11 +37,23 @@ defmodule FloUI.SelectionList do
     )
   end
 
-  def process_event({:select, {_label, _item_value, key} = item}, _pid, %{assigns: %{id: id, selected: nil}} = scene) do
+  def bounds({items, _selected}, opts) do
+    {0.0, 0.0, opts[:width] || 500, length(items) * 50}
+  end
+
+  def process_event(
+        {:select, {_label, _item_value, key} = item},
+        _pid,
+        %{assigns: %{id: id, selected: nil}} = scene
+      ) do
     {:cont, {:value_changed, id, item}, assign(scene, selected: key)}
   end
 
-  def process_event({:select, {_label, _item_value, key} = item}, _pid, %{assigns: %{id: id, selected: selected}} = scene) do
+  def process_event(
+        {:select, {_label, _item_value, key} = item},
+        _pid,
+        %{assigns: %{id: id, selected: selected}} = scene
+      ) do
     {:ok, [selected_pid]} = child(scene, selected)
     GenServer.call(selected_pid, :deselect)
     {:cont, {:value_changed, id, item}, assign(scene, selected: key)}

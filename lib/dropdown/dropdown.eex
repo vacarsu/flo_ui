@@ -1,0 +1,57 @@
+<%= graph font_size: 20 %>
+
+<%= primitive Scenic.Primitive.Rectangle,
+    {10000, 10000},
+    id: :clickout,
+    input: [:cursor_button],
+    hidden: true
+%>
+
+<%= primitive Scenic.Primitive.RoundedRectangle,
+    {@width + 20, 50, 5},
+    id: :bg,
+    fill: @theme.background,
+    input: [:cursor_button]
+%>
+
+<%= primitive Scenic.Primitive.RoundedRectangle,
+    {@width + 20, @frame_height + 20, 4},
+    id: :dropdown_bg,
+    translate: {0, 43},
+    hidden: true,
+    fill: @theme.background
+%>
+
+<%= component FloUI.Scrollable.Container,
+    %{
+        frame: {@width, @frame_height},
+        content: {@width, @content_height}
+    },
+    id: :scroll_container,
+    translate: {0, 50},
+    hidden: true,
+    scroll_bars: %{
+        vertical: %{
+            show: true,
+            show_buttons: true,
+            thickness: 15
+        },
+        horizontal: %{
+            show: false,
+            show_buttons: true,
+            thickness: 15
+        }
+    }
+do %>
+    <%= component FloUI.Dropdown.Items,
+        {@items, @selected},
+        theme: @theme
+    %>
+<% end %>
+
+<%= primitive Scenic.Primitive.Text,
+    @selected_label,
+    id: :selected_label,
+    fill: @theme.text,
+    translate: {5, 30}
+%>

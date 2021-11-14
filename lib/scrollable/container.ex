@@ -1,31 +1,79 @@
-defmodule FloUI.Scrollable.ScrollableContainer do
-  @moduledoc false
+defmodule FloUI.Scrollable.Container do
+  @moduledoc """
+  ## Usage in SnapFramework
+
+  Scrollable container is used for large content that you want to scroll. It renders a component child within.
+  this is meant to be as plug and play as possible. With minimal fiddling to get it to work.
+  You can use the ScrollBar component directly if you want to build your own scrollable containers.
+
+  data is an object in the form of
+
+  ``` elixir
+  %{
+    frame: {460, 470},
+    content: {800, 800}
+  }
+  ```
+
+  You can choose which scroll bars to render via the `scroll_bars` option.
+
+  ``` elixir
+  <%= graph font_size: 20 %>
+
+  <%= component FloUI.Scrollable.Container,
+        %{
+            frame: {460, 470},
+            content: {800, 800}
+        },
+        translate: {20, 60},
+        scroll_bars: %{
+            vertical: %{
+                show: true,
+                show_buttons: true,
+                theme: Scenic.Primitive.Style.Theme.preset(:dark),
+                thickness: 15
+            },
+            horizontal: %{
+                show: true,
+                show_buttons: true,
+                theme: Scenic.Primitive.Style.Theme.preset(:dark),
+                thickness: 15
+            }
+        } do %>
+
+        <%= component Basic.Component.Page4, nil %>
+
+    <% end %>
+  ```
+  """
 
   alias Scenic.Graph
-  import Scenic.Primitives, only: [group: 3]
   alias Scenic.Math.Vector2
 
   alias FloUI.Scrollable.Hotkeys
+  alias FloUI.Scrollable.Direction
   alias FloUI.Scrollable.Drag
   alias FloUI.Scrollable.Wheel
-  alias FloUI.Scrollable.ScrollBars
   alias FloUI.Scrollable.Acceleration
   alias FloUI.Scrollable.PositionCap
 
   use SnapFramework.Component,
     name: :scrollable_container,
     template: "lib/scrollable/container.eex",
-    controller: :none,
+    controller: FloUI.Scrollable.ScrollableContainerController,
     assigns: [],
     opts: []
 
-  defcomponent :scrollable_container, :map
+  defcomponent(:scrollable_container, :map)
 
   @default_position {0, 0}
   @default_fps 30
 
+  use_effect([assigns: [scroll_position: :any]],
+    run: [:on_scroll_position_change]
+  )
+
   def setup(%{assigns: %{data: data, opts: opts}} = scene) do
-    Logger.debug(inspect data)
     {content_width, content_height} = data.content
     {frame_width, frame_height} = data.frame
     {frame_x, frame_y} = opts[:translate] || @default_position
@@ -33,41 +81,141 @@ defmodule FloUI.Scrollable.ScrollableContainer do
 
     assign(scene,
       id: opts[:id] || :scrollable,
-      content_builder: opts[:content_builder],
+      theme: opts[:theme] || FloUI.Theme.preset(:scrollbar),
       frame: %{x: frame_x, y: frame_y, width: frame_width, height: frame_height},
       content: %{x: 0, y: 0, width: content_width, height: content_height},
       scroll_position: Vector2.add(scroll_position, {0, 0}),
       fps: opts[:scroll_fps] || @default_fps,
       acceleration: Acceleration.init(opts[:scroll_acceleration]),
       hotkeys: Hotkeys.init(opts[:scroll_hotkeys]),
-      drag_state: Drag.init(opts[:scroll_drag]),
-      wheel_state: %Wheel{},
-      scroll_bars_state: nil,
+      scroll_direction: nil,
+      scroll_bars_state: %{
+        vertical: %{
+          scrolling: :idle,
+          wheel_state: nil,
+          drag_state: nil,
+          scroll_buttons: %{
+            scroll_button_1: :released,
+            scroll_button_2: :released
+          },
+          pid: nil
+        },
+        horizontal: %{
+          scrolling: :idle,
+          wheel_state: nil,
+          drag_state: nil,
+          scroll_buttons: %{
+            scroll_button_1: :released,
+            scroll_button_2: :released
+          },
+          pid: nil
+        }
+      },
       scroll_bars: opts[:scroll_bars]
     )
     |> init_position_caps
   end
 
-  def process_event({:scroll_bar_initialized, _scroll_bar_state}, _, scene) do
-    scene = init_content(scene)
+  def mounted(scene) do
+    FloUI.Scrollable.ScrollableContainerController.render_content(scene)
+  end
+
+  def bounds(%{frame: {x, y}} = data, _opts) do
+    {0.0, 0.0, x, y}
+  end
+
+  def process_event(
+        {:register_scroll_bar, direction, scroll_bar_state},
+        pid,
+        %{assigns: %{scroll_bars_state: scroll_bars_state}} = scene
+      ) do
+    scene =
+      scene
+      |> assign(
+        scroll_bars_state:
+          Map.update!(scroll_bars_state, direction, fn _ ->
+            scroll_bar_state
+          end)
+      )
 
     {:noreply, scene}
   end
 
-  def process_event({:scroll_bar_button_pressed, direction, scroll_buttons}, _, scene) do
-    scene = update(scene)
+  def process_event({:drag_changed, direction, scroll_bar_state}, _, scene) do
+    scene =
+      scene
+      |> assign(
+        scroll_bars_state: Map.update!(
+          scene.assigns.scroll_bars_state,
+          direction, fn _ ->
+            scroll_bar_state
+          end)
+      )
 
     {:noreply, scene}
+  end
+
+  def process_event({:scroll_bar_state_changed, direction, scroll_bar_state}, _, scene) do
+    scene =
+      scene
+      |> assign(
+        scroll_bars_state: Map.update!(
+          scene.assigns.scroll_bars_state,
+          direction, fn _ ->
+            scroll_bar_state
+          end)
+      )
+      |> update
+
+    {:noreply, scene}
+  end
+
+  def process_event({:update_scroll_position, :vertical, {_, y}}, _, scene) do
+    {x, _} = scene.assigns.scroll_position
+    {:noreply, assign(scene, scroll_position: PositionCap.cap(scene.assigns.position_caps, {x, y}))}
+  end
+
+  def process_event({:update_scroll_position, :horizontal, {x, _}}, _, scene) do
+    {_, y} = scene.assigns.scroll_position
+    {:noreply, assign(scene, scroll_position: PositionCap.cap(scene.assigns.position_caps, {x, y}))}
+  end
+
+  def process_event({:update_scroll_position, pos}, _, scene) do
+    {:noreply, assign(scene, scroll_position: PositionCap.cap(scene.assigns.position_caps, pos))}
+  end
+
+  def process_event(event, _, scene) do
+    {:cont, event, scene}
+  end
+
+  def process_input(
+        {:cursor_scroll, scroll_pos},
+        :input_capture,
+        %{assigns: %{scroll_bars_state: scroll_bars_state}} = scene
+      ) do
+    if not is_nil(scroll_bars_state.vertical.pid) do
+      GenServer.cast(scroll_bars_state.vertical.pid, {:update_cursor_scroll, scroll_pos})
+    end
+
+    if not is_nil(scroll_bars_state.horizontal.pid) do
+      GenServer.cast(scroll_bars_state.horizontal.pid, {:update_cursor_scroll, scroll_pos})
+    end
+
+    {:noreply, scene}
+  end
+
+  def process_info(:tick, scene) do
+    {:noreply, assign(scene, animating: false) |> update}
   end
 
   defp init_position_caps(
-    %{assigns:
-      %{
-        frame: %{width: frame_width, height: frame_height},
-        content: %{x: x, y: y, width: content_width, height: content_height}
-      }
-    } = scene
-  ) do
+         %{
+           assigns: %{
+             frame: %{width: frame_width, height: frame_height},
+             content: %{x: x, y: y, width: content_width, height: content_height}
+           }
+         } = scene
+       ) do
     min = {x + frame_width - content_width, y + frame_height - content_height}
     max = {x, y}
 
@@ -79,193 +227,177 @@ defmodule FloUI.Scrollable.ScrollableContainer do
     )
   end
 
-  defp init_content(%{assigns: %{graph: graph, content_builder: content_builder, scroll_position: scroll_position, frame: frame, content: content}} = scene) do
-    graph =
-      Scenic.Primitives.group(
-        graph,
-        &group(&1, content_builder, [id: :content, translate: Vector2.add(scroll_position, {content.x, content.y})]),
-        id: :frame,
-        scissor: {frame.width, frame.height},
-        translate: {frame.x, frame.y}
-      )
-    assign(scene, graph: graph)
-    |> push_graph(graph)
-  end
-
   defp update(scene) do
     scene
-    |> update_scroll_state
     |> apply_force
-    |> translate
-    # |> update_scroll_bars
+    |> verify_cooling_down
     |> tick
-    # push_graph(scene, state.graph)
-    # state
   end
 
-  defp update_scroll_state(scene) do
-    scrolling =
-      verify_idle_state(scene)
-      |> OptionEx.or_try(fn -> verify_dragging_state(scene) end)
-      |> OptionEx.or_try(fn -> verify_scrolling_state(scene) end)
-      |> OptionEx.or_try(fn -> verify_wheel_state(scene) end)
-      |> OptionEx.or_try(fn -> verify_cooling_down_state(scene) end)
-
-    assign(scene, scrolling: scrolling)
-      # |> OptionEx.map(&%{scene.assigns | scrolling: &1})
-      # |> OptionEx.or_else(scene)
+  @spec verify_cooling_down(Scenic.Scene) :: Scenic.Scene
+  defp verify_cooling_down(%{assigns: %{scroll_bars_state: %{vertical: vertical, horizontal: horizontal}}} = scene) do
+    if vertical.scrolling == :idle and
+       horizontal.scrolling == :idle and not
+       Acceleration.is_stationary?(scene.assigns.acceleration)
+    do
+      assign(scene,
+        scroll_bars_state: %{
+          vertical: %{vertical | scrolling: :cooling_down},
+          horizontal: %{horizontal | scrolling: :cooling_down}
+        }
+      )
+    else
+      if vertical.scrolling == :cooling_down and horizontal.scrolling == :cooling_down and Acceleration.is_stationary?(scene.assigns.acceleration) do
+        assign(scene,
+          scroll_bars_state: %{
+            vertical: %{vertical | scrolling: :idle},
+            horizontal: %{horizontal | scrolling: :idle}
+          }
+        )
+      else
+        scene
+      end
+    end
   end
 
-  defp apply_force(%{assigns: %{scrolling: :idle}} = scene), do: scene
+  defp apply_force(
+         %{
+           assigns: %{
+             scroll_bars_state: %{
+               vertical: %{
+                 scrolling: :idle
+               },
+               horizontal: %{
+                 scrolling: :idle
+               }
+            }
+          }
+        } = scene
+      ), do: scene
 
-  defp apply_force(%{assigns: %{scrolling: :dragging}} = scene) do
+  defp apply_force(
+      %{
+        assigns: %{
+          scroll_position: scroll_position,
+          scroll_bars_state: %{
+            vertical: %{
+              scrolling: :dragging,
+              drag_state: drag_state
+            },
+          }
+        }
+      } = scene
+    ) do
+    {_, y} = Drag.new_position(drag_state) |> Vector2.invert()
+    {x, _} = scroll_position
+
     scroll_position =
-      scene.assigns.scroll_bars
-      |> OptionEx.bind(&OptionEx.from_bool(ScrollBars.dragging?(&1), &1))
-      |> OptionEx.bind(&ScrollBars.new_position/1)
-      |> OptionEx.map(fn new_position ->
-        Vector2.add(new_position, {scene.assigns.content.x, scene.assigns.content.y})
-      end)
-      |> OptionEx.or_try(fn ->
-        OptionEx.from_bool(Drag.dragging?(scene.assigns.drag_state), scene.assigns.drag_state)
-        |> OptionEx.bind(&Drag.new_position/1)
-      end)
+      {x, y}
+      |> Vector2.add({scene.assigns.content.x, scene.assigns.content.y})
 
     assign(scene, scroll_position: PositionCap.cap(scene.assigns.position_caps, scroll_position))
-
-    # |> OptionEx.map(&%{state | scroll_position: PositionCap.cap(state.position_caps, &1)})
-    # |> OptionEx.or_else(state)
   end
 
-  defp apply_force(%{assigns: %{scrolling: :wheel, wheel_state: %{offset: {:vertical, offset_y}}}} = scene) do
+  defp apply_force(
+      %{
+        assigns: %{
+          scroll_position: scroll_position,
+          scroll_bars_state: %{
+            horizontal: %{
+              scrolling: :dragging,
+              drag_state: drag_state
+            },
+          }
+        }
+      } = scene
+    ) do
+    {x, _} = Drag.new_position(drag_state) |> Vector2.invert()
+    {_, y} = scroll_position
+
+    scroll_position =
+      {x, y}
+      |> Vector2.add({scene.assigns.content.x, scene.assigns.content.y})
+
+    assign(scene, scroll_position: PositionCap.cap(scene.assigns.position_caps, scroll_position))
+  end
+
+  defp apply_force(
+    %{
+      assigns: %{
+        scroll_bars_state: %{
+        vertical: %{
+          scrolling: vert_scroll,
+          wheel_state: %{offset: {_, offset_y}}
+        },
+        horizontal: %{
+          scrolling: horiz_scroll,
+          wheel_state: %{offset: {_, offset_x}}
+        }
+      }
+    }
+  } = scene
+) when vert_scroll == :wheel or horiz_scroll == :wheel do
     {x, y} = scene.assigns.scroll_position
-    scroll_position = {x, y + offset_y * 10}
+    scroll_position = {x + offset_x * 5, y + offset_y * 5}
 
     assign(scene, scroll_position: PositionCap.cap(scene.assigns.position_caps, scroll_position))
-    # %{state | scroll_position: PositionCap.cap(state.position_caps, scroll_position)}
   end
 
-  defp apply_force(%{assigns: %{scrolling: :wheel, wheel_state: %{offset: {:horizontal, offset_x}}}} = scene) do
-    {x, y} = scene.assigns.scroll_position
-    scroll_position = {x + offset_x * 10, y}
+  defp apply_force(scene) do
+    scroll_direction = get_scroll_direction(scene)
+    force =
+      Hotkeys.direction(scene.assigns.hotkeys)
+      |> Vector2.add(scroll_direction)
 
-    assign(scene, scroll_position: PositionCap.cap(scene.assigns.position_caps, scroll_position))
-    # %{state | scroll_position: PositionCap.cap(state.position_caps, scroll_position)}
+    Acceleration.apply_force(scene.assigns.acceleration, force)
+    |> Acceleration.apply_counter_pressure()
+    |> (&assign(scene, acceleration: &1)).()
+    |> (fn scene ->
+          scroll_pos =
+            Acceleration.translate(scene.assigns.acceleration, scene.assigns.scroll_position)
+
+          assign(scene, scroll_position: PositionCap.cap(scene.assigns.position_caps, scroll_pos))
+        end).()
   end
 
-  # defp apply_force(%{assigns: assigns} = scene) do
-  #   force =
-  #     Hotkeys.direction(assigns.hotkeys)
-  #     |> Vector2.add(get_scroll_bars_direction(scene))
+  defp get_scroll_direction(%{assigns: %{scroll_bars_state: scroll_bars_state}}) do
+    case scroll_bars_state do
+      %{vertical: %{scroll_buttons: %{scroll_button_1: :pressed, scroll_button_2: :released}}} ->
+        Direction.return(1, :vertical)
+        |> Direction.to_vector_2()
 
-  #   Acceleration.apply_force(assigns.acceleration, force)
-  #   |> Acceleration.apply_counter_pressure()
-  #   |> (&%{assigns | acceleration: &1}).()
-  #   |> (fn assigns ->
-  #     scroll_pos = Acceleration.translate(assigns.acceleration, scene.assigns.scroll_position)
-  #     assign(scene, scroll_position: PositionCap.cap(assigns.position_caps, scroll_pos))
-  #   end).()
-  # end
+      %{vertical: %{scroll_buttons: %{scroll_button_1: :released, scroll_button_2: :pressed}}} ->
+        Direction.return(-1, :vertical)
+        |> Direction.to_vector_2()
 
-  defp translate(%{assigns: %{graph: graph, content: %{x: x, y: y}}} = scene) do
-    graph =
-      graph
-      |> Graph.modify(:content, &Scenic.Primitive.put_transform(&1, :translate, Vector2.add(scene.assigns.scroll_position, {x, y})))
+      %{horizontal: %{scroll_buttons: %{scroll_button_1: :pressed, scroll_button_2: :released}}} ->
+        Direction.return(1, :horizontal)
+        |> Direction.to_vector_2()
 
-    assign(scene, graph: graph)
-    |> push_graph(graph)
-    # Map.update!(state, :graph, fn graph ->
-    #   graph
-    #   |> Graph.modify(:content, fn primitive ->
-    #     Map.update(primitive, :transforms, %{}, fn styles ->
-    #       Map.put(styles, :translate, Vector2.add(state.scroll_position, {x, y}))
-    #     end)
-    #   end)
-    # end)
+      %{horizontal: %{scroll_buttons: %{scroll_button_1: :released, scroll_button_2: :pressed}}} ->
+        Direction.return(-1, :horizontal)
+        |> Direction.to_vector_2()
+
+      _ ->
+        {0, 0}
+    end
   end
 
-  defp verify_idle_state(%{assigns: assigns} = scene) do
-    result =
-      Hotkeys.direction(assigns.hotkeys) == {0, 0} and not
-        Drag.dragging?(assigns.drag_state) and
-        assigns.wheel_state.wheel_state != :scrolling and
-        # get_scroll_bars_direction(assigns) == {0, 0} and not
-        # scroll_bars_dragging?(scene) and
-        Acceleration.is_stationary?(assigns.acceleration)
-    OptionEx.from_bool(result, :idle)
+  defp tick(%{assigns: %{scroll_bars_state: %{vertical: %{scrolling: :idle}, horizontal: %{scrolling: :idle}}}} = scene), do: assign(scene, animating: false)
+
+  defp tick(%{assigns: %{scroll_bars_state: %{vertical: %{scrolling: :dragging}}}} = scene) do
+    assign(scene, animating: false)
   end
 
-  defp verify_dragging_state(%{assigns: assigns} = scene) do
-    result = Drag.dragging?(scene.assigns.drag_state)
-      # or scroll_bars_dragging?(state)
-
-    OptionEx.from_bool(result, :dragging)
+  defp tick(%{assigns: %{scroll_bars_state: %{horizontal: %{scrolling: :dragging}}}} = scene) do
+    assign(scene, animating: false)
   end
 
-  defp verify_scrolling_state(%{assigns: assigns} = scene) do
-    result =
-      Hotkeys.direction(assigns.hotkeys) != {0, 0}
-      # or (get_scroll_bars_direction(scene) != {0, 0} and not (assigns.scrolling == :dragging))
-
-    OptionEx.from_bool(result, :scrolling)
-  end
-
-  defp verify_wheel_state(%{assigns: assigns} = scene) do
-    {_, offset} = assigns.wheel_state.offset
-    result =
-      not Hotkeys.is_any_key_pressed?(assigns.hotkeys) and
-      not Drag.dragging?(assigns.drag_state) and
-      offset > 0 or offset < 0
-      # and get_scroll_bars_direction(scene) == {0, 0} and
-      # not scroll_bars_dragging?(scene)
-    OptionEx.from_bool(result, :wheel)
-  end
-
-  defp verify_cooling_down_state(%{assigns: assigns} = scene) do
-    {_, offset} = scene.wheel_state.offset
-    result =
-      not Hotkeys.is_any_key_pressed?(assigns.hotkeys) and
-        not Drag.dragging?(assigns.drag_state) and
-        offset == 0
-        # and get_scroll_bars_direction(scene) == {0, 0} and
-        # not scroll_bars_dragging?(scene) and
-        not Acceleration.is_stationary?(assigns.acceleration)
-
-    OptionEx.from_bool(result, :cooling_down)
-  end
-
-  defp start_cooling_down(%{assigns: assigns} = scene, cursor_pos) do
-    speed =
-      Drag.last_position(assigns.drag_state)
-      |> OptionEx.or_else(cursor_pos)
-      |> (&Vector2.sub(cursor_pos, &1)).()
-      |> (&Drag.amplify_speed(assigns.drag_state, &1)).()
-
-    assign(scene, acceleration: Acceleration.set_speed(assigns.acceleration, speed))
-    # Map.update!(state, :acceleration, &Acceleration.set_speed(&1, speed))
-  end
-
-  defp capture_focus(%{assigns: %{focused: false}} = scene) do
-    capture_input(scene, :key)
-
-    assign(scene, focused: true)
-  end
-
-  defp capture_focus(state, _), do: state
-
-  defp release_focus(%{assigns: %{focused: true}} = scene) do
-    release_input(scene)
-
-    assign(scene, focused: false)
-  end
-
-  defp release_focus(scene), do: scene
-
-  defp tick(%{assigns: %{scrolling: :idle}} = scene), do: assign(scene, animating: false)
-
-  defp tick(%{assigns: %{scrolling: :dragging}} = scene), do: assign(scene, animating: false)
-
-  defp tick(%{assigns: %{scrolling: :wheel}} = scene), do: assign(scene, animating: false)
+  defp tick(%{assigns: %{scroll_bars_state: %{vertical: %{scrolling: vert_scrolling}, horizontal: %{scrolling: horiz_scrolling}}}} = scene)
+    when vert_scrolling == :wheel or horiz_scrolling == :wheel
+    do
+      assign(scene, animating: false)
+    end
 
   defp tick(%{assigns: %{animating: true}} = scene), do: scene
 
@@ -274,7 +406,7 @@ defmodule FloUI.Scrollable.ScrollableContainer do
     assign(scene, animating: true)
   end
 
-  defp tick_time(%{fps: fps}) do
+  defp tick_time(%{assigns: %{fps: fps}}) do
     trunc(1000 / fps)
   end
 end

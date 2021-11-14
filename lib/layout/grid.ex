@@ -33,16 +33,30 @@ defmodule FloUI.Grid do
     name: :grid,
     template: "lib/layout/grid.eex",
     controller: :none,
-    assigns: [last_height: 0, component_xy: {0, 0}, start_xy: {0, 0}, grid_xy: {0, 0}, max_xy: {0, 0}],
+    assigns: [
+      last_height: 0,
+      component_xy: {0, 0},
+      start_xy: {0, 0},
+      grid_xy: {0, 0},
+      max_xy: {0, 0}
+    ],
     opts: []
 
-  defcomponent :grid, :map
+  defcomponent(:grid, :map)
 
   def setup(%{assigns: %{data: %{start_xy: start_xy, max_xy: max_xy}} = assigns} = scene) do
-    assigns = %{assigns | component_xy: start_xy, start_xy: start_xy, grid_xy: start_xy, max_xy: max_xy}
-    {_layout, children} = Enum.reduce(Enum.with_index(assigns.children), {assigns, []}, fn child, acc ->
-      do_layout(child, acc)
-    end)
+    assigns = %{
+      assigns
+      | component_xy: start_xy,
+        start_xy: start_xy,
+        grid_xy: start_xy,
+        max_xy: max_xy
+    }
+
+    {_layout, children} =
+      Enum.reduce(Enum.with_index(assigns.children), {assigns, []}, fn child, acc ->
+        do_layout(child, acc)
+      end)
 
     assign(scene, children: children)
   end
@@ -53,48 +67,69 @@ defmodule FloUI.Grid do
   end
 
   def process_update(data, _opts, scene) do
-    assigns = %{scene.assigns | component_xy: scene.assigns.start_xy, start_xy: scene.assigns.start_xy, grid_xy: scene.assigns.start_xy, max_xy: scene.assigns.max_xy}
-    {_layout, children} = Enum.reduce(Enum.with_index(assigns.children), {assigns, []}, fn child, acc ->
-      do_layout(child, acc)
-    end)
+    assigns = %{
+      scene.assigns
+      | component_xy: scene.assigns.start_xy,
+        start_xy: scene.assigns.start_xy,
+        grid_xy: scene.assigns.start_xy,
+        max_xy: scene.assigns.max_xy
+    }
+
+    {_layout, children} =
+      Enum.reduce(Enum.with_index(assigns.children), {assigns, []}, fn child, acc ->
+        do_layout(child, acc)
+      end)
 
     {:noreply, assign(scene, children: children)}
   end
 
-  defp do_layout({[
-    type: _,
-    module: _,
-    data: _,
-    opts: _
-  ] = child, i}, {layout, child_list}) when is_list(child) do
+  defp do_layout(
+         {[
+            type: _,
+            module: _,
+            data: _,
+            opts: _
+          ] = child, i},
+         {layout, child_list}
+       )
+       when is_list(child) do
     case translate(child, layout) do
       {:error, error} ->
         {:error, error}
+
       new_layout ->
         translate = new_layout.component_xy
+
         updated_child = [
           type: child[:type],
           module: child[:module],
           data: child[:data],
           opts: Keyword.put(child[:opts], :translate, translate)
         ]
+
         {new_layout, List.insert_at(child_list, i, updated_child)}
         # Map.put(new_layout, :children, List.replace_at(new_layout.children, i, updated_child))
     end
   end
 
-  defp do_layout({[
-    type: _,
-    module: _,
-    data: _,
-    opts: _,
-    children: _,
-  ] = child, i}, {layout, child_list}) when is_list(child) do
+  defp do_layout(
+         {[
+            type: _,
+            module: _,
+            data: _,
+            opts: _,
+            children: _
+          ] = child, i},
+         {layout, child_list}
+       )
+       when is_list(child) do
     case translate(child, layout) do
       {:error, error} ->
         {:error, error}
+
       new_layout ->
         translate = new_layout.component_xy
+
         updated_child = [
           type: child[:type],
           module: child[:module],
@@ -102,23 +137,30 @@ defmodule FloUI.Grid do
           opts: Keyword.put(child[:opts], :translate, translate),
           children: child[:children]
         ]
+
         {new_layout, List.insert_at(child_list, i, updated_child)}
         # Map.put(new_layout, :children, List.replace_at(new_layout.children, i, updated_child))
     end
   end
 
-  defp do_layout({[
-    type: _,
-    module: _,
-    data: _,
-    children: _,
-    opts: _,
-  ] = child, i}, {layout, child_list}) when is_list(child) do
+  defp do_layout(
+         {[
+            type: _,
+            module: _,
+            data: _,
+            children: _,
+            opts: _
+          ] = child, i},
+         {layout, child_list}
+       )
+       when is_list(child) do
     case translate(child, layout) do
       {:error, error} ->
         {:error, error}
+
       new_layout ->
         translate = new_layout.component_xy
+
         updated_child = [
           type: child[:type],
           module: child[:module],
@@ -126,6 +168,7 @@ defmodule FloUI.Grid do
           children: child[:children],
           opts: Keyword.put(child[:opts], :translate, translate)
         ]
+
         {new_layout, List.insert_at(child_list, i, updated_child)}
         # Map.put(new_layout, :children, List.replace_at(new_layout.children, i, updated_child))
     end
@@ -142,24 +185,26 @@ defmodule FloUI.Grid do
   end
 
   defp translate(
-    child,
-    %{
-      last_height: last_height,
-      start_xy: start_xy,
-      grid_xy: grid_xy,
-      max_xy: max_xy
-    } = layout
-  ) do
+         child,
+         %{
+           last_height: last_height,
+           start_xy: start_xy,
+           grid_xy: grid_xy,
+           max_xy: max_xy
+         } = layout
+       ) do
     width = child[:opts][:width]
     height = child[:opts][:height]
     {grid_x, _grid_y} = grid_xy
     {start_x, start_y} = start_xy
     new_x = start_x + width
+
     case start_xy == max_xy do
       true ->
         layout
         |> Map.put(:start_xy, {start_x, start_y})
         |> Map.put(:last_height, height)
+
       false ->
         # already in a new group, use start_xy
         case fits_in_x?(new_x, max_xy) do

@@ -2,17 +2,19 @@ defmodule FloUI.Theme do
   @moduledoc """
   Basic theme for sets for FloUI
 
-  base
-  dark
-  light
-  primary
-  scrollbar
-  secondary
-  success
-  danger
-  warning
-  info
-  text
+  ``` elixir
+  :base
+  :dark
+  :light
+  :primary
+  :scrollbar
+  :secondary
+  :success
+  :danger
+  :warning
+  :info
+  :text
+  ```
   """
 
   alias Scenic.Primitive.Style.Paint.Color
@@ -30,18 +32,18 @@ defmodule FloUI.Theme do
   @flo_light Map.merge(@flo_base, %{text: :black, background: :gainsboro})
 
   @flo_primary Map.merge(@flo_base, %{
-    text: :black,
-    background: :grey,
-    border: {84, 84, 84},
-    active: {40, 40, 40}
-  })
+                 text: :black,
+                 background: :grey,
+                 border: {84, 84, 84},
+                 active: {40, 40, 40}
+               })
 
   @scrollbar Map.merge(@flo_base, %{
-    text: :black,
-    background: :grey,
-    border: {84, 84, 84},
-    active: {40, 40, 40}
-  })
+               text: :black,
+               background: :grey,
+               border: {84, 84, 84},
+               active: {40, 40, 40}
+             })
 
   # specialty themes
   @primary Map.merge(@flo_base, %{text: :white, background: :steel_blue, active: {8, 86, 136}})
@@ -56,9 +58,8 @@ defmodule FloUI.Theme do
     base: @flo_base,
     dark: @flo_dark,
     light: @flo_light,
-    primary: @flo_primary,
     scrollbar: @scrollbar,
-    # primary: @primary,
+    primary: @flo_primary,
     secondary: @secondary,
     success: @success,
     danger: @danger,

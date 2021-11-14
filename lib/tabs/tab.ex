@@ -41,26 +41,31 @@ defmodule FloUI.Tab do
     ],
     opts: []
 
-  defcomponent :tab, :tuple
+  defcomponent(:tab, :tuple)
 
-  watch [:hovered?]
+  watch([:hovered?])
 
-  use_effect [assigns: [selected?: :any]], [
+  use_effect([assigns: [selected?: :any]],
     run: [:on_selected_change]
-  ]
+  )
 
   def setup(%{assigns: %{data: {label, cmp}, hovered?: hovered, opts: opts}} = scene) do
-    # width = FontMetricsHelper.get_text_width(label, 20) + 10
     request_input(scene, [:cursor_pos])
     if opts[:selected?], do: send_parent(scene, {:tab_pid, self()})
-    scene |> assign(
+
+    scene
+    |> assign(
       label: label,
-      # width: width,
+      width: FontMetricsHelper.get_text_width(label, 20),
       cmp: cmp,
       id: opts[:id] || "",
       selected?: opts[:selected?] || false,
       hovered?: hovered
     )
+  end
+
+  def bounds({label, _cmp}, opts) do
+    {0.0, 0.0, FontMetricsHelper.get_text_width(label, 20), 40}
   end
 
   def process_input({:cursor_pos, _}, :bg, scene) do

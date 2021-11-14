@@ -17,7 +17,7 @@ defmodule FloUI.Scrollable.Drag do
   By default, drag functionality is disabled.
   """
   @type settings :: %{
-          optional(:mouse_buttons) => [mouse_button]
+          mouse_buttons: [mouse_button]
         }
 
   @typedoc """
@@ -38,16 +38,16 @@ defmodule FloUI.Scrollable.Drag do
   @type t :: %__MODULE__{
           enabled_buttons: [mouse_button],
           drag_state: drag_state,
-          drag_start_content_position: :none | {:some, v2},
-          drag_start: :none | {:some, v2},
-          current: :none | {:some, v2}
+          drag_start_content_position: v2,
+          drag_start: v2,
+          current: v2
         }
 
   defstruct enabled_buttons: [],
             drag_state: :idle,
-            drag_start_content_position: :none,
-            drag_start: :none,
-            current: :none
+            drag_start_content_position: {0, 0},
+            drag_start: {0, 0},
+            current: {0, 0}
 
   # This constant specifies the factor with which the speed based on the last drag distance is multiplied after the drag has ended. This is to make the drag scroll experience feel more smooth.
   @drag_stop_speed_amplifier 3
@@ -79,28 +79,27 @@ defmodule FloUI.Scrollable.Drag do
 
   @doc """
   Calculate the new scroll position based on the current drag state.
-  The result will be wrapped in an `t:OptionEx.t/0`, resulting in :none if the user currently is not scrolling.
+  The result will be wrapped in an.
   """
-  @spec new_position(t) :: {:some, v2} | :none
+  @spec new_position(t) :: v2
   def new_position(%{
         drag_state: :dragging,
-        drag_start_content_position: {:some, drag_start_content_position},
-        drag_start: {:some, drag_start},
-        current: {:some, current}
+        drag_start_content_position: drag_start_content_position,
+        drag_start: drag_start,
+        current: current
       }) do
     current
     |> Vector2.sub(drag_start)
     |> Vector2.add(drag_start_content_position)
-    |> OptionEx.return()
   end
 
-  def new_position(_), do: :none
+  def new_position(%{current: current}), do: current
 
   @doc """
   Get the position of the users cursor during the previous update.
-  Returns an `t:OptionEx.t/0` containing the coordinate, or :none if the user was not dragging during the previous update.
+  Returns an the coordinate.
   """
-  @spec last_position(t) :: {:some, v2} | :none
+  @spec last_position(t) :: v2
   def last_position(%{current: current}), do: current
 
   @doc """
@@ -141,16 +140,16 @@ defmodule FloUI.Scrollable.Drag do
   defp start_drag(state, point, content_position) do
     state
     |> Map.put(:drag_state, :dragging)
-    |> Map.put(:drag_start_content_position, {:some, content_position})
-    |> Map.put(:drag_start, {:some, point})
-    |> Map.put(:current, {:some, point})
+    |> Map.put(:drag_start_content_position, content_position)
+    |> Map.put(:drag_start, point)
+    |> Map.put(:current, point)
   end
 
   # Update the `t:Scenic.Scrollable.Drag.t` with the necessary positional values when the user procs a mouse move event while dragging.
   @spec drag(t, v2) :: t
   defp drag(state, point) do
     state
-    |> Map.put(:current, {:some, point})
+    |> Map.put(:current, point)
   end
 
   # Update the `t:Scenic.Scrollable.Drag.t` with the necessary state defining values when the user stops dragging.
@@ -158,6 +157,5 @@ defmodule FloUI.Scrollable.Drag do
   defp stop_drag(state, _) do
     state
     |> Map.put(:drag_state, :idle)
-    |> Map.put(:current, :none)
   end
 end

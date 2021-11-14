@@ -30,12 +30,12 @@ defmodule FloUI.Scrollable.PositionCap do
   A struct representing a position cap. Positions in the form of a `t:v2/0` can be compared against, and increased or reduced to the capped values by using the `cap/2` function.
   """
   @type t :: %PositionCap{
-          max: {:some, cap} | :none,
-          min: {:some, cap} | :none
+          max: cap,
+          min: cap
         }
 
-  defstruct max: :none,
-            min: :none
+  defstruct max: {0, 0},
+            min: {0, 0}
 
   @doc """
   Initializes a `t:Scenic.Scrollable.PositionCap.t/0` according to the provided `t:Scenic.Scrollable.PositionCap.settings/0`.
@@ -45,8 +45,8 @@ defmodule FloUI.Scrollable.PositionCap do
     # TODO add validation in order to prevent a max value that is smaller than the min value
     # In the current code, the max value will take precedence in such case
     %PositionCap{
-      max: OptionEx.return(settings[:max]),
-      min: OptionEx.return(settings[:min])
+      max: settings[:max],
+      min: settings[:min]
     }
   end
 
@@ -60,21 +60,17 @@ defmodule FloUI.Scrollable.PositionCap do
     |> ceil(max)
   end
 
-  @spec floor(v2, {:some, cap} | :none) :: v2
-  defp floor(coordinate, :none), do: coordinate
+  @spec floor(v2, cap) :: v2
+  defp floor({x, y}, {:horizontal, min_x}), do: {max(x, min_x), y}
 
-  defp floor({x, y}, {:some, {:horizontal, min_x}}), do: {max(x, min_x), y}
+  defp floor({x, y}, {:vertical, min_y}), do: {x, max(y, min_y)}
 
-  defp floor({x, y}, {:some, {:vertical, min_y}}), do: {x, max(y, min_y)}
+  defp floor({x, y}, {min_x, min_y}), do: {max(x, min_x), max(y, min_y)}
 
-  defp floor({x, y}, {:some, {min_x, min_y}}), do: {max(x, min_x), max(y, min_y)}
+  @spec ceil(v2, cap) :: v2
+  defp ceil({x, y}, {:horizontal, max_x}), do: {min(x, max_x), y}
 
-  @spec ceil(v2, {:some, cap} | :none) :: v2
-  defp ceil(coordinate, :none), do: coordinate
+  defp ceil({x, y}, {:vertical, max_y}), do: {x, min(y, max_y)}
 
-  defp ceil({x, y}, {:some, {:horizontal, max_x}}), do: {min(x, max_x), y}
-
-  defp ceil({x, y}, {:some, {:vertical, max_y}}), do: {x, min(y, max_y)}
-
-  defp ceil({x, y}, {:some, {max_x, max_y}}), do: {min(x, max_x), min(y, max_y)}
+  defp ceil({x, y}, {max_x, max_y}), do: {min(x, max_x), min(y, max_y)}
 end

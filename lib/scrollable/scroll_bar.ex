@@ -1,32 +1,65 @@
-defmodule FloUI.Scrollable.ContainerScrollBar do
-  @moduledoc false
+defmodule FloUI.Scrollable.ScrollBar do
+  @moduledoc """
+  Scroll bars are meant to be used within the Scrollable.Container component, but you can use them to build your own scrollable containers.
 
-  import Scenic.Primitives, only: [rect: 3]
+  The following events are sent.
+
+  `{:register_scroll_bar, direction, scroll_bar_state}`
+  `{:drag_changed, direction, scroll_bar_state}`
+  `{:scroll_bar_state_changed, direction, scroll_bar_state}`
+
+  additionally you can cast a vector2 offset to a scroll bar
+
+  `GenServer.cast(scroll_bar_pid, {update_cursor_scroll, offset})
+
+  data is an object in the form of
+
+  ``` elixir
+  %{
+      direction: :vertical,
+      content_size: {200, 200},
+      width: 15,
+      height: 500,
+      scroll_position: {0, 0}
+  }
+  ```
+
+  The following options are accepted
+
+  ``` elixir
+  [
+    show_buttons: true,
+    theme: Scenic.Primitive.Style.Theme.preset(:dark),
+    border: 1,
+    radius: 3,
+    thickness: 15
+  ]
+  ```
+  """
+
   alias Scenic.Graph
-  alias Scenic.Primitive
   alias FloUI.Scrollable.Direction
   alias FloUI.Scrollable.Drag
   alias FloUI.Scrollable.Wheel
   alias FloUI.Scrollable.PositionCap
-  alias Scenic.Primitive.Style.Theme
-  alias Scenic.Math.Vector2
 
   use SnapFramework.Component,
     name: :scroll_bar,
     template: "lib/scrollable/scroll_bar.eex",
-    controller: :none,
+    controller: FloUI.Scrollable.ScrollBarController,
     assigns: [],
     opts: []
 
-  defcomponent :scroll_bar, :map
+  defcomponent(:scroll_bar, :map)
 
-  @default_drag_settings %{mouse_buttons: [:left, :right, :middle]}
-  @default_button_radius 3
-  @default_stroke_size 1
+  @default_drag_settings %{mouse_buttons: [:btn_left, :btn_right, :btn_middle]}
   @default_id :scroll_bar
 
+  use_effect([assigns: [scroll_position: :any]],
+    run: [:on_scroll_position_change]
+  )
+
   def setup(%{assigns: %{data: data, opts: opts}} = scene) do
-    request_input(scene, [:cursor_pos])
     scene =
       assign(scene,
         id: opts[:id] || @default_id,
@@ -35,56 +68,118 @@ defmodule FloUI.Scrollable.ContainerScrollBar do
         direction: data.direction,
         content_size: Direction.from_vector_2(data.content_size, data.direction),
         frame_size: Direction.from_vector_2({data.width, data.height}, data.direction),
-        scroll_position: Direction.return(data.scroll_position, data.direction),
+        scroll_position: Direction.from_vector_2(data.scroll_position, data.direction),
         scroll_bar_slider_background: :released,
-        last_scroll_position: Direction.return(data.scroll_position, data.direction),
-        drag_state: Drag.init(opts[:scroll_drag] || @default_drag_settings),
-        scroll_buttons:
-          OptionEx.from_bool(opts[:scroll_buttons], %{
-            scroll_button_1: :released,
-            scroll_button_2: :released
-          }),
-        pid: self()
+        last_scroll_position: Direction.from_vector_2(data.scroll_position, data.direction),
+        scroll_bar_state: %{
+          scrolling: :idle,
+          drag_state: Drag.init(opts[:scroll_drag] || @default_drag_settings),
+          wheel_state: %Wheel{},
+          scroll_buttons: nil,
+          pid: self()
+        }
       )
-      |> init_position_cap
+      |> init_scroll_buttons
       |> init_size
+      |> init_position_cap
       |> init_scroll_bar_background
       |> init_scroll_bar_drag_control
       |> init_scroll_bar_buttons
 
-    send_parent_event(scene, {:scroll_bar_initialized, scene.assigns})
+    send_parent_event(
+      scene,
+      {:register_scroll_bar, scene.assigns.direction, scene.assigns.scroll_bar_state}
+    )
+
     scene
   end
 
-  def process_input(
-    {:cursor_button, {button, :press, _, position}},
-    :scroll_bar_slider_drag_control,
-    %{assigns: %{
-      drag_state: drag_state
-    }} = scene
-  ) do
-    Logger.debug("drag control clicked")
-    drag_state = Drag.handle_mouse_click(drag_state, button, position, local_scroll_position_vector2(scene))
+  def bounds(data, _opts) do
+    {0.0, 0.0, data.width, data.height}
+  end
 
-    {:noreply, assign(scene, drag_state: drag_state)}
+  def process_update(data, _opts, scene) do
+    {:noreply,
+     assign(scene,
+       last_scroll_position: scene.assigns.scroll_position,
+       scroll_position: Direction.from_vector_2(data.scroll_position, scene.assigns.direction)
+     )}
   end
 
   def process_input(
-      {:cursor_button, {button, :release, _, position}},
-      :scroll_bar_slider_drag_control,
-      %{assigns: %{drag_state: drag_state}} = scene
-    ) do
-    drag_state = Drag.handle_mouse_release(drag_state, button, position)
+        {:cursor_button, {button, action, _, position}},
+        :scroll_bar_slider_drag_control,
+        %{assigns: %{direction: direction, scroll_bar_state: scroll_bar_state}} = scene
+      ) do
+    case action do
+      0 ->
+        unrequest_input(scene, [:cursor_pos, :cursor_button])
+        scrolling = :idle
 
-    {:noreply, assign(scene, drag_state: drag_state)}
+        scroll_position =
+          Direction.from_vector_2(position, direction)
+          |> Direction.map_horizontal(fn pos -> pos - button_width(scene) / 2 end)
+          |> Direction.map_vertical(fn pos -> pos - button_height(scene) / 2 end)
+
+        scroll_position = local_to_world(scene, scroll_position)
+
+        drag_state =
+          Drag.handle_mouse_release(
+            scroll_bar_state.drag_state,
+            button,
+            position
+          )
+
+        scroll_bar_state = %{
+          scroll_bar_state |
+          scrolling: scrolling,
+          drag_state: drag_state
+        }
+
+        scene = assign(scene,
+          scroll_bar_state: scroll_bar_state,
+          last_scroll_position: scene.assigns.scroll_position,
+          scroll_position: scroll_position
+        )
+
+        send_parent_event(scene, {:drag_changed, direction, scroll_bar_state})
+
+        {:noreply, scene}
+
+      1 ->
+        request_input(scene, [:cursor_pos, :cursor_button])
+        scrolling = :dragging
+
+        drag_state =
+          Drag.handle_mouse_click(
+            scroll_bar_state.drag_state,
+            button,
+            position,
+            local_scroll_position_vector2(scene)
+          )
+
+        scroll_bar_state = %{
+          scroll_bar_state |
+          scrolling: scrolling,
+          drag_state: drag_state
+        }
+
+        scene = assign(scene,
+          scroll_bar_state: scroll_bar_state
+        )
+
+        send_parent_event(scene, {:drag_changed, direction, scroll_bar_state})
+
+        {:noreply, scene}
+    end
   end
 
   def process_input(
-    {:cursor_pos, position},
-    _,
-    %{assigns: %{graph: graph, direction: direction, drag_state: drag_state}} = scene
-  ) do
-    # Logger.debug(inspect position)
+        {:cursor_pos, position},
+        _,
+        %{assigns: %{direction: direction, scroll_bar_state: scroll_bar_state}} =
+          scene
+      ) do
     scroll_position =
       Direction.from_vector_2(position, direction)
       |> Direction.map_horizontal(fn pos -> pos - button_width(scene) / 2 end)
@@ -92,91 +187,185 @@ defmodule FloUI.Scrollable.ContainerScrollBar do
 
     scroll_position = local_to_world(scene, scroll_position)
 
+    drag_state = Drag.handle_mouse_move(scroll_bar_state.drag_state, position)
+
+    scroll_bar_state = %{
+      scroll_bar_state |
+      drag_state: drag_state
+    }
+
     scene =
       assign(scene,
-        drag_state: Drag.handle_mouse_move(drag_state, position),
-        scroll_bar_slider_background: :released,
-        last_scroll_position: scroll_position
+        scroll_bar_state: scroll_bar_state,
+        last_scroll_position: scene.assigns.scroll_position,
+        scroll_position: scroll_position
       )
 
-    drag_control_position = local_scroll_position_vector2(scene)
-    graph = Graph.modify(graph, :scroll_bar_slider_drag_control, &Primitive.put_transform(&1, :translate, drag_control_position))
-
-    scene =
-      assign(scene, graph: graph)
-      |> push_graph(graph)
+    send_parent_event(scene, {:scroll_bar_state_changed, direction, scroll_bar_state})
 
     {:noreply, scene}
   end
 
   def process_input(
-    {:cursor_pos, _},
-    _,
-    scene
-  ) do
+        {:cursor_pos, _},
+        _,
+        scene
+      ) do
     {:noreply, scene}
   end
 
   def process_input(
-    {:cursor_button, {_button, :press, _, _}},
-    :scroll_button_1,
-    %{assigns: %{direction: direction, scroll_buttons: {:some, scroll_buttons}}} = scene
-  ) do
-    scroll_buttons = %{scroll_buttons | scroll_button_1: :pressed}
-    send_parent_event(scene, {:scroll_bar_button_pressed, direction, scroll_buttons})
-    scene =
-      scene
-      |> assign(scroll_buttons: {:some, scroll_buttons})
-
+        {:cursor_button, {_button, 1, _, _}},
+        :scroll_bar_slider_background,
+        scene
+      ) do
     {:noreply, scene}
   end
 
   def process_input(
-    {:cursor_button, {_button, :release, _, _}},
-    :scroll_button_1,
-    %{assigns: %{direction: direction, scroll_buttons: {:some, scroll_buttons}}} = scene
-  ) do
-    scroll_buttons = %{scroll_buttons | scroll_button_1: :released}
-    send_parent_event(scene, {:scroll_bar_button_released, direction, scroll_buttons})
+        {:cursor_button, {_button, 0, _, position}},
+        :scroll_bar_slider_background,
+        %{assigns: %{direction: direction}} = scene
+      ) do
     scene =
       scene
-      |> assign(scroll_buttons: {:some, scroll_buttons})
+      |> assign(scroll_position: Direction.from_vector_2(position, direction))
+
+    send_parent_event(scene, {:update_scroll_position, direction, local_to_world(scene, position)})
 
     {:noreply, scene}
   end
 
   def process_input(
-    {:cursor_button, {_button, :press, _, _}},
-    :scroll_button_2,
-    %{assigns: %{direction: direction, scroll_buttons: {:some, scroll_buttons}}} = scene
-  ) do
-    scroll_buttons = %{scroll_buttons | scroll_button_2: :pressed}
-    send_parent_event(scene, {:scroll_bar_button_pressed, direction, scroll_buttons})
-    scene =
-      scene
-      |> assign(scroll_buttons: {:some, scroll_buttons})
+        {:cursor_button, {button, 0, _, position}},
+        nil,
+        %{assigns: %{direction: direction, scroll_bar_state: scroll_bar_state}} = scene
+      ) do
+    unrequest_input(scene, [:cursor_pos, :cursor_button])
+    scrolling = :idle
+
+    drag_state =
+      Drag.handle_mouse_release(
+        scroll_bar_state.drag_state,
+        button,
+        position
+      )
+
+    scroll_bar_state = %{
+      scroll_bar_state |
+      scrolling: scrolling,
+      drag_state: drag_state
+    }
+
+    scene = assign(scene, scroll_bar_state: scroll_bar_state)
+
+    send_parent_event(scene, {:scroll_bar_state_changed, direction, scroll_bar_state})
 
     {:noreply, scene}
   end
 
   def process_input(
-    {:cursor_button, {_button, :release, _, _}},
-    :scroll_button_2,
-    %{assigns: %{direction: direction, scroll_buttons: {:some, scroll_buttons}}} = scene
-  ) do
-    scroll_buttons = %{scroll_buttons | scroll_button_2: :released}
-    send_parent_event(scene, {:scroll_bar_button_released, direction, scroll_buttons})
+        {:cursor_button, {_button, 1, _, _}},
+        button,
+        %{assigns: %{direction: direction, scroll_bar_state: scroll_bar_state}} = scene
+      ) do
+    scroll_buttons = Map.update!(scroll_bar_state.scroll_buttons, button, fn _ -> :pressed end)
+    scrolling = :scrolling
+    scroll_bar_state = %{
+      scroll_bar_state |
+      scrolling: scrolling,
+      scroll_buttons: scroll_buttons
+    }
+
     scene =
       scene
-      |> assign(scroll_buttons: {:some, scroll_buttons})
+      |> assign(scroll_bar_state: scroll_bar_state)
+
+    send_parent_event(scene, {:scroll_bar_state_changed, direction, scroll_bar_state})
 
     {:noreply, scene}
   end
 
-  defp init_scroll_bar_background(%{assigns: %{direction: :vertical, opts: opts, frame_size: frame_size}} = scene) do
-    scroll_bar_background_width = opts[:scroll_bar_thickness]
-    scroll_bar_background_height = Direction.unwrap(frame_size)
-    scroll_bar_background_pos = {0, opts[:scroll_bar_thickness]}
+  def process_input(
+        {:cursor_button, {_button, 0, _, _}},
+        button,
+        %{assigns: %{direction: direction, scroll_bar_state: scroll_bar_state}} = scene
+      ) do
+    scroll_buttons = Map.update!(scroll_bar_state.scroll_buttons, button, fn _ -> :released end)
+    scrolling = :idle
+    scroll_bar_state = %{
+      scroll_bar_state |
+      scrolling: scrolling,
+      scroll_buttons: scroll_buttons
+    }
+
+    scene =
+      scene
+      |> assign(scroll_bar_state: scroll_bar_state)
+
+    send_parent_event(scene, {:scroll_bar_state_changed, direction, scroll_bar_state})
+
+    {:noreply, scene}
+  end
+
+  def process_cast(
+        {:update_cursor_scroll, {{_, offset_y}, _}},
+        %{assigns: %{direction: :vertical = direction, scroll_bar_state: scroll_bar_state}} = scene
+      ) do
+    scene =
+      if offset_y == 0.0 do
+        scroll_bar_state = %{
+          scroll_bar_state |
+          wheel_state: Wheel.stop_scrolling(scroll_bar_state.wheel_state, {direction, 0}),
+          scrolling: :idle,
+        }
+        send_parent_event(scene, {:scroll_bar_state_changed, direction, scroll_bar_state})
+        assign(scene, scroll_bar_state: scroll_bar_state)
+      else
+        scroll_bar_state = %{
+          scroll_bar_state |
+          wheel_state: Wheel.start_scrolling(scroll_bar_state.wheel_state, {direction, offset_y}),
+          scrolling: :wheel,
+        }
+        send_parent_event(scene, {:scroll_bar_state_changed, direction, scroll_bar_state})
+        assign(scene, scroll_bar_state: scroll_bar_state)
+      end
+
+    {:noreply, scene}
+  end
+
+  def process_cast(
+        {:update_cursor_scroll, {{offset_x, _}, _}},
+        %{assigns: %{direction: :horizontal = direction, scroll_bar_state: scroll_bar_state}} = scene
+      ) do
+    scene =
+      if Float.floor(offset_x) == 0 or Float.ceil(offset_x) == 0 do
+        scroll_bar_state = %{
+          scroll_bar_state |
+          wheel_state: Wheel.stop_scrolling(scroll_bar_state.wheel_state, {direction, offset_x}),
+          scrolling: :idle,
+        }
+        send_parent_event(scene, {:scroll_bar_state_changed, direction, scroll_bar_state})
+        assign(scene, scroll_bar_state: scroll_bar_state)
+      else
+        scroll_bar_state = %{
+          scroll_bar_state |
+          wheel_state: Wheel.start_scrolling(scroll_bar_state.wheel_state, {direction, offset_x}),
+          scrolling: :wheel,
+        }
+        send_parent_event(scene, {:scroll_bar_state_changed, direction, scroll_bar_state})
+        assign(scene, scroll_bar_state: scroll_bar_state)
+      end
+
+    {:noreply, scene}
+  end
+
+  defp init_scroll_bar_background(
+         %{assigns: %{scroll_bar_state: %{scroll_buttons: nil}, direction: :vertical, opts: opts, height: height, frame_size: frame_size}} = scene
+       ) do
+    scroll_bar_background_width = opts[:thickness]
+    scroll_bar_background_height = Direction.unwrap(height) + opts[:thickness]
+    scroll_bar_background_pos = {0, 0}
 
     assign(
       scene,
@@ -186,10 +375,42 @@ defmodule FloUI.Scrollable.ContainerScrollBar do
     )
   end
 
-  defp init_scroll_bar_background(%{assigns: %{direction: :horizontal, opts: opts, frame_size: frame_size}} = scene) do
-    scroll_bar_background_width = Direction.unwrap(frame_size)
-    scroll_bar_background_height = opts[:scroll_bar_thickness]
-    scroll_bar_background_pos = {opts[:scroll_bar_thickness], 0}
+  defp init_scroll_bar_background(
+         %{assigns: %{direction: :vertical, opts: opts, height: height, frame_size: frame_size}} = scene
+       ) do
+    scroll_bar_background_width = opts[:thickness]
+    scroll_bar_background_height = Direction.unwrap(height)
+    scroll_bar_background_pos = {0, opts[:thickness]}
+
+    assign(
+      scene,
+      scroll_bar_background_width: scroll_bar_background_width,
+      scroll_bar_background_height: scroll_bar_background_height,
+      scroll_bar_background_pos: scroll_bar_background_pos
+    )
+  end
+
+  defp init_scroll_bar_background(
+         %{assigns: %{scroll_bar_state: %{scroll_buttons: nil}, direction: :horizontal, opts: opts, width: width, frame_size: frame_size}} = scene
+       ) do
+    scroll_bar_background_height = opts[:thickness]
+    scroll_bar_background_width = Direction.unwrap(width) + opts[:thickness]
+    scroll_bar_background_pos = {0, 0}
+
+    assign(
+      scene,
+      scroll_bar_background_width: scroll_bar_background_width,
+      scroll_bar_background_height: scroll_bar_background_height,
+      scroll_bar_background_pos: scroll_bar_background_pos
+    )
+  end
+
+  defp init_scroll_bar_background(
+         %{assigns: %{direction: :horizontal, opts: opts, width: width, frame_size: frame_size}} = scene
+       ) do
+    scroll_bar_background_height = opts[:thickness]
+    scroll_bar_background_width = Direction.unwrap(width)
+    scroll_bar_background_pos = {opts[:thickness], 0}
 
     assign(
       scene,
@@ -203,7 +424,7 @@ defmodule FloUI.Scrollable.ContainerScrollBar do
     scroll_bar_drag_control_width = button_width(scene)
     scroll_bar_drag_control_height = button_height(scene)
     scroll_bar_drag_control_pos = local_scroll_position_vector2(scene)
-    Logger.debug(inspect scroll_bar_drag_control_pos)
+
     assign(
       scene,
       scroll_bar_drag_control_width: scroll_bar_drag_control_width,
@@ -214,11 +435,13 @@ defmodule FloUI.Scrollable.ContainerScrollBar do
 
   defp init_scroll_bar_buttons(%{assigns: %{direction: direction}} = scene) do
     size = scroll_button_size(scene)
+
     {button_2_x, button_2_y} =
       Direction.return(size, direction)
       |> Direction.add(scene.assigns.width)
       |> Direction.add(scene.assigns.height)
       |> Direction.to_vector_2()
+
     scroll_button_1_width = size
     scroll_button_1_height = size
     scroll_button_1_pos = {0, -2}
@@ -236,21 +459,36 @@ defmodule FloUI.Scrollable.ContainerScrollBar do
     )
   end
 
-  defp init_size(%{assigns: %{scroll_buttons: :none, width: width, height: height}} = scene) do
-    assign(scene,
-      width: Direction.as_horizontal(width),
-      height: Direction.as_vertical(height)
-    )
+  defp init_scroll_buttons(%{assigns: %{scroll_bar_state: scroll_bar_state, opts: opts}} = scene) do
+    scroll_buttons =
+      if opts[:show_buttons] do
+        %{
+          scroll_button_1: :released,
+          scroll_button_2: :released
+        }
+      else
+        nil
+      end
+
+    assign(scene, scroll_bar_state: %{scroll_bar_state | scroll_buttons: scroll_buttons})
   end
 
-  defp init_size(%{assigns: %{scroll_buttons: {:some, _}, width: width, height: height}} = scene) do
+  # defp init_size(%{assigns: %{scroll_bar_state: %{scroll_buttons: nil}, width: width, height: height, opts: opts}} = scene) do
+  #   scene =
+  #     assign(scene,
+  #       width: Direction.as_horizontal(height),
+  #       height: Direction.as_vertical(width)
+  #     )
+  #   displacement = scroll_bar_displacement(scene)
+
+  #   assign(scene, scroll_bar_displacement: Direction.to_vector_2(displacement))
+  # end
+
+  defp init_size(%{assigns: %{width: width, height: height}} = scene) do
     width = Direction.as_horizontal(width)
     height = Direction.as_vertical(height)
 
-    displacement =
-      scroll_bar_displacement(
-        assign(scene, width: width, height: height)
-      )
+    displacement = scroll_bar_displacement(assign(scene, width: width, height: height))
 
     button_size_difference = Direction.map(displacement, &(&1 * 2))
 
@@ -275,13 +513,13 @@ defmodule FloUI.Scrollable.ContainerScrollBar do
       |> Direction.to_vector_2()
 
     min =
-      scroll_bar_displacement(scene)
+      scene.assigns.scroll_bar_displacement
       |> Direction.to_vector_2()
 
     assign(scene, position_cap: PositionCap.init(%{min: min, max: max}))
   end
 
-  defp scroll_button_size(%{assigns: %{scroll_buttons: :none}}), do: 0
+  defp scroll_button_size(%{assigns: %{scroll_bar_state: %{scroll_bars: nil}}}), do: 0
 
   defp scroll_button_size(%{assigns: %{width: width, height: height, direction: direction}}) do
     Direction.return(1, direction)
@@ -291,13 +529,25 @@ defmodule FloUI.Scrollable.ContainerScrollBar do
     |> Direction.unwrap()
   end
 
+  defp button_width(%{assigns: %{direction: :horizontal, scroll_bar_state: %{scroll_buttons: nil}, frame_size: frame_size}} = scene) do
+    Direction.divide(scene.assigns.frame_size, scene.assigns.content_size)
+    |> Direction.multiply(frame_size)
+    |> Direction.unwrap()
+  end
+
   defp button_width(%{assigns: %{direction: :horizontal}} = scene) do
     Direction.divide(scene.assigns.frame_size, scene.assigns.content_size)
     |> Direction.multiply(scene.assigns.width)
     |> Direction.unwrap()
   end
 
-  defp button_width(scene), do: scene.assigns.opts[:scroll_bar_thickness]
+  defp button_width(scene), do: scene.assigns.opts[:thickness]
+
+  defp button_height(%{assigns: %{direction: :vertical, scroll_bar_state: %{scroll_buttons: nil}, frame_size: frame_size}} = scene) do
+    Direction.divide(scene.assigns.frame_size, scene.assigns.content_size)
+    |> Direction.multiply(frame_size)
+    |> Direction.unwrap()
+  end
 
   defp button_height(%{assigns: %{direction: :vertical}} = scene) do
     Direction.divide(scene.assigns.frame_size, scene.assigns.content_size)
@@ -305,7 +555,7 @@ defmodule FloUI.Scrollable.ContainerScrollBar do
     |> Direction.unwrap()
   end
 
-  defp button_height(scene), do: scene.assigns.opts[:scroll_bar_thickness]
+  defp button_height(scene), do: scene.assigns.opts[:thickness]
 
   defp width_factor(%{assigns: %{content_size: {:horizontal, size}, width: {_, width}}}) do
     width / size
@@ -352,9 +602,19 @@ defmodule FloUI.Scrollable.ContainerScrollBar do
 
   defp local_to_world(_, 0), do: 0
 
+  defp local_to_world(%{assigns: %{scroll_bar_state: %{scroll_buttons: nil}, direction: :horizontal}} = scene, x) do
+    {x, _} = PositionCap.cap(scene.assigns.position_cap, {x, 0})
+    -(x) / width_factor(scene)
+  end
+
   defp local_to_world(%{assigns: %{direction: :horizontal}} = scene, x) do
     {x, _} = PositionCap.cap(scene.assigns.position_cap, {x, 0})
     -(x - scroll_button_size(scene)) / width_factor(scene)
+  end
+
+  defp local_to_world(%{assigns: %{scroll_bar_state: %{scroll_buttons: nil}, direction: :vertical}} = scene, y) do
+    {_, y} = PositionCap.cap(scene.assigns.position_cap, {0, y})
+    -(y) / height_factor(scene)
   end
 
   defp local_to_world(%{assigns: %{direction: :vertical}} = scene, y) do
@@ -371,8 +631,14 @@ defmodule FloUI.Scrollable.ContainerScrollBar do
     PositionCap.cap(scene.assigns.position_cap, position)
   end
 
+  defp world_to_local(%{assigns: %{scroll_bar_state: %{scroll_buttons: nil}, direction: :horizontal}} = scene, x),
+    do: -x * width_factor(scene)
+
   defp world_to_local(%{assigns: %{direction: :horizontal}} = scene, x),
     do: -x * width_factor(scene) + scroll_button_size(scene)
+
+  defp world_to_local(%{assigns: %{scroll_bar_state: %{scroll_buttons: nil}, direction: :vertical}} = scene, y),
+    do: -y * height_factor(scene)
 
   defp world_to_local(%{assigns: %{direction: :vertical}} = scene, y),
     do: -y * height_factor(scene) + scroll_button_size(scene)

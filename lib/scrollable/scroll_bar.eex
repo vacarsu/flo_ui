@@ -1,43 +1,47 @@
 <%= graph font_size: 20 %>
 
 <%= primitive Scenic.Primitive.RoundedRectangle,
-    {@scroll_bar_background_width, @scroll_bar_background_height, @opts[:scroll_bar_radius]},
+    {@scroll_bar_background_width, @scroll_bar_background_height, @opts[:radius]},
     id: :scroll_bar_slider_background,
-    fill: @opts[:scroll_bar_theme].border,
-    stroke: {@opts[:scroll_bar_border], @opts[:scroll_bar_theme].background},
+    fill: @opts[:theme].border,
+    stroke: {@opts[:border], @opts[:theme].background},
     translate: @scroll_bar_background_pos,
-    input: :cursor_button
+    input: [:cursor_button]
 %>
 
 <%= primitive Scenic.Primitive.RoundedRectangle,
-    {@scroll_bar_drag_control_width, @scroll_bar_drag_control_height, @opts[:scroll_bar_radius]},
+    {@scroll_bar_drag_control_width, @scroll_bar_drag_control_height, @opts[:radius]},
     id: :scroll_bar_slider_drag_control,
     translate: @scroll_bar_drag_control_pos,
-    fill: @opts[:scroll_bar_theme].background,
-    input: :cursor_button
+    fill: @opts[:theme].background,
+    input: [:cursor_button]
 %>
 
 <%= primitive Scenic.Primitive.RoundedRectangle,
-    {@scroll_button_1_width, @scroll_button_1_height, @opts[:scroll_bar_radius]},
+    {@scroll_button_1_width, @scroll_button_1_height, @opts[:radius]},
     id: :scroll_button_1,
+    hidden: not @opts[:show_buttons],
     translate: @scroll_button_1_pos,
-    fill: @opts[:scroll_bar_theme].background,
+    fill: @opts[:theme].background,
     input: [:cursor_button]
 %>
 <%= component FloUI.Icon,
     {:flo_ui, "icons/arrow_drop_down_white.png"},
+    hidden: not @opts[:show_buttons],
     translate: {@scroll_button_1_width * -1.05, @scroll_button_1_width * -1.05 - 2},
     pin: {48 / 2, 48 / 2},
     rotate: :math.pi()
 %>
 <%= primitive Scenic.Primitive.RoundedRectangle,
-    {@scroll_button_2_width, @scroll_button_2_height, @opts[:scroll_bar_radius]},
+    {@scroll_button_2_width, @scroll_button_2_height, @opts[:radius]},
     id: :scroll_button_2,
+    hidden: not @opts[:show_buttons],
     translate: @scroll_button_2_pos,
-    fill: @opts[:scroll_bar_theme].background,
+    fill: @opts[:theme].background,
     input: [:cursor_button]
 %>
 <%= component FloUI.Icon,
     {:flo_ui, "icons/arrow_drop_down_white.png"},
-    translate: Vector2.add(@scroll_button_2_pos, {@scroll_button_2_width * -1.05, @scroll_button_2_width * -1.05 + 2})
+    hidden: not @opts[:show_buttons],
+    translate: Scenic.Math.Vector2.add(@scroll_button_2_pos, {@scroll_button_2_width * -1.05, @scroll_button_2_width * -1.05 + 2})
 %>

@@ -13,7 +13,7 @@ defmodule FloUI.Modal.Body do
     ],
     opts: []
 
-  defcomponent :modal_body, :any
+  defcomponent(:modal_body, :any)
 
   def setup(%{assigns: %{opts: opts}} = scene) do
     assign(scene,

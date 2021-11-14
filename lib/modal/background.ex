@@ -19,5 +19,5 @@ defmodule FloUI.Modal.Background do
     assigns: [width: 0, height: 0],
     opts: []
 
-  defcomponent :background, :any
+  defcomponent(:background, :any)
 end

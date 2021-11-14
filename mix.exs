@@ -33,12 +33,9 @@ defmodule FloUI.MixProject do
       {:result_ex, "~> 0.1"},
       {:option_ex, "~> 0.2"},
       {:scenic, "~> 0.11.0-beta.0"},
-      {:scenic_driver_local, "~> 0.11.0-beta.0"},
-
       {:truetype_metrics, "~> 0.5"},
-
       {:dialyxir, "~> 1.1", only: :dev, runtime: false},
-      {:snap_framework, "~> 0.1.0-alpha"}
+      {:snap_framework, "~> 0.1.0-alpha.2"}
     ]
   end
 
@@ -56,7 +53,9 @@ defmodule FloUI.MixProject do
       links: %{Github: @github},
       files: [
         # only include *.ex files
+        "assets/icons/*.png",
         "lib/**/*.ex",
+        "lib/**/*.eex",
         "mix.exs",
         "README.md",
         "LICENSE"
@@ -107,7 +106,7 @@ defmodule FloUI.MixProject do
         SelectionList: [
           FloUI.SelectionList,
           FloUI.SelectionListItem,
-          FloUI.SelectionListItemController,
+          FloUI.SelectionListItemController
         ],
         Tabs: [
           FloUI.Tabs,

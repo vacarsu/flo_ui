@@ -5,18 +5,25 @@
     id: :btn_update
 %>
 
-<%= component FloUI.Scrollable.ScrollableContainer,
+<%= component FloUI.Scrollable.Container,
     %{
-        frame: {250, 300},
-        content: {200, 300}
+        frame: {400, 500},
+        content: {800, 800}
     },
-    content_builder: &Basic.Component.Page4.add_to_graph(&1, nil, []),
-    scroll_position: {0, 0},
     translate: {20, 60},
     scroll_bars: %{
-        vertical_scroll_bar: [
-            scroll_buttons: true,
-            scroll_bar_theme: Scenic.Primitive.Style.Theme.preset(:dark),
-            scroll_bar_thickness: 15
-        ]
-    } %>
+        vertical: %{
+            show: true,
+            show_buttons: false,
+            thickness: 15
+        },
+        horizontal: %{
+            show: true,
+            show_buttons: false,
+            thickness: 15
+        }
+    } do %>
+
+    <%= component Basic.Component.Page4, nil %>
+
+<% end %>
