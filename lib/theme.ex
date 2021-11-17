@@ -29,6 +29,7 @@ defmodule FloUI.Theme do
   @flo_base %{
     text: :white,
     background: {64, 64, 64},
+    highlight: :white,
     border: :light_grey,
     active: :steel_blue,
     thumb: :steel_blue,
