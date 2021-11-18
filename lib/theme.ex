@@ -28,6 +28,7 @@ defmodule FloUI.Theme do
 
   @flo_base %{
     text: :white,
+    active_text: :black,
     background: {64, 64, 64},
     border: :light_grey,
     active: :steel_blue,
@@ -48,6 +49,7 @@ defmodule FloUI.Theme do
 
   @scrollbar Map.merge(@flo_base, %{
                text: :black,
+               active_text: :black,
                background: :grey,
                border: {84, 84, 84},
                active: {40, 40, 40}
@@ -55,12 +57,12 @@ defmodule FloUI.Theme do
 
   # specialty themes
   @primary Map.merge(@flo_base, %{text: :white, active_text: :black, background: :steel_blue, active: {8, 86, 136}})
-  @secondary Map.merge(@flo_base, %{background: {111, 117, 125}, active: {86, 90, 95}})
-  @success Map.merge(@flo_base, %{background: {99, 163, 74}, active: {74, 123, 56}})
-  @danger Map.merge(@flo_base, %{background: {191, 72, 71}, active: {164, 54, 51}})
-  @warning Map.merge(@flo_base, %{background: {239, 196, 42}, active: {197, 160, 31}})
-  @info Map.merge(@flo_base, %{background: {94, 159, 183}, active: {70, 119, 138}})
-  @text Map.merge(@flo_base, %{text: {72, 122, 252}, background: :clear, active: :clear})
+  @secondary Map.merge(@flo_base, %{background: {111, 117, 125}, active_text: :black, active: {86, 90, 95}})
+  @success Map.merge(@flo_base, %{background: {99, 163, 74}, active_text: :black, active: {74, 123, 56}})
+  @danger Map.merge(@flo_base, %{background: {191, 72, 71}, active_text: :black, active: {164, 54, 51}})
+  @warning Map.merge(@flo_base, %{background: {239, 196, 42}, active_text: :black, active: {197, 160, 31}})
+  @info Map.merge(@flo_base, %{background: {94, 159, 183}, active_text: :black, active: {70, 119, 138}})
+  @text Map.merge(@flo_base, %{text: {72, 122, 252}, active_text: :black, background: :clear, active: :clear})
 
   @themes %{
     base: @flo_base,

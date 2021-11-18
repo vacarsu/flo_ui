@@ -43,15 +43,6 @@ defmodule FloUI.SelectionListItem do
   def setup(%{assigns: %{data: {label, value, key}, hovered: hovered, opts: opts}} = scene) do
     request_input(scene, [:cursor_pos])
 
-    theme =
-      case opts[:theme] do
-        nil -> @default_theme
-        :light -> @default_theme
-        :dark -> @default_theme
-        theme -> theme
-      end
-      |> FloUI.Theme.normalize()
-
     assign(scene,
       label: label,
       value: value,
@@ -59,8 +50,7 @@ defmodule FloUI.SelectionListItem do
       width: opts[:width] || 500,
       selected: opts[:selected] || false,
       hovered: hovered,
-      theme: opts[:theme] || @default_theme,
-      theme: theme
+      theme: get_theme(opts)
     )
   end
 
@@ -103,5 +93,15 @@ defmodule FloUI.SelectionListItem do
   @impl true
   def process_call(:deselect, _, scene) do
     {:reply, :ok, assign(scene, selected: false)}
+  end
+
+  defp get_theme(opts) do
+    case opts[:theme] do
+      nil -> @default_theme
+      :dark -> @default_theme
+      :light -> @default_theme
+      theme -> theme
+    end
+    |> FloUI.Theme.normalize()
   end
 end
