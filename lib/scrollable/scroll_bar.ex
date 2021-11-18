@@ -2,11 +2,11 @@ defmodule FloUI.Scrollable.ScrollBar do
   @moduledoc """
   Scroll bars are meant to be used within the Scrollable.Container component, but you can use them to build your own scrollable containers.
 
-  The following events are sent.
+  The following events are emitted.
 
   ``` elixir
   {:register_scroll_bar, direction, scroll_bar_state}
-  {:drag_changed, direction, scroll_bar_state}
+  {:update_scroll_position, direction, scroll_position}
   {:scroll_bar_state_changed, direction, scroll_bar_state}
   ```
 

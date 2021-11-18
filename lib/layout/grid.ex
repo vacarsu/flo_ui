@@ -69,7 +69,7 @@ defmodule FloUI.Grid do
     {:noreply, scene}
   end
 
-  def process_update(data, _opts, scene) do
+  def process_update(_data, _opts, scene) do
     assigns = %{
       scene.assigns
       | component_xy: scene.assigns.start_xy,

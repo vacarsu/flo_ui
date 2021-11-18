@@ -1,7 +1,7 @@
 defmodule FloUI.MixProject do
   use Mix.Project
 
-  @version "0.1.0-alpha.2"
+  @version "0.1.0-alpha.3"
   @github "https://github.com/vacarsu/flo_ui"
 
   def project do
