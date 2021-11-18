@@ -26,4 +26,9 @@ flo_ui-*.tar
 # Temporary files for e.g. tests
 /tmp
 
+/priv
+/examples/basic/priv
+
 *.ds_Store
+
+*.elixir_ls

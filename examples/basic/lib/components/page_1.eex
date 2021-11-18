@@ -14,13 +14,13 @@
     scroll_bars: %{
         vertical: %{
             show: true,
-            show_buttons: false,
+            show_buttons: true,
             thickness: 15,
             theme: FloUI.Theme.preset(:scrollbar)
         },
         horizontal: %{
             show: true,
-            show_buttons: false,
+            show_buttons: true,
             thickness: 15,
             theme: FloUI.Theme.preset(:scrollbar)
         }

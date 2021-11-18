@@ -20,7 +20,7 @@
     show_buttons: @scroll_bars.vertical.show_buttons,
     theme: @scroll_bars.vertical.theme,
     border: 1,
-    radius: 3,
+    radius: @scroll_bars.vertical.radius,
     thickness: @scroll_bars.vertical.thickness
 %>
 
@@ -38,6 +38,6 @@
     show_buttons: @scroll_bars.horizontal.show_buttons,
     theme: @scroll_bars.horizontal.theme,
     border: 1,
-    radius: 3,
+    radius: @scroll_bars.horizontal.radius,
     thickness: @scroll_bars.horizontal.thickness
 %>

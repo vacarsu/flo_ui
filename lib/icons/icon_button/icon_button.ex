@@ -18,6 +18,8 @@ defmodule FloUI.Icon.Button do
   ```
   """
 
+  @default_theme FloUI.Theme.preset(:primary)
+
   use SnapFramework.Component,
     name: :icon_button,
     template: "lib/icons/icon_button/icon_button.eex",
@@ -47,15 +49,23 @@ defmodule FloUI.Icon.Button do
   # use_effect [on_click: [@assigns[:id]]], :cont, []
 
   @impl true
-  def setup(%{assigns: %{data: nil}} = scene) do
+  def setup(%{assigns: %{data: nil, opts: opts}} = scene) do
     # Logger.debug(inspect state, pretty: true)
-    scene |> assign(id: scene.assigns.opts[:id] || nil)
+    scene
+    |> assign(
+      id: scene.assigns.opts[:id] || nil,
+      theme: get_theme(opts)
+    )
   end
 
-  @impl true
-  def setup(%{assigns: %{data: label}} = scene) do
+  def setup(%{assigns: %{data: label, opts: opts}} = scene) do
     request_input(scene, [:cursor_pos])
-    scene |> assign(id: scene.assigns.opts[:id] || nil, label: label)
+    scene
+    |> assign(
+      id: scene.assigns.opts[:id] || nil,
+      label: label,
+      theme: get_theme(opts)
+    )
   end
 
   @impl true
@@ -73,32 +83,37 @@ defmodule FloUI.Icon.Button do
     {:noreply, scene}
   end
 
-  @impl true
   def process_input({:cursor_button, {:btn_left, 0, _, _}}, :btn, scene) do
     send_parent_event(scene, {:click, scene.assigns.id})
     {:noreply, scene}
   end
 
-  @impl true
   def process_input({:cursor_pos, _}, :btn, %{assigns: %{label: nil}} = scene) do
     capture_input(scene, [:cursor_pos])
     {:noreply, assign(scene, showing_highlight: true, showing_tooltip: false)}
   end
 
-  @impl true
   def process_input({:cursor_pos, _}, :btn, scene) do
     capture_input(scene, [:cursor_pos])
     {:noreply, assign(scene, showing_highlight: true, showing_tooltip: true)}
   end
 
-  @impl true
   def process_input({:cursor_pos, _}, _, scene) do
     release_input(scene)
     {:noreply, assign(scene, showing_highlight: false, showing_tooltip: false)}
   end
 
-  @impl true
   def process_input(_event, _, scene) do
     {:noreply, scene}
+  end
+
+  defp get_theme(opts) do
+      case opts[:theme] do
+        nil -> @default_theme
+        :dark -> @default_theme
+        :light -> @default_theme
+        theme -> theme
+      end
+      |> FloUI.Theme.normalize()
   end
 end

@@ -4,12 +4,12 @@
     {@width, @height},
     id: :box,
     input: [:cursor_button, :cursor_pos],
-    fill: if(@selected or @hovered, do: :steel_blue, else: :gainsboro)
+    fill: if(@selected or @hovered, do: @theme.active, else: @theme.background)
 %>
 
 <%= component Scenic.Primitive.Text,
     @label,
     id: :text,
-    fill: if(@selected or @hovered, do: :white, else: :black),
+    fill: if(@selected or @hovered, do: @theme.active_text, else: @theme.text),
     translate: {15, 25}
 %>

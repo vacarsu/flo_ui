@@ -17,7 +17,7 @@ defmodule FloUI.Dropdown.Items do
   ```
   """
 
-  @default_max_height 300
+  # @default_max_height 300
   @default_theme FloUI.Theme.preset(:base)
 
   use SnapFramework.Component,
@@ -29,21 +29,24 @@ defmodule FloUI.Dropdown.Items do
 
   defcomponent(:dropdown_items, :tuple)
 
+  @impl true
   def setup(%{assigns: %{data: {items, selected}, opts: opts}} = scene) do
     assign(scene,
       items: items,
       selected: selected,
       width: get_width(items),
-      content_height: get_content_height(items),
-      max_height: opts[:max_height] || @default_max_height,
+      height: get_height(items),
+      # max_height: opts[:max_height] || @default_max_height,
       theme: opts[:theme] || @default_theme
     )
   end
 
-  def bounds({items, _}, opts) do
-    {0.0, 0.0, get_width(items), get_height(items, opts[:max_height] || @default_max_height)}
+  @impl true
+  def bounds({items, _}, _opts) do
+    {0.0, 0.0, get_width(items), get_height(items)}
   end
 
+  @impl true
   def process_event({:click, _id, {_, key} = data}, _, %{assigns: %{selected: selected}} = scene) do
     case child(scene, selected) do
       {:ok, [selected_pid]} ->
@@ -53,6 +56,7 @@ defmodule FloUI.Dropdown.Items do
     {:cont, {:value_changed, data}, assign(scene, selected: key)}
   end
 
+  @spec get_width(list) :: integer
   def get_width(items) do
     Enum.reduce(items, 0, fn {{label, _}, _}, l_width ->
       width = FloUI.Util.FontMetricsHelper.get_text_width(label, 20)
@@ -61,14 +65,16 @@ defmodule FloUI.Dropdown.Items do
     end)
   end
 
-  def get_height(items, max_height \\ @default_max_height) do
-    height = get_content_height(items)
+  # @spec get_height(list, integer) :: integer
+  # def get_height(items, max_height \\ @default_max_height) do
+  #   height = get_content_height(items)
 
-    if(height > max_height, do: max_height, else: height)
-  end
+  #   if(height > max_height, do: max_height, else: height)
+  # end
 
-  def get_content_height(items) do
+  @spec get_height(list) :: number
+  def get_height(items) do
     height = FloUI.Dropdown.Item.get_height()
-    length(items) * height + 10
+    length(items) * height
   end
 end

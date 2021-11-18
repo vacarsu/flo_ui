@@ -10,17 +10,8 @@ defmodule Basic.Component.Page2 do
 
   defcomponent(:page_2, :any)
 
-  use_effect([assigns: [input_value: :any]],
-    run: [:on_input_change]
-  )
-
   def process_event({:value_changed, :text_input, value}, _, scene) do
     Logger.debug("input value changed #{inspect(value)}")
     {:noreply, assign(scene, input_value: value)}
   end
-
-  # def handle_event({:value_changed, :text_input, value}, _, scene) do
-  #   Logger.debug("input value changed")
-  #   {:noreply, assign(scene, input_value: value)}
-  # end
 end

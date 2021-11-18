@@ -5,14 +5,11 @@ defmodule FloUI.Icon.ButtonController do
 
   alias Scenic.Graph
   alias Scenic.Primitive
-  alias FloUI.Theme
-
-  @theme Theme.preset(:dark)
 
   def on_highlight_change(%{assigns: %{showing_highlight: true}} = scene) do
     graph =
       scene.assigns.graph
-      |> Graph.modify(:bg, &Primitive.put_style(&1, :fill, @theme.active))
+      |> Graph.modify(:bg, &Primitive.put_style(&1, :fill, scene.assigns.theme.thumb))
 
     Scenic.Scene.assign(scene, graph: graph)
   end

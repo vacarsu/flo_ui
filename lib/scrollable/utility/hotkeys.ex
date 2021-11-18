@@ -80,10 +80,10 @@ defmodule FloUI.Scrollable.Hotkeys do
   def init(settings) do
     %__MODULE__{
       key_map: %{
-        up: parse_keycode(settings[:up]),
-        down: parse_keycode(settings[:down]),
-        left: parse_keycode(settings[:left]),
-        right: parse_keycode(settings[:right])
+        up: upcase_single_char(settings[:up]),
+        down: upcase_single_char(settings[:down]),
+        left: upcase_single_char(settings[:left]),
+        right: upcase_single_char(settings[:right])
       }
     }
   end
@@ -164,12 +164,12 @@ defmodule FloUI.Scrollable.Hotkeys do
 
   # Converts a keycode passed in as `t:Scrollable.Hotkeys.settings` to conform to the `Scenic` key press event key naming,
   # and wraps it in an `t:OptionEx.t` for internal use.
-  @spec parse_keycode(keycode) :: {:some, keycode} | :none
-  defp parse_keycode(keycode) do
-    keycode
-    |> OptionEx.return()
-    |> OptionEx.map(&upcase_single_char/1)
-  end
+  # @spec parse_keycode(keycode) :: {:some, keycode} | :none
+  # defp parse_keycode(keycode) do
+  #   keycode
+  #   |> OptionEx.return()
+  #   |> OptionEx.map(&upcase_single_char/1)
+  # end
 
   # Converts single lower case characters to upper case,
   # and multiple character upper case strings to lower case,

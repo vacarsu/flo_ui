@@ -10,6 +10,13 @@
 <%= component FloUI.Dropdown,
     @dropdown_opts,
     id: :scroll_dropdown,
+    translate: {5, 0},
     theme: FloUI.Theme.preset(:base),
-    scroll_bar_theme: FloUI.Theme.preset(:scrollbar)
+    scroll_bar: %{
+        show: true,
+        show_buttons: false,
+        theme: FloUI.Theme.preset(:scrollbar),
+        radius: 30,
+        thickness: 5
+    }
 %>

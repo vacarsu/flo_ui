@@ -30,8 +30,6 @@ defmodule FloUI.MixProject do
   defp deps do
     [
       {:ex_doc, "~> 0.24", only: :dev, runtime: false},
-      {:result_ex, "~> 0.1"},
-      {:option_ex, "~> 0.2"},
       {:scenic, "~> 0.11.0-beta.0"},
       {:truetype_metrics, "~> 0.5"},
       {:dialyxir, "~> 1.1", only: :dev, runtime: false},

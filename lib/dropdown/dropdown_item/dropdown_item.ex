@@ -8,7 +8,6 @@ defmodule FloUI.Dropdown.Item do
   """
 
   @default_theme FloUI.Theme.preset(:base)
-  @default_height 50
 
   use SnapFramework.Component,
     name: :dropdown_item,
@@ -29,6 +28,7 @@ defmodule FloUI.Dropdown.Item do
     run: [:on_selected_change]
   ]
 
+  @impl true
   def setup(%{assigns: %{data: {{label, value}, key}, opts: opts}} = scene) do
     selected = opts[:selected] || false
     if(selected, do: send_parent_event(scene, {:click, opts[:id], scene.assigns.data}))
@@ -44,10 +44,12 @@ defmodule FloUI.Dropdown.Item do
     )
   end
 
+  @impl true
   def bounds({_, _}, opts) do
     {0.0, 0.0, opts[:width], get_height()}
   end
 
+  @impl true
   def process_input({:cursor_button, {:btn_left, 0, _, _}}, :bg, scene) do
     send_parent_event(scene, {:click, scene.assigns.opts[:id], scene.assigns.data})
     {:noreply, assign(scene, selected: true)}
@@ -67,10 +69,12 @@ defmodule FloUI.Dropdown.Item do
     {:noreply, scene}
   end
 
+  @impl true
   def process_cast(:deselect, scene) do
     {:noreply, assign(scene, selected: false)}
   end
 
+  @spec get_height :: number
   def get_height() do
     FloUI.Util.FontMetricsHelper.get_text_height(20)
   end

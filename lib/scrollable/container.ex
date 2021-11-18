@@ -52,8 +52,6 @@ defmodule FloUI.Scrollable.Container do
 
   alias FloUI.Scrollable.Hotkeys
   alias FloUI.Scrollable.Direction
-  alias FloUI.Scrollable.Drag
-  alias FloUI.Scrollable.Wheel
   alias FloUI.Scrollable.Acceleration
   alias FloUI.Scrollable.PositionCap
 
@@ -66,6 +64,20 @@ defmodule FloUI.Scrollable.Container do
 
   defcomponent(:scrollable_container, :map)
 
+  @default_horizontal_scroll_bar %{
+    show: false,
+    show_buttons: false,
+    thickness: 15,
+    radius: 3,
+    theme: FloUI.Theme.preset(:scrollbar)
+  }
+  @default_vertical_scroll_bar %{
+    show: true,
+    show_buttons: true,
+    thickness: 15,
+    radius: 3,
+    theme: FloUI.Theme.preset(:scrollbar)
+  }
   @default_position {0, 0}
   @default_fps 30
 
@@ -73,11 +85,36 @@ defmodule FloUI.Scrollable.Container do
     run: [:on_scroll_position_change]
   )
 
+  @impl true
   def setup(%{assigns: %{data: data, opts: opts}} = scene) do
     {content_width, content_height} = data.content
     {frame_width, frame_height} = data.frame
     {frame_x, frame_y} = opts[:translate] || @default_position
     scroll_position = opts[:scroll_position] || @default_position
+    scroll_bars =
+      case opts[:scroll_bars] do
+        nil ->
+          %{vertical: @default_vertical_scroll_bar, horizontal: @default_horizontal_scroll_bar}
+        scroll_bars ->
+          vertical = Map.get(scroll_bars, :vertical, @default_vertical_scroll_bar)
+          horizontal = Map.get(scroll_bars, :horizontal, @default_horizontal_scroll_bar)
+          %{
+            vertical: %{
+              show: Map.get(vertical, :show, true),
+              show_buttons: Map.get(vertical, :show_buttons, true),
+              thickness: Map.get(vertical, :thickness, 15),
+              radius: Map.get(vertical, :radius, 3),
+              theme: Map.get(vertical, :theme, FloUI.Theme.preset(:scrollbar))
+            },
+            horizontal: %{
+              show: Map.get(horizontal, :show, true),
+              show_buttons: Map.get(horizontal, :show_buttons, true),
+              thickness: Map.get(horizontal, :thickness, 15),
+              radius: Map.get(horizontal, :radius, 3),
+              theme: Map.get(horizontal, :theme, FloUI.Theme.preset(:scrollbar))
+            }
+          }
+      end
 
     assign(scene,
       id: opts[:id] || :scrollable,
@@ -93,7 +130,6 @@ defmodule FloUI.Scrollable.Container do
         vertical: %{
           scrolling: :idle,
           wheel_state: nil,
-          drag_state: nil,
           scroll_buttons: %{
             scroll_button_1: :released,
             scroll_button_2: :released
@@ -103,7 +139,6 @@ defmodule FloUI.Scrollable.Container do
         horizontal: %{
           scrolling: :idle,
           wheel_state: nil,
-          drag_state: nil,
           scroll_buttons: %{
             scroll_button_1: :released,
             scroll_button_2: :released
@@ -111,22 +146,25 @@ defmodule FloUI.Scrollable.Container do
           pid: nil
         }
       },
-      scroll_bars: opts[:scroll_bars]
+      scroll_bars: scroll_bars
     )
     |> init_position_caps
   end
 
+  @impl true
   def mounted(scene) do
     FloUI.Scrollable.ScrollableContainerController.render_content(scene)
   end
 
-  def bounds(%{frame: {x, y}} = data, _opts) do
+  @impl true
+  def bounds(%{frame: {x, y}}, _opts) do
     {0.0, 0.0, x, y}
   end
 
+  @impl true
   def process_event(
         {:register_scroll_bar, direction, scroll_bar_state},
-        pid,
+        _pid,
         %{assigns: %{scroll_bars_state: scroll_bars_state}} = scene
       ) do
     scene =
@@ -134,20 +172,6 @@ defmodule FloUI.Scrollable.Container do
       |> assign(
         scroll_bars_state:
           Map.update!(scroll_bars_state, direction, fn _ ->
-            scroll_bar_state
-          end)
-      )
-
-    {:noreply, scene}
-  end
-
-  def process_event({:drag_changed, direction, scroll_bar_state}, _, scene) do
-    scene =
-      scene
-      |> assign(
-        scroll_bars_state: Map.update!(
-          scene.assigns.scroll_bars_state,
-          direction, fn _ ->
             scroll_bar_state
           end)
       )
@@ -175,7 +199,7 @@ defmodule FloUI.Scrollable.Container do
     {:noreply, assign(scene, scroll_position: PositionCap.cap(scene.assigns.position_caps, {x, y}))}
   end
 
-  def process_event({:update_scroll_position, :horizontal, {x, _}}, _, scene) do
+  def process_event({:update_scroll_position, :horizontal, {_, x}}, _, scene) do
     {_, y} = scene.assigns.scroll_position
     {:noreply, assign(scene, scroll_position: PositionCap.cap(scene.assigns.position_caps, {x, y}))}
   end
@@ -188,6 +212,7 @@ defmodule FloUI.Scrollable.Container do
     {:cont, event, scene}
   end
 
+  @impl true
   def process_input(
         {:cursor_scroll, scroll_pos},
         :input_capture,
@@ -204,10 +229,12 @@ defmodule FloUI.Scrollable.Container do
     {:noreply, scene}
   end
 
+  @impl true
   def process_info(:tick, scene) do
     {:noreply, assign(scene, animating: false) |> update}
   end
 
+  @spec init_position_caps(Scenic.Scene.t) :: Scenic.Scene.t
   defp init_position_caps(
          %{
            assigns: %{
@@ -227,6 +254,7 @@ defmodule FloUI.Scrollable.Container do
     )
   end
 
+  @spec update(Scenic.Scene.t) :: Scenic.Scene.t
   defp update(scene) do
     scene
     |> apply_force
@@ -234,7 +262,7 @@ defmodule FloUI.Scrollable.Container do
     |> tick
   end
 
-  @spec verify_cooling_down(Scenic.Scene) :: Scenic.Scene
+  @spec verify_cooling_down(Scenic.Scene.t) :: Scenic.Scene.t
   defp verify_cooling_down(%{assigns: %{scroll_bars_state: %{vertical: vertical, horizontal: horizontal}}} = scene) do
     if vertical.scrolling == :idle and
        horizontal.scrolling == :idle and not
@@ -260,6 +288,7 @@ defmodule FloUI.Scrollable.Container do
     end
   end
 
+  @spec apply_force(Scenic.Scene.t) :: Scenic.Scene.t
   defp apply_force(
          %{
            assigns: %{
@@ -274,52 +303,6 @@ defmodule FloUI.Scrollable.Container do
           }
         } = scene
       ), do: scene
-
-  defp apply_force(
-      %{
-        assigns: %{
-          scroll_position: scroll_position,
-          scroll_bars_state: %{
-            vertical: %{
-              scrolling: :dragging,
-              drag_state: drag_state
-            },
-          }
-        }
-      } = scene
-    ) do
-    {_, y} = Drag.new_position(drag_state) |> Vector2.invert()
-    {x, _} = scroll_position
-
-    scroll_position =
-      {x, y}
-      |> Vector2.add({scene.assigns.content.x, scene.assigns.content.y})
-
-    assign(scene, scroll_position: PositionCap.cap(scene.assigns.position_caps, scroll_position))
-  end
-
-  defp apply_force(
-      %{
-        assigns: %{
-          scroll_position: scroll_position,
-          scroll_bars_state: %{
-            horizontal: %{
-              scrolling: :dragging,
-              drag_state: drag_state
-            },
-          }
-        }
-      } = scene
-    ) do
-    {x, _} = Drag.new_position(drag_state) |> Vector2.invert()
-    {_, y} = scroll_position
-
-    scroll_position =
-      {x, y}
-      |> Vector2.add({scene.assigns.content.x, scene.assigns.content.y})
-
-    assign(scene, scroll_position: PositionCap.cap(scene.assigns.position_caps, scroll_position))
-  end
 
   defp apply_force(
     %{
@@ -360,6 +343,7 @@ defmodule FloUI.Scrollable.Container do
         end).()
   end
 
+  @spec get_scroll_direction(Scenic.Scene.t) :: Scenic.Math.Vector2.t
   defp get_scroll_direction(%{assigns: %{scroll_bars_state: scroll_bars_state}}) do
     case scroll_bars_state do
       %{vertical: %{scroll_buttons: %{scroll_button_1: :pressed, scroll_button_2: :released}}} ->
@@ -383,6 +367,7 @@ defmodule FloUI.Scrollable.Container do
     end
   end
 
+  @spec tick(Scenic.Scene.t) :: Scenic.Scene.t
   defp tick(%{assigns: %{scroll_bars_state: %{vertical: %{scrolling: :idle}, horizontal: %{scrolling: :idle}}}} = scene), do: assign(scene, animating: false)
 
   defp tick(%{assigns: %{scroll_bars_state: %{vertical: %{scrolling: :dragging}}}} = scene) do
@@ -406,6 +391,7 @@ defmodule FloUI.Scrollable.Container do
     assign(scene, animating: true)
   end
 
+  @spec tick_time(Scenic.Scene.t) :: integer
   defp tick_time(%{assigns: %{fps: fps}}) do
     trunc(1000 / fps)
   end

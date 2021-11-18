@@ -6,8 +6,13 @@ defmodule FloUI.Dropdown do
 
   Options
   ``` elixir
-  theme,
-  scroll_bar_theme
+  theme: theme,
+  scroll_bar: %{
+    show: true,
+    show_buttons: true,
+    theme: Scenic.Primitive.Style.Theme.preset(:dark),
+    thickness: 15
+  }
   ```
 
   data is a tuple in the form of
@@ -32,13 +37,24 @@ defmodule FloUI.Dropdown do
       {@items, @selected},
       id: :dropdown,
       theme: @theme,
-      scroll_bar_theme: @scroll_bar_theme
+      scroll_bar: %{
+        show: true,
+        show_buttons: true,
+        theme: Scenic.Primitive.Style.Theme.preset(:dark),
+        thickness: 15
+      }
   %>
   ```
   """
   @default_height 50
-  @default_max_height 300
+  @default_frame_height 300
   @default_theme FloUI.Theme.preset(:base)
+  @default_scroll_bar %{
+    show: true,
+    show_buttons: true,
+    theme: Scenic.Primitive.Style.Theme.preset(:dark),
+    thickness: 15
+  }
 
   alias FloUI.Dropdown.Items
 
@@ -59,12 +75,13 @@ defmodule FloUI.Dropdown do
     run: [:on_selected_change]
   ]
 
+  @impl true
   def setup(%{assigns: %{data: {items, selected} = data, opts: opts}} = scene) do
+    width = get_width(data, opts)
     frame_height = get_frame_height(data, opts)
     content_height = get_content_height(items)
-    show_vertical_scroll = content_height > frame_height
-    IO.puts("frame_height - #{inspect frame_height}")
-    IO.puts("content_height - #{inspect content_height}")
+    scroll_bar = opts[:scroll_bar] || @default_scroll_bar
+    show_vertical_scroll = content_height > frame_height and scroll_bar.show
 
     assign(scene,
       items: items,
@@ -72,26 +89,29 @@ defmodule FloUI.Dropdown do
       selected_key: nil,
       selected: selected,
       open?: false,
-      background_width: if(show_vertical_scroll, do: get_width(data, opts) + 20, else: get_width(data, opts)),
-      background_height: frame_height + 15,
-      width: get_width(data, opts),
-      height: opts[:height] || @default_height,
-      max_height: opts[:max_height] || @default_max_height,
+      button_width: if(show_vertical_scroll, do: width + 20, else: width),
+      button_height: opts[:height] || @default_height,
+      background_height: frame_height + 20,
+      frame_width: if(show_vertical_scroll, do: width, else: width),
       frame_height: frame_height,
       content_height: content_height,
+      scroll_bar: scroll_bar,
       show_vertical_scroll: show_vertical_scroll,
-      theme: opts[:theme] || @default_theme
+      theme: get_theme(opts)
     )
   end
 
+  @impl true
   def bounds(data, opts) do
     {0.0, 0.0, get_width(data, opts), opts[:height] || @default_height}
   end
 
+  @impl true
   def process_event({:value_changed, {{label, value}, key}}, _, scene) do
     {:cont, {:value_changed, scene.assigns.opts[:id], value}, assign(scene, selected_label: label, selected_key: key, open?: false)}
   end
 
+  @impl true
   def process_input({:cursor_button, {:btn_left, 0, _, _}}, :bg, %{assigns: %{open?: open?}} = scene) do
     {:noreply, assign(scene, open?: not open?)}
   end
@@ -111,10 +131,21 @@ defmodule FloUI.Dropdown do
 
   defp get_frame_height(data, opts) do
     {_, _, _w, h} = Items.bounds(data, opts)
-    h
+    frame_height = opts[:frame_height] || @default_frame_height
+    if(h > frame_height, do: frame_height, else: h)
   end
 
   defp get_content_height(items) do
-    Items.get_content_height(items)
+    Items.get_height(items)
+  end
+
+  defp get_theme(opts) do
+    case opts[:theme] do
+      nil -> @default_theme
+      :dark -> @default_theme
+      :light -> @default_theme
+      theme -> theme
+    end
+    |> FloUI.Theme.normalize()
   end
 end

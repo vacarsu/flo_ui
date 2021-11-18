@@ -5,8 +5,8 @@ defmodule FloUI.SelectionListItemController do
   def on_selected_change(%{assigns: %{selected: true}} = scene) do
     graph =
       scene.assigns.graph
-      |> Graph.modify(:box, &Primitive.put_style(&1, :fill, :steel_blue))
-      |> Graph.modify(:text, &Primitive.put_style(&1, :fill, :white))
+      |> Graph.modify(:box, &Primitive.put_style(&1, :fill, scene.assigns.theme.active))
+      |> Graph.modify(:text, &Primitive.put_style(&1, :fill, scene.assigns.theme.active_text))
 
     Scenic.Scene.assign(scene, graph: graph)
   end
@@ -14,8 +14,8 @@ defmodule FloUI.SelectionListItemController do
   def on_selected_change(%{assigns: %{selected: false}} = scene) do
     graph =
       scene.assigns.graph
-      |> Graph.modify(:box, &Primitive.put_style(&1, :fill, :gainsboro))
-      |> Graph.modify(:text, &Primitive.put_style(&1, :fill, :black))
+      |> Graph.modify(:box, &Primitive.put_style(&1, :fill, scene.assigns.theme.background))
+      |> Graph.modify(:text, &Primitive.put_style(&1, :fill, scene.assigns.theme.text))
 
     Scenic.Scene.assign(scene, graph: graph)
   end

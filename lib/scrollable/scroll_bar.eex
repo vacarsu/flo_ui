@@ -1,7 +1,7 @@
 <%= graph font_size: 20 %>
 
 <%= primitive Scenic.Primitive.RoundedRectangle,
-    {@scroll_bar_background_width, @scroll_bar_background_height, @opts[:radius]},
+    {@scroll_bar_background_width, @scroll_bar_background_height, @radius},
     id: :scroll_bar_slider_background,
     fill: @opts[:theme].border,
     stroke: {@opts[:border], @opts[:theme].background},
@@ -10,7 +10,7 @@
 %>
 
 <%= primitive Scenic.Primitive.RoundedRectangle,
-    {@scroll_bar_drag_control_width, @scroll_bar_drag_control_height, @opts[:radius]},
+    {@scroll_bar_drag_control_width, @scroll_bar_drag_control_height, @radius},
     id: :scroll_bar_slider_drag_control,
     translate: @scroll_bar_drag_control_pos,
     fill: @opts[:theme].background,
@@ -18,7 +18,7 @@
 %>
 
 <%= primitive Scenic.Primitive.RoundedRectangle,
-    {@scroll_button_1_width, @scroll_button_1_height, @opts[:radius]},
+    {@scroll_button_1_width, @scroll_button_1_height, @radius},
     id: :scroll_button_1,
     hidden: not @opts[:show_buttons],
     translate: @scroll_button_1_pos,
@@ -28,12 +28,12 @@
 <%= component FloUI.Icon,
     {:flo_ui, "icons/arrow_drop_down_white.png"},
     hidden: not @opts[:show_buttons],
-    translate: {@scroll_button_1_width * -1.05, @scroll_button_1_width * -1.05 - 2},
+    translate: @scroll_button_1_icon_pos,
     pin: {48 / 2, 48 / 2},
-    rotate: :math.pi()
+    rotate: @scroll_button_1_icon_rotation
 %>
 <%= primitive Scenic.Primitive.RoundedRectangle,
-    {@scroll_button_2_width, @scroll_button_2_height, @opts[:radius]},
+    {@scroll_button_2_width, @scroll_button_2_height, @radius},
     id: :scroll_button_2,
     hidden: not @opts[:show_buttons],
     translate: @scroll_button_2_pos,
@@ -43,5 +43,7 @@
 <%= component FloUI.Icon,
     {:flo_ui, "icons/arrow_drop_down_white.png"},
     hidden: not @opts[:show_buttons],
-    translate: Scenic.Math.Vector2.add(@scroll_button_2_pos, {@scroll_button_2_width * -1.05, @scroll_button_2_width * -1.05 + 2})
+    translate: @scroll_button_2_icon_pos,
+    pin: {48 / 2, 48 / 2},
+    rotate: @scroll_button_2_icon_rotation
 %>

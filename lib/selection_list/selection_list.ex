@@ -30,6 +30,7 @@ defmodule FloUI.SelectionList do
 
   defcomponent(:selection_list, :tuple)
 
+  @impl true
   def setup(%{assigns: %{data: {list, selected}, opts: opts}} = scene) do
     assign(scene,
       items: list,
@@ -40,10 +41,12 @@ defmodule FloUI.SelectionList do
     )
   end
 
+  @impl true
   def bounds({items, _selected}, opts) do
     {0.0, 0.0, opts[:width] || 500, length(items) * 50}
   end
 
+  @impl true
   def process_event(
         {:select, {_label, _item_value, key} = item},
         _pid,

@@ -1,7 +1,6 @@
 defmodule FloUI.Scrollable.ScrollableContainerController do
   import Scenic.Primitives, only: [group: 3]
   import FloUI.Scrollable.ScrollBar, only: [scroll_bar: 3]
-  import FloUI.Scrollable.Direction
   alias Scenic.Graph
   alias Scenic.Primitive
   alias Scenic.Math.Vector2
@@ -17,8 +16,7 @@ defmodule FloUI.Scrollable.ScrollableContainerController do
           horizontal: %{
             scrolling: horiz_scrolling
           }
-        },
-        content: %{x: x, y: y, width: width, height: height}
+        }
       }
     } = scene
   ) when vert_scrolling == :dragging or horiz_scrolling == :dragging do
@@ -28,31 +26,11 @@ defmodule FloUI.Scrollable.ScrollableContainerController do
         :content,
         &Primitive.put_transform(&1, :translate, scroll_position)
       )
-      # |> Graph.modify(
-      #   :vertical_scroll_bar,
-      #   &scroll_bar(
-      #     &1,
-      #     %{
-      #       scroll_position: Vector2.sub(scene.assigns.scroll_position, {x, y}) |> Vector2.invert
-      #     },
-      #     []
-      #   )
-      # )
-      # |> Graph.modify(
-      #   :horizontal_scroll_bar,
-      #   &scroll_bar(
-      #     &1,
-      #     %{
-      #       scroll_position: Vector2.sub(scene.assigns.scroll_position, {x, y}) |> Vector2.invert
-      #     },
-      #     []
-      #   )
-      # )
 
     Scenic.Scene.assign(scene, graph: graph)
   end
 
-  def on_scroll_position_change(%{assigns: %{content: %{x: x, y: y, width: width, height: height}}} = scene) do
+  def on_scroll_position_change(%{assigns: %{content: %{x: x, y: y}}} = scene) do
     graph =
       scene.assigns.graph
       |> Graph.modify(

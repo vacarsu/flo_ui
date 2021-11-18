@@ -2,47 +2,47 @@
 
 <%= primitive Scenic.Primitive.Rectangle,
     {10000, 10000},
+    translate: {-5000, -5000},
     id: :clickout,
     input: [:cursor_button],
     hidden: true
 %>
 
 <%= primitive Scenic.Primitive.RoundedRectangle,
-    {@background_width, @height, 5},
+    {@button_width, @button_height, 3},
     id: :bg,
+    stroke: {1, {@theme.border, 150}},
     fill: @theme.background,
     input: [:cursor_button]
 %>
 
 <%= primitive Scenic.Primitive.RoundedRectangle,
-    {@background_width, @background_height, 4},
+    {@button_width, @background_height, 3},
     id: :dropdown_bg,
-    translate: {0, 43},
+    translate: {0, 45},
+    hidden: true,
+    stroke: {1, {@theme.border, 150}},
+    fill: @theme.background
+%>
+
+<%= primitive Scenic.Primitive.Rectangle,
+    {@button_width-2, 3},
+    id: :border_cover,
+    translate: {1, 44},
     hidden: true,
     fill: @theme.background
 %>
 
 <%= component FloUI.Scrollable.Container,
     %{
-        frame: {@width, @frame_height},
-        content: {@width, @content_height}
+        frame: {@frame_width, @frame_height},
+        content: {@frame_width, @content_height}
     },
     id: :scroll_container,
-    translate: {0, 50},
+    translate: {1, 60},
     hidden: true,
     scroll_bars: %{
-        vertical: %{
-            show: @show_vertical_scroll,
-            show_buttons: true,
-            thickness: 15,
-            theme: @opts[:scroll_bar_theme]
-        },
-        horizontal: %{
-            show: false,
-            show_buttons: true,
-            thickness: 15,
-            theme: @opts[:scroll_bar_theme]
-        }
+        vertical: @scroll_bar
     }
 do %>
     <%= component FloUI.Dropdown.Items,
@@ -60,7 +60,7 @@ do %>
 
 <%= component FloUI.Icon,
     {:flo_ui, "icons/arrow_drop_down_white.png"},
-    translate: {@width - 48 / 2, @height / 2 - 48 / 2},
+    translate: {@button_width - 48 / 2 - 10, @button_height / 2 - 48 / 2},
     pin: {48 / 2, 48 / 2},
     id: :icon
 %>

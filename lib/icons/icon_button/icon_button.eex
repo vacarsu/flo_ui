@@ -3,7 +3,7 @@
 <%= primitive Scenic.Primitive.Circle,
     15, 
     id: :bg,
-    translate: {23, 23} 
+    translate: {23, 23}
 %>
 
 <%= @children %>

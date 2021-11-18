@@ -6,8 +6,8 @@ defmodule Basic.Component.Page4 do
     assigns: [
       dropdown_opts: {
         [
-          {{"Select Item", :select}, :select},
-          {{"Item 1", "Item 1"}, :item_1},
+          {{"item", :select}, :select},
+          {{"Item 1 fefuewhfluihjdfhdjd", "Item 1"}, :item_1},
           {{"Item 2", "Item 2"}, :item_2},
           {{"Item 3", "Item 3"}, :item_3},
           {{"Item 4", "Item 4"}, :item_4},

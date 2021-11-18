@@ -17,6 +17,9 @@ defmodule FloUI.SelectionListItem do
   %>
   ```
   """
+
+  @default_theme FloUI.Theme.preset(:primary)
+
   use SnapFramework.Component,
     name: :selection_list_item,
     template: "lib/selection_list/selection_list_item.eex",
@@ -36,8 +39,18 @@ defmodule FloUI.SelectionListItem do
     run: [:on_selected_change]
   )
 
+  @impl true
   def setup(%{assigns: %{data: {label, value, key}, hovered: hovered, opts: opts}} = scene) do
     request_input(scene, [:cursor_pos])
+
+    theme =
+      case opts[:theme] do
+        nil -> @default_theme
+        :light -> @default_theme
+        :dark -> @default_theme
+        theme -> theme
+      end
+      |> FloUI.Theme.normalize()
 
     assign(scene,
       label: label,
@@ -45,14 +58,18 @@ defmodule FloUI.SelectionListItem do
       key: key,
       width: opts[:width] || 500,
       selected: opts[:selected] || false,
-      hovered: hovered
+      hovered: hovered,
+      theme: opts[:theme] || @default_theme,
+      theme: theme
     )
   end
 
+  @impl true
   def bounds(_data, opts) do
     {0.0, 0.0, opts[:width] || 500, 50}
   end
 
+  @impl true
   def process_input({:cursor_pos, _}, :box, scene) do
     {:noreply, assign(scene, hovered: true)}
   end
@@ -83,6 +100,7 @@ defmodule FloUI.SelectionListItem do
     {:noreply, scene}
   end
 
+  @impl true
   def process_call(:deselect, _, scene) do
     {:reply, :ok, assign(scene, selected: false)}
   end
