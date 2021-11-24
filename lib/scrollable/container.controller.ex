@@ -31,6 +31,7 @@ defmodule FloUI.Scrollable.ScrollableContainerController do
   end
 
   def on_scroll_position_change(%{assigns: %{content: %{x: x, y: y}}} = scene) do
+    IO.puts "update container position"
     graph =
       scene.assigns.graph
       |> Graph.modify(
@@ -61,6 +62,16 @@ defmodule FloUI.Scrollable.ScrollableContainerController do
     Scenic.Scene.assign(scene, graph: graph)
   end
 
+  def on_children_change(scene) do
+    graph =
+      scene.assigns.graph
+      |> Graph.delete(:content_container)
+
+    scene
+    |> Scenic.Scene.assign(graph: graph)
+    |> render_content
+  end
+
   def render_content(
         %{
           assigns: %{
@@ -82,7 +93,6 @@ defmodule FloUI.Scrollable.ScrollableContainerController do
       )
 
     Scenic.Scene.assign(scene, graph: graph)
-    |> Scenic.Scene.push_graph(graph)
   end
 
   def render_children(g, children) do

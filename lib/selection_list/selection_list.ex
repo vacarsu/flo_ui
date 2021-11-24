@@ -60,8 +60,10 @@ defmodule FloUI.SelectionList do
         _pid,
         %{assigns: %{id: id, selected: selected}} = scene
       ) do
-    {:ok, [selected_pid]} = child(scene, selected)
-    GenServer.call(selected_pid, :deselect)
+    case child(scene, selected) do
+      {:ok, [selected_pid]} -> GenServer.call(selected_pid, :deselect)
+      _ -> selected
+    end
     {:cont, {:value_changed, id, item}, assign(scene, selected: key)}
   end
 

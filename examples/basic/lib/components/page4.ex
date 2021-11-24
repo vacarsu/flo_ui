@@ -24,9 +24,19 @@ defmodule Basic.Component.Page4 do
           {"number 3", "number 3", 2}
         ],
         0
-      }
+      },
+      selected_dropdown_item: :select,
+      selected_list_item: 0,
     ],
     opts: []
 
   defcomponent(:page_4, :any)
+
+  def process_event({:value_changed, :scroll_dropdown, value}, _, scene) do
+    {:noreply, assign(scene, selected_dropdown_item: value)}
+  end
+
+  def process_event({:value_changed, :selection_list, {_, value, _}}, _, scene) do
+    {:noreply, assign(scene, selected_list_item: value)}
+  end
 end

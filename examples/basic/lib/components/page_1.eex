@@ -8,8 +8,10 @@
 <%= component FloUI.Scrollable.Container,
     %{
         frame: {400, 500},
-        content: {800, 800}
+        content: {800, 800},
+        scroll_position: {0, 0}
     },
+    id: :scrollable,
     translate: {20, 60},
     scroll_bars: %{
         vertical: %{

@@ -90,7 +90,7 @@ defmodule FloUI.Scrollable.Container do
     {content_width, content_height} = data.content
     {frame_width, frame_height} = data.frame
     {frame_x, frame_y} = opts[:translate] || @default_position
-    scroll_position = opts[:scroll_position] || @default_position
+    scroll_position = Map.get(data, :scroll_position, {0, 0})
     scroll_bars =
       case opts[:scroll_bars] do
         nil ->
@@ -153,12 +153,29 @@ defmodule FloUI.Scrollable.Container do
 
   @impl true
   def mounted(scene) do
-    FloUI.Scrollable.ScrollableContainerController.render_content(scene)
+    Logger.debug(inspect scene, pretty: true, limit: :infinity)
+    scene =
+      FloUI.Scrollable.ScrollableContainerController.render_content(scene)
+
+    Scenic.Scene.push_graph(scene, scene.assigns.graph)
   end
 
   @impl true
   def bounds(%{frame: {x, y}}, _opts) do
     {0.0, 0.0, x, y}
+  end
+
+  @impl true
+  def process_update(data, _opts, scene) do
+    IO.puts("update scrollable container")
+    # children = opts[:children] || scene.assigns.children
+    scene =
+      assign(scene,
+        data: data,
+        scroll_position: PositionCap.cap(scene.assigns.position_caps, Vector2.invert(data.scroll_position))
+      )
+
+    {:noreply, scene}
   end
 
   @impl true
@@ -218,11 +235,14 @@ defmodule FloUI.Scrollable.Container do
         :input_capture,
         %{assigns: %{scroll_bars_state: scroll_bars_state}} = scene
       ) do
+    IO.puts("test scroll")
     if not is_nil(scroll_bars_state.vertical.pid) do
+      IO.puts("vertical test hit")
       GenServer.cast(scroll_bars_state.vertical.pid, {:update_cursor_scroll, scroll_pos})
     end
 
     if not is_nil(scroll_bars_state.horizontal.pid) do
+      IO.puts("horizontal test hit")
       GenServer.cast(scroll_bars_state.horizontal.pid, {:update_cursor_scroll, scroll_pos})
     end
 
@@ -250,7 +270,7 @@ defmodule FloUI.Scrollable.Container do
 
     assign(scene,
       position_caps: position_cap,
-      scroll_position: PositionCap.cap(position_cap, scene.assigns.scroll_position)
+      scroll_position: PositionCap.cap(position_cap, Vector2.invert(scene.assigns.scroll_position))
     )
   end
 
