@@ -50,7 +50,6 @@ defmodule FloUI.Icon.Button do
 
   @impl true
   def setup(%{assigns: %{data: nil, opts: opts}} = scene) do
-    # Logger.debug(inspect state, pretty: true)
     scene
     |> assign(
       id: scene.assigns.opts[:id] || nil,

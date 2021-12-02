@@ -33,7 +33,7 @@ defmodule FloUI.MixProject do
       {:scenic, "~> 0.11.0-beta.0"},
       {:truetype_metrics, "~> 0.5"},
       {:dialyxir, "~> 1.1", only: :dev, runtime: false},
-      {:snap_framework, "~> 0.1.0-alpha.5"}
+      {:snap_framework, "~> 0.1.0-alpha.6"}
     ]
   end
 

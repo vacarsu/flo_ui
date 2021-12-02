@@ -110,7 +110,6 @@ defmodule FloUI.Scrollable.ScrollBar do
 
   @impl true
   def process_update(data, _opts, scene) do
-    IO.puts("updating scroll bar position")
     {:noreply,
      assign(scene,
        last_scroll_position: scene.assigns.scroll_position,

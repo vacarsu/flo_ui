@@ -153,7 +153,6 @@ defmodule FloUI.Scrollable.Container do
 
   @impl true
   def mounted(scene) do
-    Logger.debug(inspect scene, pretty: true, limit: :infinity)
     scene =
       FloUI.Scrollable.ScrollableContainerController.render_content(scene)
 
@@ -167,8 +166,6 @@ defmodule FloUI.Scrollable.Container do
 
   @impl true
   def process_update(data, _opts, scene) do
-    IO.puts("update scrollable container")
-    # children = opts[:children] || scene.assigns.children
     scene =
       assign(scene,
         data: data,
@@ -235,14 +232,11 @@ defmodule FloUI.Scrollable.Container do
         :input_capture,
         %{assigns: %{scroll_bars_state: scroll_bars_state}} = scene
       ) do
-    IO.puts("test scroll")
     if not is_nil(scroll_bars_state.vertical.pid) do
-      IO.puts("vertical test hit")
       GenServer.cast(scroll_bars_state.vertical.pid, {:update_cursor_scroll, scroll_pos})
     end
 
     if not is_nil(scroll_bars_state.horizontal.pid) do
-      IO.puts("horizontal test hit")
       GenServer.cast(scroll_bars_state.horizontal.pid, {:update_cursor_scroll, scroll_pos})
     end
 

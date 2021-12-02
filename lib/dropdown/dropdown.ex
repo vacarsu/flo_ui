@@ -111,6 +111,10 @@ defmodule FloUI.Dropdown do
     {:cont, {:value_changed, scene.assigns.opts[:id], value}, assign(scene, selected_label: label, selected_key: key, open?: false)}
   end
 
+  def process_event(_, _, scene) do
+    {:noreply, scene}
+  end
+
   @impl true
   def process_input({:cursor_button, {:btn_left, 0, _, _}}, :bg, %{assigns: %{open?: open?}} = scene) do
     {:noreply, assign(scene, open?: not open?)}

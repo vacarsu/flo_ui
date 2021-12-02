@@ -27,23 +27,23 @@ defmodule FloUI.Scrollable.ScrollableContainerController do
         &Primitive.put_transform(&1, :translate, scroll_position)
       )
 
+    Scenic.Scene.send_parent_event(scene, {:scroll_position_changed, scroll_position})
     Scenic.Scene.assign(scene, graph: graph)
   end
 
-  def on_scroll_position_change(%{assigns: %{content: %{x: x, y: y}}} = scene) do
-    IO.puts "update container position"
+  def on_scroll_position_change(%{assigns: %{scroll_position: scroll_position, content: %{x: x, y: y}}} = scene) do
     graph =
       scene.assigns.graph
       |> Graph.modify(
         :content,
-        &Primitive.put_transform(&1, :translate, Vector2.add(scene.assigns.scroll_position, {x, y}))
+        &Primitive.put_transform(&1, :translate, Vector2.add(scroll_position, {x, y}))
       )
       |> Graph.modify(
         :vertical_scroll_bar,
         &scroll_bar(
           &1,
           %{
-            scroll_position: Vector2.sub(scene.assigns.scroll_position, {x, y})
+            scroll_position: Vector2.sub(scroll_position, {x, y})
           },
           []
         )
@@ -53,12 +53,12 @@ defmodule FloUI.Scrollable.ScrollableContainerController do
         &scroll_bar(
           &1,
           %{
-            scroll_position: Vector2.sub(scene.assigns.scroll_position, {x, y})
+            scroll_position: Vector2.sub(scroll_position, {x, y})
           },
           []
         )
       )
-
+    Scenic.Scene.send_parent_event(scene, {:scroll_position_changed, scroll_position})
     Scenic.Scene.assign(scene, graph: graph)
   end
 
