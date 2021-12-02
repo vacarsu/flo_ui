@@ -27,7 +27,7 @@ defmodule FloUI.Scrollable.ScrollableContainerController do
         &Primitive.put_transform(&1, :translate, scroll_position)
       )
 
-    Scenic.Scene.send_parent_event(scene, {:scroll_position_changed, scroll_position})
+    Scenic.Scene.send_parent_event(scene, {:scroll_position_changed, Vector2.invert(scroll_position)})
     Scenic.Scene.assign(scene, graph: graph)
   end
 
@@ -58,7 +58,7 @@ defmodule FloUI.Scrollable.ScrollableContainerController do
           []
         )
       )
-    Scenic.Scene.send_parent_event(scene, {:scroll_position_changed, scroll_position})
+    Scenic.Scene.send_parent_event(scene, {:scroll_position_changed, Vector2.invert(scroll_position)})
     Scenic.Scene.assign(scene, graph: graph)
   end
 
