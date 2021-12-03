@@ -121,7 +121,7 @@ defmodule FloUI.Scrollable.Container do
       theme: opts[:theme] || FloUI.Theme.preset(:scrollbar),
       frame: %{x: frame_x, y: frame_y, width: frame_width, height: frame_height},
       content: %{x: 0, y: 0, width: content_width, height: content_height},
-      scroll_position: Vector2.invert(scroll_position),
+      scroll_position: scroll_position,
       fps: opts[:scroll_fps] || @default_fps,
       acceleration: Acceleration.init(opts[:scroll_acceleration]),
       hotkeys: Hotkeys.init(opts[:scroll_hotkeys]),

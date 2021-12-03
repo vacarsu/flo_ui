@@ -77,7 +77,8 @@ defmodule FloUI.Scrollable.ScrollableContainerController do
           assigns: %{
             children: children,
             graph: graph,
-            frame: %{x: x, y: y, width: width, height: height}
+            frame: %{x: x, y: y, width: width, height: height},
+            scroll_position: scroll_position
           }
         } = scene
       ) do
@@ -85,7 +86,7 @@ defmodule FloUI.Scrollable.ScrollableContainerController do
       graph
       |> group(
         fn g ->
-          group(g, &render_children(&1, children), id: :content)
+          group(g, &render_children(&1, children), id: :content, translate: scroll_position)
         end,
         scissor: {width, height},
         translate: {x, y},

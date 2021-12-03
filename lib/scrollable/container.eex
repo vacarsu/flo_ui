@@ -12,7 +12,7 @@
         content_size: {@content.width, @content.height},
         width: @scroll_bars.vertical.thickness,
         height: @frame.height,
-        scroll_position: Scenic.Math.Vector2.invert(@scroll_position)
+        scroll_position: @scroll_position
     },
     id: :vertical_scroll_bar,
     hidden: not @scroll_bars.vertical.show,
@@ -30,7 +30,7 @@
         content_size: {@content.width, @content.height},
         width: @frame.width,
         height: @scroll_bars.horizontal.thickness,
-        scroll_position: Scenic.Math.Vector2.invert(@scroll_position)
+        scroll_position: @scroll_position
     },
     id: :horizontal_scroll_bar,
     hidden: not @scroll_bars.horizontal.show,
