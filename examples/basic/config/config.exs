@@ -4,6 +4,8 @@ use Mix.Config
 
 config :scenic, :assets, module: FloUI.Assets
 
+config :scenic, :themes, module: FloUI.Themes
+
 # config :scenic, :assets,
 #   module: Basic.Assets,
 #   alias: []
@@ -12,7 +14,7 @@ config :scenic, :assets, module: FloUI.Assets
 config :basic, :viewport,
   name: :main_viewport,
   size: {700, 600},
-  theme: :dark,
+  theme: {:flo_ui, :primary},
   default_scene: Basic.Scene.Home,
   drivers: [
     [

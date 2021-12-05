@@ -22,7 +22,7 @@ defmodule Basic.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:scenic, "~> 0.11.0-beta.0"},
+      {:scenic, git: "https://github.com/vacarsu/scenic.git", override: true},
       {:scenic_driver_local, "~> 0.11.0-beta.0"},
       {:truetype_metrics, "~> 0.5"},
       {:dialyxir, "~> 1.1", only: :dev, runtime: false},

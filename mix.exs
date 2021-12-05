@@ -1,7 +1,7 @@
 defmodule FloUI.MixProject do
   use Mix.Project
 
-  @version "0.1.0-alpha.5"
+  @version "0.1.0-alpha.6"
   @github "https://github.com/vacarsu/flo_ui"
 
   def project do
@@ -30,7 +30,7 @@ defmodule FloUI.MixProject do
   defp deps do
     [
       {:ex_doc, "~> 0.24", only: :dev, runtime: false},
-      {:scenic, "~> 0.11.0-beta.0"},
+      {:scenic, git: "https://github.com/vacarsu/scenic.git", override: true},
       {:truetype_metrics, "~> 0.5"},
       {:dialyxir, "~> 1.1", only: :dev, runtime: false},
       {:snap_framework, "~> 0.1.0-alpha.6"}
