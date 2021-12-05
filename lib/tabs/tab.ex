@@ -50,7 +50,7 @@ defmodule FloUI.Tab do
   )
 
   def setup(%{assigns: %{data: {label, cmp}, hovered?: hovered, opts: opts}} = scene) do
-    request_input(scene, [:cursor_pos])
+    # request_input(scene, [:cursor_pos])
     if opts[:selected?], do: send_parent(scene, {:tab_pid, self()})
 
     scene

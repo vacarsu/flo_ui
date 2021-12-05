@@ -41,7 +41,7 @@ defmodule FloUI.SelectionListItem do
 
   @impl true
   def setup(%{assigns: %{data: {label, value, key}, hovered: hovered, opts: opts}} = scene) do
-    request_input(scene, [:cursor_pos])
+    # request_input(scene, [:cursor_pos])
 
     assign(scene,
       label: label,
@@ -61,10 +61,12 @@ defmodule FloUI.SelectionListItem do
 
   @impl true
   def process_input({:cursor_pos, _}, :box, scene) do
+    capture_input(scene, :cursor_pos)
     {:noreply, assign(scene, hovered: true)}
   end
 
   def process_input({:cursor_pos, _}, _, scene) do
+    release_input(scene, :cursor_pos)
     {:noreply, assign(scene, hovered: false)}
   end
 
