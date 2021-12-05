@@ -58,7 +58,7 @@ defmodule FloUI.Icon.Button do
   end
 
   def setup(%{assigns: %{data: label, opts: opts}} = scene) do
-    request_input(scene, [:cursor_pos])
+    # request_input(scene, [:cursor_pos])
     scene
     |> assign(
       id: scene.assigns.opts[:id] || nil,

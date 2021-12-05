@@ -8,7 +8,7 @@
 
 <%= @children %>
 
-<%= primitive Scenic.Primitive.Rectangle, {48, 48}, id: :btn, input: :cursor_button %>
+<%= primitive Scenic.Primitive.Rectangle, {48, 48}, id: :btn, input: [:cursor_button, :cursor_pos] %>
 
 <%= component FloUI.Tooltip,
     @label,
