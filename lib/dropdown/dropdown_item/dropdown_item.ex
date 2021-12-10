@@ -7,7 +7,7 @@ defmodule FloUI.Dropdown.Item do
   data is a tuple in the form of `{{label, value}, key}`
   """
 
-  @default_theme FloUI.Theme.preset(:base)
+  @default_theme Scenic.Themes.preset({:flo_ui, :base})
 
   use SnapFramework.Component,
     name: :dropdown_item,

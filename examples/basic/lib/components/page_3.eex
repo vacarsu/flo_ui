@@ -22,13 +22,13 @@ do %>
             vertical: %{
                 show: true,
                 show_buttons: true,
-                theme: FloUI.Theme.preset(:scrollbar),
+                theme: Scenic.Themes.preset({:flo_ui, :scrollbar}),
                 thickness: 15
             },
             horizontal: %{
                 show: true,
                 show_buttons: true,
-                theme: FloUI.Theme.preset(:scrollbar),
+                theme: Scenic.Themes.preset({:flo_ui, :scrollbar}),
                 thickness: 15
             }
         } do %>

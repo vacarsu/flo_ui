@@ -18,7 +18,7 @@ defmodule FloUI.Icon.Button do
   ```
   """
 
-  @default_theme FloUI.Theme.preset(:primary)
+  @default_theme Scenic.Themes.preset({:flo_ui, :primary})
 
   use SnapFramework.Component,
     name: :icon_button,
@@ -113,6 +113,6 @@ defmodule FloUI.Icon.Button do
         :light -> @default_theme
         theme -> theme
       end
-      |> FloUI.Theme.normalize()
+      |> Scenic.Themes.normalize()
   end
 end

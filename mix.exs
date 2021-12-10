@@ -66,7 +66,7 @@ defmodule FloUI.MixProject do
       groups_for_modules: [
         FloUI: [
           FloUI,
-          FloUI.Theme
+          FloUI.Themes
         ],
         Icons: [
           FloUI.Icon.Button,

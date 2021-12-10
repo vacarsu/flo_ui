@@ -11,11 +11,11 @@
     @dropdown_opts,
     id: :scroll_dropdown,
     translate: {5, 0},
-    theme: FloUI.Theme.preset(:base),
+    theme: Scenic.Themes.preset({:flo_ui, :base}),
     scroll_bar: %{
         show: true,
         show_buttons: false,
-        theme: FloUI.Theme.preset(:scrollbar),
+        theme: Scenic.Themes.preset({:flo_ui, :scrollbar}),
         radius: 30,
         thickness: 5
     }

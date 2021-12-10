@@ -69,14 +69,14 @@ defmodule FloUI.Scrollable.Container do
     show_buttons: false,
     thickness: 15,
     radius: 3,
-    theme: FloUI.Theme.preset(:scrollbar)
+    theme: Scenic.Themes.preset({:flo_ui, :scrollbar})
   }
   @default_vertical_scroll_bar %{
     show: true,
     show_buttons: true,
     thickness: 15,
     radius: 3,
-    theme: FloUI.Theme.preset(:scrollbar)
+    theme: Scenic.Themes.preset({:flo_ui, :scrollbar})
   }
   @default_position {0, 0}
   @default_fps 30
@@ -104,21 +104,21 @@ defmodule FloUI.Scrollable.Container do
               show_buttons: Map.get(vertical, :show_buttons, true),
               thickness: Map.get(vertical, :thickness, 15),
               radius: Map.get(vertical, :radius, 3),
-              theme: Map.get(vertical, :theme, FloUI.Theme.preset(:scrollbar))
+              theme: Map.get(vertical, :theme, Scenic.Themes.preset({:flo_ui, :scrollbar}))
             },
             horizontal: %{
               show: Map.get(horizontal, :show, true),
               show_buttons: Map.get(horizontal, :show_buttons, true),
               thickness: Map.get(horizontal, :thickness, 15),
               radius: Map.get(horizontal, :radius, 3),
-              theme: Map.get(horizontal, :theme, FloUI.Theme.preset(:scrollbar))
+              theme: Map.get(horizontal, :theme, Scenic.Themes.preset({:flo_ui, :scrollbar}))
             }
           }
       end
 
     assign(scene,
       id: opts[:id] || :scrollable,
-      theme: opts[:theme] || FloUI.Theme.preset(:scrollbar),
+      theme: opts[:theme] || Scenic.Themes.preset({:flo_ui, :scrollbar}),
       frame: %{x: frame_x, y: frame_y, width: frame_width, height: frame_height},
       content: %{x: 0, y: 0, width: content_width, height: content_height},
       scroll_position: scroll_position,

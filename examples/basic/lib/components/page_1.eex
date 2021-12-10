@@ -18,13 +18,13 @@
             show: true,
             show_buttons: true,
             thickness: 15,
-            theme: FloUI.Theme.preset(:scrollbar)
+            theme: Scenic.Themes.preset({:flo_ui, :scrollbar})
         },
         horizontal: %{
             show: true,
             show_buttons: true,
             thickness: 15,
-            theme: FloUI.Theme.preset(:scrollbar)
+            theme: Scenic.Themes.preset({:flo_ui, :scrollbar})
         }
     } do %>
 

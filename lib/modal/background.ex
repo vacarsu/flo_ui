@@ -12,7 +12,7 @@ defmodule FloUI.Modal.Background do
   ```
   """
 
-  @default_theme FloUI.Theme.preset(:dark)
+  @default_theme Scenic.Themes.preset({:flo_ui, :dark})
 
   use SnapFramework.Component,
     name: :background,
@@ -34,6 +34,6 @@ defmodule FloUI.Modal.Background do
       :light -> @default_theme
       theme -> theme
     end
-    |> FloUI.Theme.normalize()
+    |> Scenic.Themes.normalize()
   end
 end

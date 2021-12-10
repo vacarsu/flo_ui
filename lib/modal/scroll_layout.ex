@@ -40,7 +40,7 @@
 
 #   import Scenic.Primitives
 
-#   alias FloUI.Theme
+#   alias Scenic.Themes
 #   alias FloUI.Modal.Body
 #   alias FloUI.Modal.Header
 #   import FloUI.Scrollable.Components

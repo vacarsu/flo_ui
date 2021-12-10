@@ -1,6 +1,7 @@
 defmodule FloUI.Themes do
   @flo_base %{
     text: :white,
+    active_text: :black,
     background: {64, 64, 64},
     highlight: :white,
     border: :light_grey,
@@ -49,10 +50,12 @@ defmodule FloUI.Themes do
     text: @text
   }
 
+  @schema [:active_text]
+
   use Scenic.Themes, [
     [name: :scenic, themes: Scenic.Themes],
-    [name: :flo_ui, themes: @themes]
+    [name: :flo_ui, themes: @themes, schema: @schema]
   ]
 
-  def load(), do: [name: :flo_ui, themes: @themes]
+  def load(), do: [name: :flo_ui, themes: @themes, schema: @schema]
 end

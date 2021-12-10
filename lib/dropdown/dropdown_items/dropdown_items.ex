@@ -18,7 +18,7 @@ defmodule FloUI.Dropdown.Items do
   """
 
   # @default_max_height 300
-  @default_theme FloUI.Theme.preset(:base)
+  @default_theme Scenic.Themes.preset({:flo_ui, :base})
 
   use SnapFramework.Component,
     name: :dropdown_items,

@@ -48,11 +48,11 @@ defmodule FloUI.Dropdown do
   """
   @default_height 50
   @default_frame_height 300
-  @default_theme FloUI.Theme.preset(:base)
+  @default_theme Scenic.Themes.preset({:flo_ui, :base})
   @default_scroll_bar %{
     show: true,
     show_buttons: true,
-    theme: Scenic.Primitive.Style.Theme.preset(:dark),
+    theme: Scenic.Themes.preset({:flo_ui, :dark}),
     thickness: 15
   }
 
@@ -146,10 +146,10 @@ defmodule FloUI.Dropdown do
   defp get_theme(opts) do
     case opts[:theme] do
       nil -> @default_theme
-      :dark -> @default_theme
-      :light -> @default_theme
+      {:scenic, :dark} -> @default_theme
+      {:scenic, :light} -> @default_theme
       theme -> theme
     end
-    |> FloUI.Theme.normalize()
+    |> Scenic.Themes.normalize()
   end
 end
