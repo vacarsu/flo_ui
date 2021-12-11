@@ -27,10 +27,6 @@ defmodule FloUI.Modal.Layout do
   ```
   """
 
-  import Scenic.Primitives, only: [rect: 3, text: 3]
-  import FloUI.Modal.Background, only: [background: 3]
-  import FloUI.Icon.Button, only: [icon_button: 3]
-
   use SnapFramework.Component,
     name: :layout,
     template: "lib/modal/layout.eex",
