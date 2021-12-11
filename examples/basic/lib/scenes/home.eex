@@ -1,11 +1,7 @@
 <%= graph font_size: 20 %>
 
 <%= component FloUI.Tabs, {@active_tab, @tabs}, id: :tabs do %>
-    <%= component FloUI.Grid,
-        %{
-            start_xy: {0, 0},
-            max_xy: {400, 40}
-        } do %>
+    <%= layout padding: 0, width: 400, height: 60 do %>
         <%= for {{label, cmp}, i} <- Enum.with_index @tabs do %>
             <%= component FloUI.Tab,
                 {label, cmp},
@@ -17,3 +13,5 @@
         <% end %>
     <% end %>
 <% end %>
+
+<%= component FloUI.Dropdown, {@theme_opts, @active_theme}, id: :theme_dropdown, translate: {400, 0} %>

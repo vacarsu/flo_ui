@@ -97,6 +97,7 @@ defmodule FloUI.Dropdown do
       scroll_bar: scroll_bar,
       show_vertical_scroll: show_vertical_scroll
     )
+    |> get_selected
     |> get_theme
   end
 
@@ -140,6 +141,16 @@ defmodule FloUI.Dropdown do
 
   defp get_content_height(items) do
     Items.get_height(items)
+  end
+
+  def get_selected(%{assigns: %{selected: selected, items: items}} = scene) do
+    Enum.reduce(items, scene, fn {{label, value}, key}, acc ->
+      if selected == value do
+        assign(acc, selected_label: label, selected_key: key)
+      else
+        acc
+      end
+    end)
   end
 
   def get_theme(%{assigns: %{opts: opts}} = scene) do
