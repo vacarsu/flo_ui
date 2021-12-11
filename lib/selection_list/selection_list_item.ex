@@ -18,8 +18,6 @@ defmodule FloUI.SelectionListItem do
   ```
   """
 
-  @default_theme Scenic.Themes.preset({:flo_ui, :primary})
-
   use SnapFramework.Component,
     name: :selection_list_item,
     template: "lib/selection_list/selection_list_item.eex",
@@ -49,9 +47,9 @@ defmodule FloUI.SelectionListItem do
       key: key,
       width: opts[:width] || 500,
       selected: opts[:selected] || false,
-      hovered: hovered,
-      theme: get_theme(opts)
+      hovered: hovered
     )
+    |> get_theme
   end
 
   @impl true
@@ -97,13 +95,10 @@ defmodule FloUI.SelectionListItem do
     {:reply, :ok, assign(scene, selected: false)}
   end
 
-  defp get_theme(opts) do
-    case opts[:theme] do
-      nil -> @default_theme
-      :dark -> @default_theme
-      :light -> @default_theme
-      theme -> theme
-    end
-    |> Scenic.Themes.normalize()
+  def get_theme(%{assigns: %{opts: opts}} = scene) do
+    schema = FloUI.Themes.get_schema()
+    theme = Scenic.Themes.normalize(opts[:theme]) || Scenic.Themes.normalize({:flo_ui, :dark})
+    Scenic.Themes.validate(theme, schema)
+    assign(scene, theme: theme)
   end
 end

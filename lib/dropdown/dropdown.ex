@@ -48,11 +48,10 @@ defmodule FloUI.Dropdown do
   """
   @default_height 50
   @default_frame_height 300
-  @default_theme Scenic.Themes.preset({:flo_ui, :base})
   @default_scroll_bar %{
     show: true,
     show_buttons: true,
-    theme: Scenic.Themes.preset({:flo_ui, :dark}),
+    theme: Scenic.Themes.preset({:flo_ui, :scrollbar}),
     thickness: 15
   }
 
@@ -96,9 +95,9 @@ defmodule FloUI.Dropdown do
       frame_height: frame_height,
       content_height: content_height,
       scroll_bar: scroll_bar,
-      show_vertical_scroll: show_vertical_scroll,
-      theme: get_theme(opts)
+      show_vertical_scroll: show_vertical_scroll
     )
+    |> get_theme
   end
 
   @impl true
@@ -143,13 +142,10 @@ defmodule FloUI.Dropdown do
     Items.get_height(items)
   end
 
-  defp get_theme(opts) do
-    case opts[:theme] do
-      nil -> @default_theme
-      {:scenic, :dark} -> @default_theme
-      {:scenic, :light} -> @default_theme
-      theme -> theme
-    end
-    |> Scenic.Themes.normalize()
+  def get_theme(%{assigns: %{opts: opts}} = scene) do
+    schema = FloUI.Themes.get_schema()
+    theme = Scenic.Themes.normalize(opts[:theme]) || Scenic.Themes.normalize({:flo_ui, :dark})
+    Scenic.Themes.validate(theme, schema)
+    assign(scene, theme: theme)
   end
 end

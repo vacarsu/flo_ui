@@ -6,7 +6,7 @@ defmodule FloUI.Dropdown.ItemController do
     graph =
       case scene.assigns.hovered do
         false ->
-          scene.assigns.graph |> Graph.modify(:bg, &Primitive.put_style(&1, :fill, scene.assigns.theme.background))
+          scene.assigns.graph |> Graph.modify(:bg, &Primitive.put_style(&1, :fill, scene.assigns.theme.surface))
         true ->
           scene.assigns.graph |> Graph.modify(:bg, &Primitive.put_style(&1, :fill, scene.assigns.theme.thumb))
       end
@@ -18,7 +18,7 @@ defmodule FloUI.Dropdown.ItemController do
     graph =
       case scene.assigns.selected do
         false ->
-          scene.assigns.graph |> Graph.modify(:bg, &Primitive.put_style(&1, :fill, scene.assigns.theme.background))
+          scene.assigns.graph |> Graph.modify(:bg, &Primitive.put_style(&1, :fill, scene.assigns.theme.surface))
         true ->
           scene.assigns.graph |> Graph.modify(:bg, &Primitive.put_style(&1, :fill, scene.assigns.theme.thumb))
       end

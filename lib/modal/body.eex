@@ -2,5 +2,5 @@
 
 <%= primitive Scenic.Primitive.Rectangle,
     {@width, @height},
-    fill: :gainsboro
+    fill: @theme.surface_secondary
 %>

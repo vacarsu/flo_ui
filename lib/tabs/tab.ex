@@ -62,9 +62,10 @@ defmodule FloUI.Tab do
       selected?: opts[:selected?] || false,
       hovered?: hovered
     )
+    |> get_theme
   end
 
-  def bounds({label, _cmp}, opts) do
+  def bounds({label, _cmp}, _opts) do
     {0.0, 0.0, FontMetricsHelper.get_text_width(label, 20), 40}
   end
 
@@ -93,5 +94,12 @@ defmodule FloUI.Tab do
 
   def process_call(_, _, scene) do
     {:noreply, scene}
+  end
+
+  def get_theme(%{assigns: %{opts: opts}} = scene) do
+    schema = FloUI.Themes.get_schema()
+    theme = Scenic.Themes.normalize(opts[:theme]) || Scenic.Themes.normalize({:flo_ui, :dark})
+    Scenic.Themes.validate(theme, schema)
+    assign(scene, theme: theme)
   end
 end

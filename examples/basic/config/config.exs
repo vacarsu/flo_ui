@@ -14,7 +14,7 @@ config :scenic, :themes, module: FloUI.Themes
 config :basic, :viewport,
   name: :main_viewport,
   size: {700, 600},
-  theme: {:flo_ui, :primary},
+  theme: {:flo_ui, :dark},
   default_scene: Basic.Scene.Home,
   drivers: [
     [

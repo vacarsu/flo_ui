@@ -11,7 +11,6 @@
     @dropdown_opts,
     id: :scroll_dropdown,
     translate: {5, 0},
-    theme: Scenic.Themes.preset({:flo_ui, :base}),
     scroll_bar: %{
         show: true,
         show_buttons: false,

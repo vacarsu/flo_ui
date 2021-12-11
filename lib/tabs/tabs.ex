@@ -1,6 +1,5 @@
 defmodule FloUI.Tabs do
   alias Scenic.Graph
-  alias Scenic.Primitive
 
   @moduledoc ~S"""
   ## Usage in SnapFramework
@@ -41,7 +40,7 @@ defmodule FloUI.Tabs do
     ],
     opts: []
 
-  defcomponent(:tabs, :any)
+  defcomponent(:tabs, :tuple)
 
   use_effect([assigns: [active_tab: :any]],
     run: [:on_tab_change]

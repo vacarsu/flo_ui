@@ -18,8 +18,6 @@ defmodule FloUI.Icon.Button do
   ```
   """
 
-  @default_theme Scenic.Themes.preset({:flo_ui, :primary})
-
   use SnapFramework.Component,
     name: :icon_button,
     template: "lib/icons/icon_button/icon_button.eex",
@@ -45,26 +43,23 @@ defmodule FloUI.Icon.Button do
     run: [:on_show_tooltip_change]
   )
 
-  # DEPRECATED
-  # use_effect [on_click: [@assigns[:id]]], :cont, []
-
   @impl true
-  def setup(%{assigns: %{data: nil, opts: opts}} = scene) do
+  def setup(%{assigns: %{data: nil}} = scene) do
     scene
     |> assign(
       id: scene.assigns.opts[:id] || nil,
-      theme: get_theme(opts)
     )
+    |> get_theme
   end
 
-  def setup(%{assigns: %{data: label, opts: opts}} = scene) do
+  def setup(%{assigns: %{data: label}} = scene) do
     # request_input(scene, [:cursor_pos])
     scene
     |> assign(
       id: scene.assigns.opts[:id] || nil,
-      label: label,
-      theme: get_theme(opts)
+      label: label
     )
+    |> get_theme
   end
 
   @impl true
@@ -106,13 +101,10 @@ defmodule FloUI.Icon.Button do
     {:noreply, scene}
   end
 
-  defp get_theme(opts) do
-      case opts[:theme] do
-        nil -> @default_theme
-        :dark -> @default_theme
-        :light -> @default_theme
-        theme -> theme
-      end
-      |> Scenic.Themes.normalize()
+  def get_theme(%{assigns: %{opts: opts}} = scene) do
+    schema = FloUI.Themes.get_schema()
+    theme = Scenic.Themes.normalize(opts[:theme]) || Scenic.Themes.normalize({:flo_ui, :dark})
+    Scenic.Themes.validate(theme, schema)
+    assign(scene, theme: theme)
   end
 end

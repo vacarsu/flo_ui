@@ -3,7 +3,7 @@
 <%= primitive Scenic.Primitive.Rectangle,
     {@width, 40},
     id: :bg,
-    fill: if(@selected? or @hovered?, do: :steel_blue, else: :gainsboro),
+    fill: if(@selected? or @hovered?, do: @theme.surface_primary, else: @theme.surface),
     input: [:cursor_button, :cursor_pos]
 %>
 
@@ -11,5 +11,5 @@
     @label,
     id: :text,
     translate: {5, 25},
-    fill: if @selected? or @hovered?, do: :white, else: :black
+    fill: if @selected? or @hovered?, do: @theme.active_text, else: @theme.text
 %>

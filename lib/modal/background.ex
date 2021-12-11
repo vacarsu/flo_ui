@@ -12,8 +12,6 @@ defmodule FloUI.Modal.Background do
   ```
   """
 
-  @default_theme Scenic.Themes.preset({:flo_ui, :dark})
-
   use SnapFramework.Component,
     name: :background,
     template: "lib/modal/background.eex",
@@ -23,17 +21,14 @@ defmodule FloUI.Modal.Background do
 
   defcomponent(:background, :any)
 
-  def setup(%{assigns: %{opts: opts}} = scene) do
-    assign(scene, theme: get_theme(opts))
+  def setup(scene) do
+    scene |> get_theme
   end
 
-  defp get_theme(opts) do
-    case opts[:theme] do
-      nil -> @default_theme
-      :dark -> @default_theme
-      :light -> @default_theme
-      theme -> theme
-    end
-    |> Scenic.Themes.normalize()
+  def get_theme(%{assigns: %{opts: opts}} = scene) do
+    schema = FloUI.Themes.get_schema()
+    theme = Scenic.Themes.normalize(opts[:theme]) || Scenic.Themes.normalize({:flo_ui, :dark})
+    Scenic.Themes.validate(theme, schema)
+    assign(scene, theme: theme)
   end
 end

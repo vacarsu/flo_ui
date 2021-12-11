@@ -12,7 +12,7 @@
     {@button_width, @button_height, 3},
     id: :bg,
     stroke: {1, {@theme.border, 150}},
-    fill: @theme.background,
+    fill: @theme.surface,
     input: [:cursor_button]
 %>
 
@@ -22,7 +22,7 @@
     translate: {0, 45},
     hidden: true,
     stroke: {1, {@theme.border, 150}},
-    fill: @theme.background
+    fill: @theme.surface
 %>
 
 <%= primitive Scenic.Primitive.Rectangle,
@@ -30,7 +30,7 @@
     id: :border_cover,
     translate: {1, 44},
     hidden: true,
-    fill: @theme.background
+    fill: @theme.surface
 %>
 
 <%= component FloUI.Scrollable.Container,
@@ -46,8 +46,7 @@
     }
 do %>
     <%= component FloUI.Dropdown.Items,
-        {@items, @selected},
-        theme: @theme
+        {@items, @selected}
     %>
 <% end %>
 

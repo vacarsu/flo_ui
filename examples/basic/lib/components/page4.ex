@@ -36,7 +36,15 @@ defmodule Basic.Component.Page4 do
     {:noreply, assign(scene, selected_dropdown_item: value)}
   end
 
+  def process_event({:value_changed, :selection_list, nil}, _, scene) do
+    {:noreply, assign(scene, selected_list_item: :select)}
+  end
+
   def process_event({:value_changed, :selection_list, {_, value, _}}, _, scene) do
     {:noreply, assign(scene, selected_list_item: value)}
+  end
+
+  def process_event(_, _, scene) do
+    {:noreply, scene}
   end
 end

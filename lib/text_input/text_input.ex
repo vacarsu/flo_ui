@@ -17,7 +17,6 @@ defmodule FloUI.Component.TextInput do
 
   @default_font_size 22
   @char_width 10
-  @default_hint_color :light_grey
 
   @default_width @char_width * 24
   @default_height @default_font_size * 1.5

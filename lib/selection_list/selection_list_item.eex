@@ -4,7 +4,7 @@
     {@width, @height},
     id: :box,
     input: [:cursor_button, :cursor_pos],
-    fill: if(@selected or @hovered, do: @theme.active, else: @theme.background)
+    fill: if(@selected or @hovered, do: @theme.surface_primary, else: @theme.surface)
 %>
 
 <%= component Scenic.Primitive.Text,

@@ -7,8 +7,6 @@ defmodule FloUI.Dropdown.Item do
   data is a tuple in the form of `{{label, value}, key}`
   """
 
-  @default_theme Scenic.Themes.preset({:flo_ui, :base})
-
   use SnapFramework.Component,
     name: :dropdown_item,
     template: "lib/dropdown/dropdown_item/dropdown_item.eex",
@@ -39,9 +37,9 @@ defmodule FloUI.Dropdown.Item do
       selected: selected,
       hovered: false,
       width: opts[:width],
-      height: get_height(),
-      theme: opts[:theme] || @default_theme
+      height: get_height()
     )
+    |> get_theme
   end
 
   @impl true
@@ -77,5 +75,12 @@ defmodule FloUI.Dropdown.Item do
   @spec get_height :: number
   def get_height() do
     FloUI.Util.FontMetricsHelper.get_text_height(20)
+  end
+
+  def get_theme(%{assigns: %{opts: opts}} = scene) do
+    schema = FloUI.Themes.get_schema()
+    theme = Scenic.Themes.normalize(opts[:theme]) || Scenic.Themes.normalize({:flo_ui, :dark})
+    Scenic.Themes.validate(theme, schema)
+    assign(scene, theme: theme)
   end
 end

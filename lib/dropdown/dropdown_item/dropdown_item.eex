@@ -3,7 +3,7 @@
 <%= primitive Scenic.Primitive.Rectangle,
     {@width, @height},
     id: :bg,
-    fill: if(@selected or @hovered, do: @theme.thumb, else: @theme.background),
+    fill: if(@selected or @hovered, do: @theme.thumb, else: @theme.surface),
     input: [:cursor_pos, :cursor_button]
 %>
 

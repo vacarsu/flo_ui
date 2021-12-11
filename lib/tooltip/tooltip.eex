@@ -3,10 +3,11 @@
 <%= primitive Scenic.Primitive.RoundedRectangle,
     {@width, @height, 5}, 
     translate: {0, 0}, 
-    fill: :black
+    fill: @theme.surface
 %>
 
 <%= primitive Scenic.Primitive.Text,
     @data,
-    translate: {5, @height / 2 + 5}
+    translate: {5, @height / 2 + 5},
+    fill: @theme.text
 %>

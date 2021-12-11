@@ -2,7 +2,7 @@
 
 <%= primitive Scenic.Primitive.Rectangle,
     {@width, 50},
-    fill: :dim_grey,
+    fill: @theme.surface,
     translate: {0, 0}
 %>
 

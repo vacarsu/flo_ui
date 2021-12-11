@@ -20,5 +20,13 @@ defmodule FloUI.Modal.Body do
       width: opts[:width] || 500,
       height: opts[:height] || 500
     )
+    |> get_theme
+  end
+
+  def get_theme(%{assigns: %{opts: opts}} = scene) do
+    schema = FloUI.Themes.get_schema()
+    theme = Scenic.Themes.normalize(opts[:theme]) || Scenic.Themes.normalize({:flo_ui, :dark})
+    Scenic.Themes.validate(theme, schema)
+    assign(scene, theme: theme)
   end
 end

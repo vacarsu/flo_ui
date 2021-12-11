@@ -21,15 +21,16 @@ defmodule FloUI.Tooltip do
     assigns: [width: 0, height: 0],
     opts: []
 
-  defcomponent(:tooltip, :any)
+  defcomponent(:tooltip, :string)
 
   def setup(scene) do
     scene
     |> get_background_width
     |> get_background_height
+    |> get_theme
   end
 
-  def bound(data, opts) do
+  def bound(data, _opts) do
     {0.0, 0.0, FontMetricsHelper.get_text_width(data, 20), FontMetricsHelper.get_text_height(20)}
   end
 
@@ -39,5 +40,12 @@ defmodule FloUI.Tooltip do
 
   def get_background_height(scene) do
     assign(scene, height: FontMetricsHelper.get_text_height(20))
+  end
+
+  def get_theme(%{assigns: %{opts: opts}} = scene) do
+    schema = FloUI.Themes.get_schema()
+    theme = Scenic.Themes.normalize(opts[:theme]) || Scenic.Themes.normalize({:flo_ui, :dark})
+    Scenic.Themes.validate(theme, schema)
+    assign(scene, theme: theme)
   end
 end
