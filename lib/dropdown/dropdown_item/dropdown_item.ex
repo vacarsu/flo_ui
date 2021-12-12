@@ -29,7 +29,7 @@ defmodule FloUI.Dropdown.Item do
   @impl true
   def setup(%{assigns: %{data: {{label, value}, key}, opts: opts}} = scene) do
     selected = opts[:selected] || false
-    if(selected, do: send_parent_event(scene, {:click, opts[:id], scene.assigns.data}))
+    # if(selected, do: send_parent_event(scene, {:click, opts[:id], scene.assigns.data}))
     assign(scene,
       label: label,
       value: value,

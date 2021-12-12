@@ -26,6 +26,8 @@ defmodule Basic.Scene.Home do
         {{"scrollbar", {:flo_ui, :scrollbar}}, :scrollbar},
         {{"blue light", {:flo_ui, :blue_light}}, :blue_light},
         {{"blue dark", {:flo_ui, :blue_dark}}, :blue_dark},
+        {{"red light", {:flo_ui, :red_light}}, :red_light},
+        {{"red dark", {:flo_ui, :red_dark}}, :red_dark},
         {{"purple light", {:flo_ui, :purple_light}}, :purple_light},
         {{"purple dark", {:flo_ui, :purple_dark}}, :purple_dark},
         {{"orange light", {:flo_ui, :orange_light}}, :orange_light},

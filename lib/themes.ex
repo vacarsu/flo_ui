@@ -40,6 +40,8 @@ defmodule FloUI.Themes do
   {:flo_ui, :scrollbar}
   {:flo_ui, :blue_light}
   {:flo_ui, :blue_dark}
+  {:flo_ui, :red_light}
+  {:flo_ui, :red_dark}
   {:flo_ui, :purple_light}
   {:flo_ui, :purple_dark}
   {:flo_ui, :orange_light}
@@ -71,8 +73,8 @@ defmodule FloUI.Themes do
 
   @dark Map.merge(@base, %{
     text: :white,
-    background: :flo_dark_grey,
     active_text: :white,
+    background: :flo_dark_grey,
     surface: :flo_dark_medium_grey,
     surface_primary: :steel_blue,
     surface_secondary: :flo_medium_grey
@@ -105,6 +107,20 @@ defmodule FloUI.Themes do
     surface_primary: :flo_blue,
     thumb: :flo_blue,
     focus: :flo_blue
+  })
+
+  @red_light Map.merge(@light, %{
+    active_text: :black,
+    surface_primary: :red,
+    thumb: :red,
+    focus: :red
+  })
+
+  @red_dark Map.merge(@dark, %{
+    active_text: :black,
+    surface_primary: :red,
+    thumb: :red,
+    focus: :red
   })
 
   @purple_light Map.merge(@light, %{
@@ -140,7 +156,8 @@ defmodule FloUI.Themes do
   @teal_dark Map.merge(@dark, %{
     surface_primary: :teal,
     thumb: :teal,
-    focus: :teal
+    focus: :teal,
+    highlight: :teal
   })
 
   @green_light Map.merge(@light, %{
@@ -178,6 +195,8 @@ defmodule FloUI.Themes do
     scrollbar: @scrollbar,
     blue_light: @blue_light,
     blue_dark: @blue_dark,
+    red_light: @red_light,
+    red_dark: @red_dark,
     purple_light: @purple_light,
     purple_dark: @purple_dark,
     orange_light: @orange_light,
