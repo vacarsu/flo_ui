@@ -61,6 +61,10 @@ defmodule FloUI.Scrollable.ScrollBar do
   @default_radius 3
   @default_id :scroll_bar
 
+  use_effect([assigns: [scroll_bar_state: :any]],
+    run: [:on_scrolling_change]
+  )
+
   use_effect([assigns: [scroll_position: :any]],
     run: [:on_scroll_position_change]
   )
@@ -337,7 +341,7 @@ defmodule FloUI.Scrollable.ScrollBar do
         %{assigns: %{direction: :vertical = direction, scroll_bar_state: scroll_bar_state}} = scene
       ) do
     scene =
-      if Float.floor(offset_y) == 0 or Float.ceil(offset_y) == 0 do
+      if Float.round(offset_y, 9) <= 0.200000003 and Float.round(offset_y, 9) >= -0.200000003 or offset_y == 0.0 do
         scroll_bar_state = %{
           scroll_bar_state |
           wheel_state: Wheel.stop_scrolling(scroll_bar_state.wheel_state, {direction, 0}),
@@ -363,10 +367,10 @@ defmodule FloUI.Scrollable.ScrollBar do
         %{assigns: %{direction: :horizontal = direction, scroll_bar_state: scroll_bar_state}} = scene
       ) do
     scene =
-      if Float.floor(offset_x) == 0 or Float.ceil(offset_x) == 0 do
+      if Float.round(offset_x, 9) <= 0.200000003 and Float.round(offset_x, 9) >= -0.200000003 or offset_x == 0.0 do
         scroll_bar_state = %{
           scroll_bar_state |
-          wheel_state: Wheel.stop_scrolling(scroll_bar_state.wheel_state, {direction, offset_x}),
+          wheel_state: Wheel.stop_scrolling(scroll_bar_state.wheel_state, {direction, 0}),
           scrolling: :idle,
         }
         send_parent_event(scene, {:scroll_bar_state_changed, direction, scroll_bar_state})

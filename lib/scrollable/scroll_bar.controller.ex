@@ -3,48 +3,16 @@ defmodule FloUI.Scrollable.ScrollBarController do
   alias Scenic.Primitive
   alias FloUI.Scrollable.Direction
 
-  # def on_scroll_position_change(%{assigns: %{scroll_bar_state: %{scrolling: :wheel}}} = scene) do
-  #   drag_control_position = local_scroll_position_vector2(scene)
+  def on_scrolling_change(scene) do
+    graph =
+      scene.assigns.graph
+      |> Graph.modify(
+        :scroll_bar_slider_background,
+        &Primitive.put_style(&1, :stroke, {scene.assigns.opts[:border], {get_border_color(scene), 150}})
+      )
 
-  #   graph =
-  #     scene.assigns.graph
-  #     |> Graph.modify(
-  #       :scroll_bar_slider_drag_control,
-  #       &Primitive.put_transform(&1, :translate, drag_control_position)
-  #     )
-
-  #   Scenic.Scene.assign(scene, graph: graph)
-  # end
-
-  # def on_scroll_position_change(
-  #       %{assigns: %{direction: :vertical, scroll_bar_state: %{scrolling: :dragging}}} =
-  #         scene
-  #     ) do
-  #   drag_control_position = local_scroll_position_vector2(scene)
-  #   graph =
-  #     scene.assigns.graph
-  #     |> Graph.modify(
-  #       :scroll_bar_slider_drag_control,
-  #       &Primitive.put_transform(&1, :translate, drag_control_position)
-  #     )
-
-  #   Scenic.Scene.assign(scene, graph: graph)
-  # end
-
-  # def on_scroll_position_change(
-  #       %{assigns: %{direction: :horizontal, scroll_bar_state: %{scrolling: :dragging}}} =
-  #         scene
-  #     ) do
-  #   drag_control_position = local_scroll_position_vector2(scene)
-  #   graph =
-  #     scene.assigns.graph
-  #     |> Graph.modify(
-  #       :scroll_bar_slider_drag_control,
-  #       &Primitive.put_transform(&1, :translate, drag_control_position)
-  #     )
-
-  #   Scenic.Scene.assign(scene, graph: graph)
-  # end
+    Scenic.Scene.assign(scene, graph: graph)
+  end
 
   def on_scroll_position_change(scene) do
     drag_control_position = local_scroll_position_vector2(scene)
@@ -59,6 +27,15 @@ defmodule FloUI.Scrollable.ScrollBarController do
     Scenic.Scene.assign(scene, graph: graph)
   end
 
+  defp get_border_color(scene) do
+    case scene.assigns.scroll_bar_state.scrolling do
+      :dragging -> scene.assigns.theme.highlight
+      :scrolling -> scene.assigns.theme.highlight
+      :wheel -> scene.assigns.theme.highlight
+      _ -> scene.assigns.theme.border
+    end
+  end
+
   defp scroll_button_size(%{assigns: %{scroll_bar_state: %{scroll_buttons: nil}}}), do: 0
 
   defp scroll_button_size(%{assigns: %{width: width, height: height, direction: direction}}) do
@@ -68,22 +45,6 @@ defmodule FloUI.Scrollable.ScrollBarController do
     |> Direction.multiply(height)
     |> Direction.unwrap()
   end
-
-  # defp button_width(%{assigns: %{direction: :horizontal}} = scene) do
-  #   Direction.divide(scene.assigns.frame_size, scene.assigns.content_size)
-  #   |> Direction.multiply(scene.assigns.width)
-  #   |> Direction.unwrap()
-  # end
-
-  # defp button_width(scene), do: scene.assigns.opts[:scroll_bar_thickness]
-
-  # defp button_height(%{assigns: %{direction: :vertical}} = scene) do
-  #   Direction.divide(scene.assigns.frame_size, scene.assigns.content_size)
-  #   |> Direction.multiply(scene.assigns.height)
-  #   |> Direction.unwrap()
-  # end
-
-  # defp button_height(scene), do: scene.assigns.opts[:scroll_bar_thickness]
 
   defp width_factor(%{assigns: %{content_size: {:horizontal, size}, width: {_, width}}}) do
     width / size
@@ -96,12 +57,6 @@ defmodule FloUI.Scrollable.ScrollBarController do
   end
 
   defp height_factor(_), do: 1
-
-  # POSITION CALCULATIONS
-
-  # defp scroll_position_vector2(scene) do
-  #   Direction.to_vector_2(scene.assigns.scroll_position)
-  # end
 
   defp local_scroll_position_vector2(scene) do
     world_to_local(scene, scene.assigns.scroll_position)

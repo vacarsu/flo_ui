@@ -339,7 +339,7 @@ defmodule FloUI.Scrollable.Container do
   } = scene
 ) when vert_scroll == :wheel or horiz_scroll == :wheel do
     {x, y} = scene.assigns.scroll_position
-    scroll_position = {x + offset_x * 5, y + offset_y * 5}
+    scroll_position = {x + offset_x * 10, y + offset_y * 10}
 
     assign(scene, scroll_position: PositionCap.cap(scene.assigns.position_caps, scroll_position))
   end

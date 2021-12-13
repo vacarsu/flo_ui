@@ -4,7 +4,7 @@
     {@scroll_bar_background_width, @scroll_bar_background_height, @radius},
     id: :scroll_bar_slider_background,
     fill: @theme.background,
-    stroke: {@opts[:border], {@theme.highlight, 150}},
+    stroke: {@opts[:border], {@theme.border, 150}},
     translate: @scroll_bar_background_pos,
     input: [:cursor_button]
 %>
