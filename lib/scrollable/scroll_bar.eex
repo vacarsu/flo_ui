@@ -3,8 +3,8 @@
 <%= primitive Scenic.Primitive.RoundedRectangle,
     {@scroll_bar_background_width, @scroll_bar_background_height, @radius},
     id: :scroll_bar_slider_background,
-    fill: @opts[:theme].border,
-    stroke: {@opts[:border], @opts[:theme].background},
+    fill: @theme.background,
+    stroke: {@opts[:border], {@theme.highlight, 150}},
     translate: @scroll_bar_background_pos,
     input: [:cursor_button]
 %>
@@ -13,7 +13,7 @@
     {@scroll_bar_drag_control_width, @scroll_bar_drag_control_height, @radius},
     id: :scroll_bar_slider_drag_control,
     translate: @scroll_bar_drag_control_pos,
-    fill: @opts[:theme].background,
+    fill: @theme.surface_secondary,
     input: [:cursor_button]
 %>
 
@@ -22,7 +22,7 @@
     id: :scroll_button_1,
     hidden: not @opts[:show_buttons],
     translate: @scroll_button_1_pos,
-    fill: @opts[:theme].background,
+    fill: @theme.surface,
     input: [:cursor_button]
 %>
 <%= component FloUI.Icon,
@@ -37,7 +37,7 @@
     id: :scroll_button_2,
     hidden: not @opts[:show_buttons],
     translate: @scroll_button_2_pos,
-    fill: @opts[:theme].background,
+    fill: @theme.surface,
     input: [:cursor_button]
 %>
 <%= component FloUI.Icon,

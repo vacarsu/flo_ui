@@ -17,14 +17,12 @@
         vertical: %{
             show: true,
             show_buttons: true,
-            thickness: 15,
-            theme: Scenic.Themes.preset({:flo_ui, :scrollbar})
+            thickness: 15
         },
         horizontal: %{
             show: true,
             show_buttons: true,
-            thickness: 15,
-            theme: Scenic.Themes.preset({:flo_ui, :scrollbar})
+            thickness: 15
         }
     } do %>
 

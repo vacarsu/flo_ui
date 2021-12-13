@@ -70,6 +70,7 @@ defmodule FloUI.Scrollable.ScrollBar do
     scene =
       assign(scene,
         id: opts[:id] || @default_id,
+        theme: opts[:theme] |> Scenic.Themes.normalize(),
         thickness: opts[:thickness] || @default_thickness,
         radius: opts[:radius] || @default_radius,
         width: Direction.as_horizontal(data.width),

@@ -51,7 +51,6 @@ defmodule FloUI.Dropdown do
   @default_scroll_bar %{
     show: true,
     show_buttons: true,
-    theme: Scenic.Themes.preset({:flo_ui, :scrollbar}),
     thickness: 15
   }
 

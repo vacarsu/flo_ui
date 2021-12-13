@@ -94,59 +94,71 @@ defmodule FloUI.Themes do
   @scrollbar Map.merge(@base, %{
     text: :black,
     background: :grey,
-    border: :flo_medium_grey,
-    active: :flo_dark_grey,
-    active_text: :white
+    border: :neutral_400,
+    active: :neutral_600,
+    active_text: :white,
+    highlight: :neutral_200,
+    surface: :neutral_300,
+    surface_primary: :steel_blue,
+    surface_secondary: :neutral_100
   })
 
   @blue_light Map.merge(@light, %{
     surface_primary: :blue_800,
     thumb: :blue_800,
-    focus: :blue_900
+    focus: :blue_900,
+    highlight: :blue_700
   })
 
   @blue_dark Map.merge(@dark, %{
     surface_primary: :blue_800,
     thumb: :blue_800,
-    focus: :blue_900
+    focus: :blue_900,
+    highlight: :blue_700
   })
 
   @red_light Map.merge(@light, %{
     active_text: :white,
     surface_primary: :red_800,
     thumb: :red_800,
-    focus: :red_900
+    focus: :red_900,
+    highlight: :red_600
   })
 
   @red_dark Map.merge(@dark, %{
     active_text: :white,
     surface_primary: :red_800,
     thumb: :red_800,
-    focus: :red_900
+    focus: :red_900,
+    highlight: :red_600
   })
 
   @purple_light Map.merge(@light, %{
     surface_primary: :purple_600,
     thumb: :purple_600,
-    focus: :purple_700
+    focus: :purple_700,
+    highlight: :purple_500
   })
 
   @purple_dark Map.merge(@dark, %{
     surface_primary: :purple_600,
     thumb: :purple_600,
-    focus: :purple_700
+    focus: :purple_700,
+    highlight: :purple_500
   })
 
   @orange_light Map.merge(@light, %{
     surface_primary: :orange_300,
     thumb: :orange_300,
-    focus: :orange_400
+    focus: :orange_400,
+    highlight: :orange_200
   })
 
   @orange_dark Map.merge(@dark, %{
     surface_primary: :orange_300,
     thumb: :orange_300,
-    focus: :orange_400
+    focus: :orange_400,
+    highlight: :orange_200
   })
 
   @teal_light Map.merge(@light, %{
@@ -167,42 +179,48 @@ defmodule FloUI.Themes do
     active_text: :black,
     surface_primary: :green_500,
     thumb: :green_400,
-    focus: :green_500
+    focus: :green_500,
+    highlight: :green_300
   })
 
   @green_dark Map.merge(@dark, %{
     active_text: :black,
     surface_primary: :green_500,
     thumb: :green_400,
-    focus: :green_500
+    focus: :green_500,
+    highlight: :green_300
   })
 
   @emerald_light Map.merge(@light, %{
     active_text: :black,
     surface_primary: :emerald_500,
     thumb: :emerald_400,
-    focus: :emerald_500
+    focus: :emerald_500,
+    highlight: :emerald_300
   })
 
   @emerald_dark Map.merge(@dark, %{
     active_text: :black,
     surface_primary: :emerald_500,
     thumb: :emerald_400,
-    focus: :emerald_500
+    focus: :emerald_500,
+    highlight: :emerald_300
   })
 
   @yellow_light Map.merge(@light, %{
     active_text: :black,
     surface_primary: :yellow_300,
     thumb: :yellow_300,
-    focus: :yellow_400
+    focus: :yellow_400,
+    highlight: :yellow_200
   })
 
   @yellow_dark Map.merge(@dark, %{
     active_text: :black,
     surface_primary: :yellow_300,
     thumb: :yellow_300,
-    focus: :yellow_400
+    focus: :yellow_400,
+    highlight: :yellow_200
   })
 
   @themes %{

@@ -91,6 +91,10 @@ defmodule FloUI.Scrollable.Container do
     {frame_width, frame_height} = data.frame
     {frame_x, frame_y} = opts[:translate] || @default_position
     scroll_position = Map.get(data, :scroll_position, {0, 0})
+    theme =
+      opts[:theme] || {:flo_ui, :scrollbar}
+      |> Scenic.Themes.normalize()
+
     scroll_bars =
       case opts[:scroll_bars] do
         nil ->
@@ -104,21 +108,21 @@ defmodule FloUI.Scrollable.Container do
               show_buttons: Map.get(vertical, :show_buttons, true),
               thickness: Map.get(vertical, :thickness, 15),
               radius: Map.get(vertical, :radius, 3),
-              theme: Map.get(vertical, :theme, Scenic.Themes.preset({:flo_ui, :scrollbar}))
+              theme: Map.get(vertical, :theme, theme)
             },
             horizontal: %{
               show: Map.get(horizontal, :show, true),
               show_buttons: Map.get(horizontal, :show_buttons, true),
               thickness: Map.get(horizontal, :thickness, 15),
               radius: Map.get(horizontal, :radius, 3),
-              theme: Map.get(horizontal, :theme, Scenic.Themes.preset({:flo_ui, :scrollbar}))
+              theme: Map.get(horizontal, :theme, theme)
             }
           }
       end
 
     assign(scene,
       id: opts[:id] || :scrollable,
-      theme: opts[:theme] || Scenic.Themes.preset({:flo_ui, :scrollbar}),
+      theme: theme,
       frame: %{x: frame_x, y: frame_y, width: frame_width, height: frame_height},
       content: %{x: 0, y: 0, width: content_width, height: content_height},
       scroll_position: scroll_position,

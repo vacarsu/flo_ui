@@ -27,7 +27,7 @@ defmodule FloUI.DropdownController do
 
   defp get_border_color(scene) do
     case scene.assigns.open? do
-      true -> {1, {scene.assigns.theme.focus, 150}}
+      true -> {1, {scene.assigns.theme.highlight, 150}}
       false -> {1, {scene.assigns.theme.border, 150}}
     end
   end

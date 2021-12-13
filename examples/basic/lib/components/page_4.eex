@@ -14,7 +14,6 @@
     scroll_bar: %{
         show: true,
         show_buttons: false,
-        theme: Scenic.Themes.preset({:flo_ui, :scrollbar}),
         radius: 30,
         thickness: 5
     }
