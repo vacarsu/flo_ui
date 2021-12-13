@@ -2,14 +2,14 @@
 
 <%= component Scenic.Primitive.Rectangle,
     {@width, @height},
-    id: :box,
+    id: :bg,
     input: [:cursor_button, :cursor_pos],
-    fill: if(@selected or @hovered, do: @theme.surface_primary, else: @theme.surface)
+    fill: if(@selected, do: @theme.focus, else: @theme.surface)
 %>
 
 <%= component Scenic.Primitive.Text,
     @label,
     id: :text,
-    fill: if(@selected or @hovered, do: @theme.active_text, else: @theme.text),
+    fill: if(@selected, do: @theme.active_text, else: @theme.text),
     translate: {15, 25}
 %>

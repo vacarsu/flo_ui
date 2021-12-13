@@ -16,11 +16,9 @@ defmodule FloUI.Dropdown.Item do
 
   defcomponent(:dropdown_item, :tuple)
 
-  watch([:hovered])
-
-  # use_effect [assigns: [hovered: :any]], [
-  #   run: [:on_hovered_change]
-  # ]
+  use_effect [assigns: [hovered: :any]], [
+    run: [:on_hovered_change]
+  ]
 
   use_effect [assigns: [selected: :any]], [
     run: [:on_selected_change]

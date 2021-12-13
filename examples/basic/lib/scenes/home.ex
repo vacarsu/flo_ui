@@ -36,6 +36,8 @@ defmodule Basic.Scene.Home do
         {{"teal dark", {:flo_ui, :teal_dark}}, :teal_dark},
         {{"green light", {:flo_ui, :green_light}}, :green_light},
         {{"green dark", {:flo_ui, :green_dark}}, :green_dark},
+        {{"emerald light", {:flo_ui, :emerald_light}}, :emerald_light},
+        {{"emerald dark", {:flo_ui, :emerald_dark}}, :emerald_dark},
         {{"yellow light", {:flo_ui, :yellow_light}}, :yellow_light},
         {{"yellow dark", {:flo_ui, :yellow_dark}}, :yellow_dark}
       ]
