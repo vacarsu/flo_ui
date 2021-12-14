@@ -44,12 +44,18 @@ defmodule FloUI.Themes do
   {:flo_ui, :red_dark}
   {:flo_ui, :purple_light}
   {:flo_ui, :purple_dark}
+  {:flo_ui, :amber_light}
+  {:flo_ui, :amber_dark}
   {:flo_ui, :orange_light}
   {:flo_ui, :orange_dark}
   {:flo_ui, :teal_light}
   {:flo_ui, :teal_dark}
   {:flo_ui, :green_light}
   {:flo_ui, :green_dark}
+  {:flo_ui, :cyan_light}
+  {:flo_ui, :cyan_dark}
+  {:flo_ui, :sky_light}
+  {:flo_ui, :sky_dark}
   {:flo_ui, :emerald_light}
   {:flo_ui, :emerald_dark}
   {:flo_ui, :yellow_light}
@@ -85,10 +91,10 @@ defmodule FloUI.Themes do
   @light Map.merge(@base, %{
     text: :black,
     active_text: :white,
-    background: :neutral_200,
-    surface: :neutral_300,
+    background: :neutral_500,
+    surface: :neutral_400,
     surface_primary: :steel_blue,
-    surface_secondary: :neutral_100
+    surface_secondary: :neutral_300
   })
 
   @scrollbar Map.merge(@base, %{
@@ -147,6 +153,20 @@ defmodule FloUI.Themes do
     highlight: :purple_500
   })
 
+  @amber_light Map.merge(@light, %{
+    surface_primary: :amber_300,
+    thumb: :amber_300,
+    focus: :amber_400,
+    highlight: :amber_200
+  })
+
+  @amber_dark Map.merge(@dark, %{
+    surface_primary: :amber_300,
+    thumb: :amber_300,
+    focus: :amber_400,
+    highlight: :amber_200
+  })
+
   @orange_light Map.merge(@light, %{
     surface_primary: :orange_300,
     thumb: :orange_300,
@@ -189,6 +209,38 @@ defmodule FloUI.Themes do
     thumb: :green_400,
     focus: :green_500,
     highlight: :green_300
+  })
+
+  @cyan_light Map.merge(@light, %{
+    active_text: :black,
+    surface_primary: :cyan_500,
+    thumb: :cyan_400,
+    focus: :cyan_500,
+    highlight: :cyan_300
+  })
+
+  @cyan_dark Map.merge(@dark, %{
+    active_text: :black,
+    surface_primary: :cyan_500,
+    thumb: :cyan_400,
+    focus: :cyan_500,
+    highlight: :cyan_300
+  })
+
+  @sky_light Map.merge(@light, %{
+    active_text: :black,
+    surface_primary: :sky_500,
+    thumb: :sky_400,
+    focus: :sky_500,
+    highlight: :sky_300
+  })
+
+  @sky_dark Map.merge(@dark, %{
+    active_text: :black,
+    surface_primary: :sky_500,
+    thumb: :sky_400,
+    focus: :sky_500,
+    highlight: :sky_300
   })
 
   @emerald_light Map.merge(@light, %{
@@ -234,12 +286,18 @@ defmodule FloUI.Themes do
     red_dark: @red_dark,
     purple_light: @purple_light,
     purple_dark: @purple_dark,
+    amber_light: @amber_light,
+    amber_dark: @amber_dark,
     orange_light: @orange_light,
     orange_dark: @orange_dark,
     teal_light: @teal_light,
     teal_dark: @teal_dark,
     green_light: @green_light,
     green_dark: @green_dark,
+    cyan_light: @cyan_light,
+    cyan_dark: @cyan_dark,
+    sky_light: @sky_light,
+    sky_dark: @sky_dark,
     emerald_light: @emerald_light,
     emerald_dark: @emerald_dark,
     yellow_light: @yellow_light,
