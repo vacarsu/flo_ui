@@ -27,12 +27,35 @@ defmodule FloUI.Scrollable.ScrollBarController do
     Scenic.Scene.assign(scene, graph: graph)
   end
 
-  defp get_border_color(scene) do
-    case scene.assigns.scroll_bar_state.scrolling do
-      :dragging -> scene.assigns.theme.highlight
-      :scrolling -> scene.assigns.theme.highlight
-      :wheel -> scene.assigns.theme.highlight
-      _ -> scene.assigns.theme.border
+  defp get_border_color(%{assigns: %{direction: :vertical, position_cap: position_cap}} = scene) do
+    {_, y} = local_scroll_position_vector2(scene)
+    {_, min} = position_cap.min
+    {_, max} = position_cap.max
+    if y <= min or y >= max do
+      scene.assigns.theme.border
+    else
+      case scene.assigns.scroll_bar_state.scrolling do
+        :dragging -> scene.assigns.theme.highlight
+        :scrolling -> scene.assigns.theme.highlight
+        :wheel -> scene.assigns.theme.highlight
+        _ -> scene.assigns.theme.border
+      end
+    end
+  end
+
+  defp get_border_color(%{assigns: %{direction: :horizontal, position_cap: position_cap}} = scene) do
+    {x, _} = local_scroll_position_vector2(scene)
+    {min, _} = position_cap.min
+    {max, _} = position_cap.max
+    if x <= min or x >= max do
+      scene.assigns.theme.border
+    else
+      case scene.assigns.scroll_bar_state.scrolling do
+        :dragging -> scene.assigns.theme.highlight
+        :scrolling -> scene.assigns.theme.highlight
+        :wheel -> scene.assigns.theme.highlight
+        _ -> scene.assigns.theme.border
+      end
     end
   end
 

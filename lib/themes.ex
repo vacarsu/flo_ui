@@ -85,16 +85,20 @@ defmodule FloUI.Themes do
     background: :neutral_800,
     surface: :neutral_600,
     surface_primary: :steel_blue,
-    surface_secondary: :neutral_500
+    surface_secondary: :neutral_500,
+    scrollbar_surface: :neutral_700,
+    scrollbar_background: :neutral_900
   })
 
   @light Map.merge(@base, %{
     text: :black,
     active_text: :white,
-    background: :neutral_500,
-    surface: :neutral_400,
+    background: :neutral_100,
+    surface: :neutral_300,
     surface_primary: :steel_blue,
-    surface_secondary: :neutral_300
+    surface_secondary: :neutral_200,
+    scrollbar_surface: :neutral_400,
+    scrollbar_background: :neutral_300
   })
 
   @scrollbar Map.merge(@base, %{
@@ -106,7 +110,9 @@ defmodule FloUI.Themes do
     highlight: :neutral_200,
     surface: :neutral_300,
     surface_primary: :steel_blue,
-    surface_secondary: :neutral_100
+    surface_secondary: :neutral_100,
+    scrollbar_surface: :neutral_400,
+    scrollbar_background: :neutral_900
   })
 
   @blue_light Map.merge(@light, %{
@@ -304,7 +310,7 @@ defmodule FloUI.Themes do
     yellow_dark: @yellow_dark
   }
 
-  @schema [:active_text, :surface, :surface_primary, :surface_secondary]
+  @schema [:active_text, :surface, :surface_primary, :surface_secondary, :scrollbar_surface, :scrollbar_background]
 
   @lib [name: :flo_ui, themes: @themes, schema: @schema, palette: FloUI.Palette.get]
 

@@ -69,14 +69,14 @@ defmodule FloUI.Scrollable.Container do
     show_buttons: false,
     thickness: 15,
     radius: 3,
-    theme: Scenic.Themes.preset({:flo_ui, :scrollbar})
+    theme: Scenic.Themes.preset({:flo_ui, :dark})
   }
   @default_vertical_scroll_bar %{
     show: true,
     show_buttons: true,
     thickness: 15,
     radius: 3,
-    theme: Scenic.Themes.preset({:flo_ui, :scrollbar})
+    theme: Scenic.Themes.preset({:flo_ui, :dark})
   }
   @default_position {0, 0}
   @default_fps 30
@@ -92,7 +92,7 @@ defmodule FloUI.Scrollable.Container do
     {frame_x, frame_y} = opts[:translate] || @default_position
     scroll_position = Map.get(data, :scroll_position, {0, 0})
     theme =
-      opts[:theme] || {:flo_ui, :scrollbar}
+      opts[:theme] || {:flo_ui, :dark}
       |> Scenic.Themes.normalize()
 
     scroll_bars =

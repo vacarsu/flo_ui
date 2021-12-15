@@ -45,16 +45,10 @@
         vertical: @scroll_bar
     }
 do %>
-    <%= layout width: @frame_width, height: @frame_height, translate: {0, 0} do %>
-        <%= for {_, key} = item <- @items do %>
-            <%= component FloUI.Dropdown.Item,
-                item,
-                id: key,
-                selected: @selected == key,
-                width: @frame_width
-            %>
-        <% end %>
-    <% end %>
+    <%= component FloUI.Dropdown.Items,
+        {@items, @selected},
+        theme: @theme
+    %>
 <% end %>
 
 <%= primitive Scenic.Primitive.Text,
