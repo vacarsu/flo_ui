@@ -97,8 +97,6 @@ defmodule FloUI.Scrollable.ScrollableContainerController do
   end
 
   def render_children(g, children) do
-    Enum.reduce(children, g, fn child, g ->
-      g |> child[:module].add_to_graph(child[:data], child[:opts])
-    end)
+    SnapFramework.Engine.Builder.build_graph(children, g)
   end
 end
