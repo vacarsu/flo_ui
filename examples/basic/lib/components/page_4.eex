@@ -12,7 +12,6 @@
     id: :scroll_dropdown,
     translate: {5, 0},
     scroll_bar: %{
-        show: true,
         show_buttons: false,
         radius: 30,
         thickness: 5

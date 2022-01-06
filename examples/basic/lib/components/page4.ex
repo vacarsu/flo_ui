@@ -9,11 +9,7 @@ defmodule Basic.Component.Page4 do
           {{"item", :select}, :select},
           {{"Item 1 fefuewhfluihjdfhdjd", "Item 1"}, :item_1},
           {{"Item 2", "Item 2"}, :item_2},
-          {{"Item 3", "Item 3"}, :item_3},
-          {{"Item 4", "Item 4"}, :item_4},
-          {{"Item 5", "Item 5"}, :item_5},
-          {{"Item 6", "Item 6"}, :item_6},
-          {{"Item 7", "Item 7"}, :item_7}
+          {{"Item 3", "Item 3"}, :item_3}
         ],
         :select
       },

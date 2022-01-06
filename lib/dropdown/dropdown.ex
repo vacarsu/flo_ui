@@ -79,7 +79,7 @@ defmodule FloUI.Dropdown do
     frame_height = get_frame_height(data, opts)
     content_height = get_content_height(items)
     scroll_bar = opts[:scroll_bar] || @default_scroll_bar
-    show_vertical_scroll = content_height > frame_height and scroll_bar.show
+    show_vertical_scroll = scroll_bar[:show] || true
 
     assign(scene,
       items: items,
@@ -87,10 +87,10 @@ defmodule FloUI.Dropdown do
       selected_key: nil,
       selected: selected,
       open?: false,
-      button_width: if(show_vertical_scroll, do: width + 20, else: width),
+      button_width: if(show_vertical_scroll, do: width, else: width),
       button_height: opts[:height] || @default_height,
       background_height: frame_height + 20,
-      frame_width: if(show_vertical_scroll, do: width, else: width),
+      frame_width: if(show_vertical_scroll, do: width - scroll_bar[:thickness] - 5, else: width - 2),
       frame_height: frame_height,
       content_height: content_height,
       scroll_bar: scroll_bar,
