@@ -51,6 +51,7 @@ defmodule FloUI.Tab do
     run: [:on_selected_change]
   )
 
+  @impl true
   def setup(%{assigns: %{data: {label, cmp}, hovered?: hovered, opts: opts}} = scene) do
     # request_input(scene, [:cursor_pos])
     if opts[:selected?], do: send_parent(scene, {:tab_pid, self()})
@@ -67,10 +68,17 @@ defmodule FloUI.Tab do
     |> get_theme
   end
 
+  @impl true
   def bounds({label, _cmp}, _opts) do
     {0.0, 0.0, FontMetricsHelper.get_text_width(label, 20), 40}
   end
 
+  @impl true
+  def handle_get(_from, scene) do
+    {:reply, scene, scene}
+  end
+
+  @impl true
   def process_input({:cursor_pos, _}, :bg, scene) do
     capture_input(scene, [:cursor_pos])
     {:noreply, assign(scene, hovered?: true)}
@@ -90,6 +98,7 @@ defmodule FloUI.Tab do
     {:noreply, scene}
   end
 
+  @impl true
   def process_call({:put, value}, _, scene) do
     {:reply, :ok, assign(scene, selected?: value)}
   end

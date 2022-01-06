@@ -21,8 +21,14 @@ defmodule FloUI.Modal.Background do
 
   defcomponent(:background, :any)
 
+  @impl true
   def setup(scene) do
     scene |> get_theme
+  end
+
+  @impl true
+  def handle_get(_from, scene) do
+    {:reply, scene, scene}
   end
 
   def get_theme(%{assigns: %{opts: opts}} = scene) do

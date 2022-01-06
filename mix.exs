@@ -15,9 +15,13 @@ defmodule FloUI.MixProject do
       source_url: @github,
       docs: docs(),
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      elixirc_paths: elixirc_paths(Mix.env())
     ]
   end
+
+  defp elixirc_paths(:test), do: ["lib", "test/support"]
+  defp elixirc_paths(_), do: ["lib"]
 
   # Run "mix help compile.app" to learn about applications.
   def application do
@@ -29,11 +33,12 @@ defmodule FloUI.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:ex_doc, "~> 0.24", only: :dev, runtime: false},
       {:scenic, git: "https://github.com/vacarsu/scenic.git", override: true},
       {:truetype_metrics, "~> 0.5"},
       {:dialyxir, "~> 1.1", only: :dev, runtime: false},
-      {:snap_framework, "~> 0.1.0-beta"}
+      {:snap_framework, "~> 0.1.0-beta"},
+
+      {:ex_doc, "~> 0.24", only: :dev, runtime: false}
     ]
   end
 

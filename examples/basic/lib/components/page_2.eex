@@ -6,7 +6,7 @@
     translate: {20, 80}
 %>
 
-<%= component FloUI.Component.TextInput, @input_value, show_clear: true, id: :text_input, translate: {20, 200} %>
+<%= component FloUI.TextInput, @input_value, show_clear: true, id: :text_input, translate: {20, 200} %>
 
 <%= layout padding: 10, width: 70 * 3, height: 50, translate: {20, 120} do %>
     <%= component FloUI.Icon.Button, "Close", id: :icon_button do %>

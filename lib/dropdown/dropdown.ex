@@ -2,7 +2,7 @@ defmodule FloUI.Dropdown do
   @moduledoc """
   ## Usage in SnapFramework
 
-  Dropdown component that scrolls. You can pass two separate themes as options. one for the dropdown, and one for the scroll bar.
+  Dropdown component that scrolls. You can pass two separate themes as options. One for the dropdown, and one for the scroll bar.
 
   Options
   ``` elixir
@@ -106,6 +106,11 @@ defmodule FloUI.Dropdown do
   end
 
   @impl true
+  def handle_get(_from, scene) do
+    {:reply, scene, scene}
+  end
+
+  @impl true
   def process_event({:value_changed, {{label, value}, key}}, _, scene) do
     {:cont, {:value_changed, scene.assigns.opts[:id], value}, assign(scene, selected_label: label, selected_key: key, open?: false)}
   end
@@ -154,8 +159,9 @@ defmodule FloUI.Dropdown do
 
   def get_theme(%{assigns: %{opts: opts}} = scene) do
     schema = FloUI.Themes.get_schema()
-    theme = Scenic.Themes.normalize(opts[:theme]) || Scenic.Themes.normalize({:flo_ui, :dark})
-    Scenic.Themes.validate(theme, schema)
-    assign(scene, theme: theme)
+    case Scenic.Themes.validate(opts[:theme], schema) do
+      {:ok, theme} -> assign(scene, theme: theme)
+      {:error, _msg} -> assign(scene, theme: Scenic.Themes.normalize({:flo_ui, :dark}))
+    end
   end
 end

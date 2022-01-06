@@ -1,5 +1,5 @@
 defmodule Basic.Component.Page2Controller do
-  import FloUI.Component.TextInput, only: [text_input: 3]
+  import FloUI.TextInput, only: [text_input: 3]
   alias Scenic.Graph
 
   def on_input_change(scene) do

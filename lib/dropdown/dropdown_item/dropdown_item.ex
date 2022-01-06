@@ -77,8 +77,9 @@ defmodule FloUI.Dropdown.Item do
 
   def get_theme(%{assigns: %{opts: opts}} = scene) do
     schema = FloUI.Themes.get_schema()
-    theme = Scenic.Themes.normalize(opts[:theme]) || Scenic.Themes.normalize({:flo_ui, :dark})
-    Scenic.Themes.validate(theme, schema)
-    assign(scene, theme: theme)
+    case Scenic.Themes.validate(opts[:theme], schema) do
+      {:ok, theme} -> assign(scene, theme: theme)
+      {:error, _msg} -> assign(scene, theme: Scenic.Themes.normalize({:flo_ui, :dark}))
+    end
   end
 end

@@ -41,6 +41,7 @@ defmodule FloUI.Modal.Layout do
 
   defcomponent(:layout, :string)
 
+  @impl true
   def setup(%{assigns: %{opts: opts}} = scene) do
     assign(scene,
       width: opts[:width] || 500,
@@ -50,6 +51,12 @@ defmodule FloUI.Modal.Layout do
     )
   end
 
+  @impl true
+  def handle_get(_from, scene) do
+    {:reply, scene, scene}
+  end
+
+  @impl true
   def process_event({:click, :btn_check}, _from, scene) do
     send_parent_event(scene, :modal_done)
     {:noreply, scene}

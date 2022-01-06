@@ -21,9 +21,15 @@ defmodule FloUI.Icon do
     assigns: [],
     opts: []
 
-  defcomponent(:icon, :any)
+  defcomponent(:icon, :tuple)
 
+  @impl true
   def bounds(_data, _opts) do
     {0.0, 0.0, 48, 48}
+  end
+
+  @impl true
+  def handle_get(_from, scene) do
+    {:reply, scene, scene}
   end
 end

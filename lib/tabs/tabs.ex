@@ -46,14 +46,22 @@ defmodule FloUI.Tabs do
     run: [:on_tab_change]
   )
 
+  @impl true
   def setup(%{assigns: %{data: {active_tab, tabs}}} = scene) do
     scene |> assign(active_tab: active_tab, tabs: tabs)
   end
 
+  @impl true
+  def handle_get(_from, scene) do
+    {:reply, scene, scene}
+  end
+
+  @impl true
   def process_info({:tab_pid, pid}, scene) do
     {:noreply, assign(scene, active_pid: pid)}
   end
 
+  @impl true
   def process_event(
         {:select_tab, cmp},
         pid,

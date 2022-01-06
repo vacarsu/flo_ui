@@ -18,7 +18,7 @@ defmodule FloUI.Dropdown.Items do
   """
 
   # @default_max_height 300
-  @default_theme Scenic.Themes.preset({:flo_ui, :base})
+  # @default_theme Scenic.Themes.preset({:flo_ui, :base})
 
   use SnapFramework.Component,
     name: :dropdown_items,
@@ -30,15 +30,14 @@ defmodule FloUI.Dropdown.Items do
   defcomponent(:dropdown_items, :tuple)
 
   @impl true
-  def setup(%{assigns: %{data: {items, selected}, opts: opts}} = scene) do
+  def setup(%{assigns: %{data: {items, selected}}} = scene) do
     assign(scene,
       items: items,
       selected: selected,
       width: get_width(items),
-      height: get_height(items),
-      # max_height: opts[:max_height] || @default_max_height,
-      theme: opts[:theme] || @default_theme
+      height: get_height(items)
     )
+    |> get_theme
   end
 
   @impl true
@@ -71,6 +70,14 @@ defmodule FloUI.Dropdown.Items do
 
   #   if(height > max_height, do: max_height, else: height)
   # end
+
+  def get_theme(%{assigns: %{opts: opts}} = scene) do
+    schema = FloUI.Themes.get_schema()
+    case Scenic.Themes.validate(opts[:theme], schema) do
+      {:ok, theme} -> assign(scene, theme: theme)
+      {:error, _msg} -> assign(scene, theme: Scenic.Themes.normalize({:flo_ui, :dark}))
+    end
+  end
 
   @spec get_height(list) :: number
   def get_height(items) do

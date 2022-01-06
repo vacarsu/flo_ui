@@ -114,6 +114,11 @@ defmodule FloUI.Scrollable.ScrollBar do
   end
 
   @impl true
+  def handle_get(_from, scene) do
+    {:reply, scene, scene}
+  end
+
+  @impl true
   def process_update(data, _opts, scene) do
     {:noreply,
      assign(scene,
@@ -130,7 +135,7 @@ defmodule FloUI.Scrollable.ScrollBar do
       ) do
     case action do
       0 ->
-        unrequest_input(scene, [:cursor_pos, :cursor_button])
+        release_input(scene, [:cursor_pos, :cursor_button])
         scrolling = :idle
 
       {_, content_start} = Direction.from_vector_2(scroll_bar_state.drag_state.drag_start_content_position, direction)
@@ -165,7 +170,7 @@ defmodule FloUI.Scrollable.ScrollBar do
         {:noreply, scene}
 
       1 ->
-        request_input(scene, [:cursor_pos, :cursor_button])
+        capture_input(scene, [:cursor_pos, :cursor_button])
         scrolling = :dragging
 
         drag_state =

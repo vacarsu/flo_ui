@@ -68,15 +68,13 @@ defmodule FloUI.Scrollable.Container do
     show: false,
     show_buttons: false,
     thickness: 15,
-    radius: 3,
-    theme: Scenic.Themes.preset({:flo_ui, :dark})
+    radius: 3
   }
   @default_vertical_scroll_bar %{
     show: true,
     show_buttons: true,
     thickness: 15,
-    radius: 3,
-    theme: Scenic.Themes.preset({:flo_ui, :dark})
+    radius: 3
   }
   @default_position {0, 0}
   @default_fps 30
@@ -91,9 +89,7 @@ defmodule FloUI.Scrollable.Container do
     {frame_width, frame_height} = data.frame
     {frame_x, frame_y} = opts[:translate] || @default_position
     scroll_position = Map.get(data, :scroll_position, {0, 0})
-    theme =
-      opts[:theme] || {:flo_ui, :dark}
-      |> Scenic.Themes.normalize()
+    theme = get_theme(opts[:theme])
 
     scroll_bars =
       case opts[:scroll_bars] do
@@ -166,6 +162,11 @@ defmodule FloUI.Scrollable.Container do
   @impl true
   def bounds(%{frame: {x, y}}, _opts) do
     {0.0, 0.0, x, y}
+  end
+
+  @impl true
+  def handle_get(_from, scene) do
+    {:reply, scene, scene}
   end
 
   @impl true
@@ -382,6 +383,14 @@ defmodule FloUI.Scrollable.Container do
 
       _ ->
         {0, 0}
+    end
+  end
+
+  defp get_theme(theme) do
+    schema = FloUI.Themes.get_schema()
+    case Scenic.Themes.validate(theme, schema) do
+      {:ok, theme} -> Scenic.Themes.normalize(theme)
+      {:error, _msg} -> Scenic.Themes.normalize({:flo_ui, :dark})
     end
   end
 

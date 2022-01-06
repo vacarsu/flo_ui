@@ -15,6 +15,7 @@ defmodule FloUI.Modal.Header do
 
   defcomponent(:modal_header, :string)
 
+  @impl true
   def setup(%{assigns: %{opts: opts}} = scene) do
     assign(scene,
       width: opts[:width] || 500,
@@ -23,6 +24,11 @@ defmodule FloUI.Modal.Header do
       show_close: opts[:show_close] || false
     )
     |> get_theme
+  end
+
+  @impl true
+  def handle_get(_from, scene) do
+    {:reply, scene, scene}
   end
 
   def get_theme(%{assigns: %{opts: opts}} = scene) do

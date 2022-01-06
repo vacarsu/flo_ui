@@ -42,6 +42,11 @@ defmodule FloUI.SelectionList do
   end
 
   @impl true
+  def handle_get(_from, scene) do
+    {:reply, scene, scene}
+  end
+
+  @impl true
   def bounds({items, _selected}, opts) do
     {0.0, 0.0, opts[:width] || 500, length(items) * 50}
   end

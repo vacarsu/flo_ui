@@ -26,12 +26,13 @@ defmodule FloUI.Icon.Button do
       id: nil,
       icon: nil,
       label: nil,
+      pressed: false,
       showing_highlight: false,
       showing_tooltip: false
     ],
     opts: []
 
-  defcomponent(:icon_button, :any)
+  defcomponent(:icon_button, :string)
 
   watch([:children])
 
@@ -47,7 +48,7 @@ defmodule FloUI.Icon.Button do
   def setup(%{assigns: %{data: nil}} = scene) do
     scene
     |> assign(
-      id: scene.assigns.opts[:id] || nil,
+      id: scene.assigns.opts[:id] || nil
     )
     |> get_theme
   end
@@ -68,18 +69,28 @@ defmodule FloUI.Icon.Button do
   end
 
   @impl true
+  def handle_get(_from, scene) do
+    {:reply, scene, scene}
+  end
+
+  @impl true
   def process_update(data, opts, scene) do
     {:noreply, assign(scene, data: data, children: opts[:children], opts: opts)}
   end
 
   @impl true
   def process_input({:cursor_button, {:btn_left, 1, _, _}}, :btn, scene) do
-    {:noreply, scene}
+    capture_input(scene, [:cursor_button])
+    {:noreply, assign(scene, pressed: true)}
   end
 
-  def process_input({:cursor_button, {:btn_left, 0, _, _}}, :btn, scene) do
+  def process_input({:cursor_button, {:btn_left, 0, _, _}}, :btn, %{assigns: %{pressed: true}} = scene) do
     send_parent_event(scene, {:click, scene.assigns.id})
-    {:noreply, scene}
+    {:noreply, assign(scene, pressed: false)}
+  end
+
+  def process_input({:cursor_button, {:btn_left, 0, _, _}}, nil, scene) do
+    {:noreply, assign(scene, pressed: false)}
   end
 
   def process_input({:cursor_pos, _}, :btn, %{assigns: %{label: nil}} = scene) do

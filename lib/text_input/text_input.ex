@@ -1,4 +1,4 @@
-defmodule FloUI.Component.TextInput do
+defmodule FloUI.TextInput do
   alias Scenic.Graph
 
   @moduledoc """
@@ -38,6 +38,7 @@ defmodule FloUI.Component.TextInput do
     run: [:on_clear_hidden_change]
   )
 
+  @impl true
   def setup(%{assigns: %{opts: opts}} = scene) do
     assign(scene,
       id: scene.assigns.opts[:id],
@@ -52,25 +53,31 @@ defmodule FloUI.Component.TextInput do
     )
   end
 
+  @impl true
   def bounds(_data, opts) do
     {0.0, 0.0, opts[:width] || opts[:w] || @default_width,
      opts[:height] || opts[:h] || @default_height}
   end
 
+  @impl true
+  def handle_get(_from, scene) do
+    {:reply, scene, scene}
+  end
+
+  @impl true
   def process_update(data, opts, scene) do
     {:noreply, assign(scene, data: data, value: data, opts: opts)}
   end
 
+  @impl true
   def process_event({:value_changed, :text_input, value}, _, %{assigns: %{id: id}} = scene) do
     {:cont, {:value_changed, id, value}, assign(scene, value: value)}
   end
 
   def process_event({:click, :btn_clear}, _, %{assigns: %{id: id}} = scene) do
-    Scenic.Scene.update_child(scene, :text_input, "", [])
-
     scene =
       scene
-      |> assign(data: "")
+      |> assign(data: "", value: "")
 
     {:cont, {:value_changed, id, ""}, scene}
   end

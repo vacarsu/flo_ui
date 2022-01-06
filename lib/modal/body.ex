@@ -15,12 +15,18 @@ defmodule FloUI.Modal.Body do
 
   defcomponent(:modal_body, :any)
 
+  @impl true
   def setup(%{assigns: %{opts: opts}} = scene) do
     assign(scene,
       width: opts[:width] || 500,
       height: opts[:height] || 500
     )
     |> get_theme
+  end
+
+  @impl true
+  def handle_get(_from, scene) do
+    {:reply, scene, scene}
   end
 
   def get_theme(%{assigns: %{opts: opts}} = scene) do

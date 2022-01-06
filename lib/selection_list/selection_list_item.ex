@@ -58,6 +58,11 @@ defmodule FloUI.SelectionListItem do
   end
 
   @impl true
+  def handle_get(_from, scene) do
+    {:reply, scene, scene}
+  end
+
+  @impl true
   def process_input({:cursor_pos, _}, :bg, scene) do
     capture_input(scene, :cursor_pos)
     {:noreply, assign(scene, hovered: true)}

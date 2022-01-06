@@ -1,6 +1,4 @@
 defmodule Basic.Component.Page2 do
-  import FloUI.Component.TextInput, only: [text_input: 3]
-
   use SnapFramework.Component,
     name: :page_2_scene,
     template: "lib/components/page_2.eex",
