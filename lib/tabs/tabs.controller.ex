@@ -28,7 +28,7 @@ defmodule FloUI.TabsController do
   def on_tab_to_enable_change(scene) do
     graph =
       scene.assigns.graph
-      |> Graph.modify(scene.assigns.tab_to_disable, &tab(&1, {scene.assigns.tab_to_disable, FloDcs.Component.Widgets}, disabled?: false))
+      |> Graph.modify(scene.assigns.tab_to_enable, &tab(&1, {scene.assigns.tab_to_enable, FloDcs.Component.Widgets}, disabled?: false))
 
     Scenic.Scene.assign(scene, graph: graph, tab_to_enable: nil)
   end
