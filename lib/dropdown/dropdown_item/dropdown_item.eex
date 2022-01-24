@@ -9,7 +9,7 @@
 
 <%= primitive Scenic.Primitive.Text,
     @label,
-    translate: {5, 30},
+    translate: {5, 28},
     id: :text,
     fill: if(@selected or @hovered, do: @theme.active_text, else: @theme.text)
 %>

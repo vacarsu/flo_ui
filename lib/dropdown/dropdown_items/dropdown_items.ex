@@ -31,18 +31,20 @@ defmodule FloUI.Dropdown.Items do
 
   @impl true
   def setup(%{assigns: %{data: {items, selected}}} = scene) do
+    scroll_bar_thickness = scene.assigns.opts[:scroll_bar_thickness] || 15
     assign(scene,
       items: items,
       selected: selected,
-      width: get_width(items),
+      width: get_width(items) - scroll_bar_thickness,
       height: get_height(items)
     )
     |> get_theme
   end
 
   @impl true
-  def bounds({items, _}, _opts) do
-    {0.0, 0.0, get_width(items), get_height(items)}
+  def bounds({items, _}, opts) do
+    scroll_bar_thickness = opts[:scroll_bar_thickness] || 15
+    {0.0, 0.0, get_width(items) - scroll_bar_thickness, get_height(items)}
   end
 
   @impl true

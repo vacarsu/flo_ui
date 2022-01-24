@@ -20,6 +20,7 @@
     translate: {400, 0},
     scroll_bar: %{
         show: true,
+        thickness: 15,
         show_buttons: false
     }
 %>

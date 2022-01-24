@@ -11,5 +11,5 @@
     @label,
     id: :text,
     fill: if(@selected, do: @theme.active_text, else: @theme.text),
-    translate: {15, 25}
+    translate: {15, 30}
 %>

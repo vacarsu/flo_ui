@@ -75,12 +75,12 @@ defmodule FloUI.Dropdown do
 
   @impl true
   def setup(%{assigns: %{data: {items, selected} = data, opts: opts}} = scene) do
-    width = get_width(data, opts)
     frame_height = get_frame_height(data, opts)
     content_height = get_content_height(items)
     scroll_bar = opts[:scroll_bar] || @default_scroll_bar
     scroll_bar_thickness = scroll_bar[:thickness] || @default_scroll_bar[:thickness]
     show_vertical_scroll = scroll_bar[:show]
+    width = get_width(data, Keyword.merge(opts, [scroll_bar_thickness: scroll_bar_thickness]))
 
     assign(scene,
       items: items,
@@ -88,11 +88,13 @@ defmodule FloUI.Dropdown do
       selected_key: nil,
       selected: selected,
       open?: false,
-      button_width: if(show_vertical_scroll, do: width, else: width - scroll_bar_thickness),
+      button_width: if(show_vertical_scroll, do: width + scroll_bar_thickness + 5, else: width),
       button_height: opts[:height] || @default_height,
       background_height: frame_height + 20,
-      frame_width: if(show_vertical_scroll, do: width - scroll_bar_thickness - 5, else: width - scroll_bar_thickness - 2),
+      scroll_bar_thickness: scroll_bar_thickness,
+      frame_width: width,
       frame_height: frame_height,
+      content_width: width,
       content_height: content_height,
       scroll_bar: scroll_bar,
       show_vertical_scroll: show_vertical_scroll

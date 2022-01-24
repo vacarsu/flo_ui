@@ -36,7 +36,7 @@
 <%= component FloUI.Scrollable.Container,
     %{
         frame: {@frame_width, @frame_height},
-        content: {@frame_width, @content_height}
+        content: {@content_width, @content_height}
     },
     id: :scroll_container,
     translate: {1, 60},
@@ -47,6 +47,7 @@
 do %>
     <%= component FloUI.Dropdown.Items,
         {@items, @selected},
+        scroll_bar_thickness: @scroll_bar_thickness,
         theme: @theme
     %>
 <% end %>
