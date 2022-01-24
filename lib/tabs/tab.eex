@@ -14,11 +14,10 @@
     fill: if @selected? or @hovered?, do: @theme.active_text, else: @theme.text
 %>
 
-<%= if @disabled? do %>
-  	<%= primitive Scenic.Primitive.Rectangle,
-    	{@width, 40},
-		id: :disabled_rect,
-		fill: {:black, 100},
-		input: [:cursor_button, :cursor_pos]
-	%>
-<% end %>
+<%= primitive Scenic.Primitive.Rectangle,
+	{@width, 40},
+	id: :disabled_rect,
+	fill: {:black, 100},
+	hidden: not @disabled?,
+	input: [:cursor_button, :cursor_pos]
+%>
