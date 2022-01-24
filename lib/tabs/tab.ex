@@ -36,6 +36,7 @@ defmodule FloUI.Tab do
       label: nil,
       cmp: nil,
       id: nil,
+      disabled?: false,
       selected?: false,
       hovered?: false
     ],
@@ -43,13 +44,15 @@ defmodule FloUI.Tab do
 
   defcomponent(:tab, :tuple)
 
-  use_effect([assigns: [hovered?: :any]],
-    run: [:on_hovered_change]
-  )
+  watch [:hovered?, :selected?, :disabled?]
 
-  use_effect([assigns: [selected?: :any]],
-    run: [:on_selected_change]
-  )
+  # use_effect([assigns: [hovered?: :any]],
+  #   run: [:on_hovered_change]
+  # )
+
+  # use_effect([assigns: [selected?: :any]],
+  #   run: [:on_selected_change]
+  # )
 
   @impl true
   def setup(%{assigns: %{data: {label, cmp}, hovered?: hovered, opts: opts}} = scene) do
@@ -62,6 +65,7 @@ defmodule FloUI.Tab do
       width: FontMetricsHelper.get_text_width(label, 20),
       cmp: cmp,
       id: opts[:id] || "",
+      disabled?: opts[:disabled?] || false,
       selected?: opts[:selected?] || false,
       hovered?: hovered
     )
@@ -79,23 +83,36 @@ defmodule FloUI.Tab do
   end
 
   @impl true
-  def process_input({:cursor_pos, _}, :bg, scene) do
+  def process_input({:cursor_pos, _}, :bg, %{assigns: %{disabled?: false}} = scene) do
     capture_input(scene, [:cursor_pos])
     {:noreply, assign(scene, hovered?: true)}
   end
 
-  def process_input({:cursor_pos, _}, _, scene) do
+  def process_input({:cursor_pos, _}, _, %{assigns: %{disabled?: false}} = scene) do
     release_input(scene)
     {:noreply, assign(scene, hovered?: false)}
   end
 
-  def process_input({:cursor_button, {:btn_left, 1, _, _}}, _, scene) do
+  def process_input({:cursor_button, {:btn_left, 1, _, _}}, _, %{assigns: %{disabled?: false}} = scene) do
     send_parent_event(scene, {:select_tab, scene.assigns.cmp})
     {:noreply, assign(scene, selected?: true)}
   end
 
   def process_input({:cursor_button, {:btn_left, 0, _, _}}, _, scene) do
     {:noreply, scene}
+  end
+
+  def process_input(_input, _, scene) do
+    {:noreply, scene}
+  end
+
+  @impl true
+  def process_info({:deselect, pid}, scene) do
+    if pid == self() do
+      {:noreply, assign(scene, selected?: false)}
+    else
+      {:noreply, scene}
+    end
   end
 
   @impl true

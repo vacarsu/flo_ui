@@ -1,10 +1,11 @@
 <%= graph font_size: 20 %>
 
-<%= component FloUI.Tabs, {@active_tab, @tabs}, id: :tabs do %>
+<%= component FloUI.Tabs, {@active_tab, @tabs_model}, id: :tabs do %>
     <%= layout padding: 0, width: 400, height: 60 do %>
-        <%= for {{label, cmp}, i} <- Enum.with_index @tabs do %>
+        <%= for {{label, cmp, disabled}, i} <- Enum.with_index @tabs do %>
             <%= component FloUI.Tab,
                 {label, cmp},
+                disabled?: disabled,
                 selected?: if(cmp === @active_tab, do: true, else: false),
                 id: :"#{i}_tab",
                 width: 100,

@@ -13,11 +13,17 @@ defmodule Basic.Scene.Home do
     assigns: [
       active_tab: Basic.Component.Page1,
       active_theme: {:flo_ui, :teal_dark},
-      tabs: [
+      tabs_model: [
         {"page 1", Basic.Component.Page1},
         {"page 2", Basic.Component.Page2},
         {"page 3", Basic.Component.Page3},
         {"page 4", Basic.Component.Page4}
+      ],
+      tabs: [
+        {"page 1", Basic.Component.Page1, false},
+        {"page 2", Basic.Component.Page2, true},
+        {"page 3", Basic.Component.Page3, false},
+        {"page 4", Basic.Component.Page4, false}
       ],
       theme_opts: [
         {{"base", {:flo_ui, :base}}, :base},

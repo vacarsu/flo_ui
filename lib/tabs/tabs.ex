@@ -68,7 +68,7 @@ defmodule FloUI.Tabs do
         %{assigns: %{active_tab: active_tab, active_pid: active_pid}} = scene
       )
       when cmp != active_tab do
-    GenServer.call(active_pid, {:put, false})
+    send_children(scene, {:deselect, active_pid})
 
     scene =
       scene

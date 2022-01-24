@@ -13,3 +13,12 @@
     translate: {5, 25},
     fill: if @selected? or @hovered?, do: @theme.active_text, else: @theme.text
 %>
+
+<%= if @disabled? do %>
+  	<%= primitive Scenic.Primitive.Rectangle,
+    	{@width, 40},
+		id: :disabled_rect,
+		fill: {:black, 100},
+		input: [:cursor_button, :cursor_pos]
+	%>
+<% end %>

@@ -1,8 +1,10 @@
 defmodule FloUI.TabsController do
   alias Scenic.Graph
   alias Scenic.Primitive
+  require Logger
 
   def on_tab_change(%{assigns: %{graph: graph, active_tab: active_tab, tabs: tabs}} = scene) do
+    Logger.debug(inspect tabs)
     graph =
       Enum.reduce(tabs, graph, fn {_label, cmp}, g ->
         if cmp == active_tab do
