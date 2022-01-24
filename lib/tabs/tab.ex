@@ -86,9 +86,9 @@ defmodule FloUI.Tab do
         width: FontMetricsHelper.get_text_width(label, 20),
         cmp: cmp,
         id: opts[:id] || "",
-        disabled?: opts[:disabled?] || false,
-        selected?: opts[:selected?] || false,
-        hovered?: opts[:hovered] || false
+        disabled?: opts[:disabled?] || scene.assigns.disabled?,
+        selected?: opts[:selected?] || scene.assigns.selected?,
+        hovered?: opts[:hovered] || scene.assigns.hovered?
       )
     }
   end
