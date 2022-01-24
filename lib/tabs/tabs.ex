@@ -34,6 +34,8 @@ defmodule FloUI.Tabs do
     template: "lib/tabs/tabs.eex",
     controller: FloUI.TabsController,
     assigns: [
+      tab_to_disable: nil,
+      tab_to_enable: nil,
       active_tab: nil,
       active_pid: nil,
       tabs: nil
