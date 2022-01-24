@@ -46,6 +46,14 @@ defmodule FloUI.Tabs do
     run: [:on_tab_change]
   )
 
+  use_effect([assigns: [tab_to_disable: :any]],
+    run: [:on_tab_to_disable_change]
+  )
+
+  use_effect([assigns: [tab_to_enable: :any]],
+    run: [:on_tab_to_enable_change]
+  )
+
   @impl true
   def setup(%{assigns: %{data: {active_tab, tabs}}} = scene) do
     scene |> assign(active_tab: active_tab, tabs: tabs)
@@ -59,6 +67,14 @@ defmodule FloUI.Tabs do
   @impl true
   def process_info({:tab_pid, pid}, scene) do
     {:noreply, assign(scene, active_pid: pid)}
+  end
+
+  def process_info({:disable_tab, id}, scene) do
+    {:noreply, assign(scene, tab_to_disable: id)}
+  end
+
+  def process_info({:enable_tab, id}, scene) do
+    {:noreply, assign(scene, tab_to_enable: id)}
   end
 
   @impl true
