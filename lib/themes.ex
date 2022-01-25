@@ -201,6 +201,16 @@ defmodule FloUI.Themes do
     highlight: :teal_400
   })
 
+  @teal_dark_scenic Map.merge(@teal_dark, %{
+    text: :white,
+    active_text: :white,
+    background: :neutral_800,
+    thumb: :teal_600,
+    active: :teal_600,
+    focus: :teal_600,
+    border: :neutral_200
+  })
+
   @green_light Map.merge(@light, %{
     active_text: :black,
     surface_primary: :green_500,
@@ -298,6 +308,7 @@ defmodule FloUI.Themes do
     orange_dark: @orange_dark,
     teal_light: @teal_light,
     teal_dark: @teal_dark,
+    teal_dark_scenic: @teal_dark_scenic,
     green_light: @green_light,
     green_dark: @green_dark,
     cyan_light: @cyan_light,
