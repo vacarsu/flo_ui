@@ -1,5 +1,4 @@
 defmodule FloUI.TabsController do
-  import FloUI.Tab, only: [tab: 3]
   alias Scenic.Graph
   alias Scenic.Primitive
   require Logger
@@ -15,21 +14,5 @@ defmodule FloUI.TabsController do
       end)
 
     Scenic.Scene.assign(scene, graph: graph)
-  end
-
-  def on_tab_to_disable_change(scene) do
-    graph =
-      scene.assigns.graph
-      |> Graph.modify(scene.assigns.tab_to_disable, &tab(&1, {scene.assigns.tab_to_disable, FloDcs.Component.Widgets}, disabled?: true))
-
-    Scenic.Scene.assign(scene, graph: graph, tab_to_disable: nil)
-  end
-
-  def on_tab_to_enable_change(scene) do
-    graph =
-      scene.assigns.graph
-      |> Graph.modify(scene.assigns.tab_to_enable, &tab(&1, {scene.assigns.tab_to_enable, FloDcs.Component.Widgets}, disabled?: false))
-
-    Scenic.Scene.assign(scene, graph: graph, tab_to_enable: nil)
   end
 end

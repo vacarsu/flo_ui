@@ -1,6 +1,7 @@
 defmodule FloUI.TabController do
   alias Scenic.Graph
   alias Scenic.Primitive
+  require Logger
 
   def on_hovered_change(scene) do
     graph =
@@ -16,6 +17,14 @@ defmodule FloUI.TabController do
       scene.assigns.graph
       |> Graph.modify(:bg, &Primitive.put_style(&1, :fill, get_bg_color(scene)))
       |> Graph.modify(:text, &Primitive.put_style(&1, :fill, get_text_color(scene)))
+
+    Scenic.Scene.assign(scene, graph: graph)
+  end
+
+  def on_disabled_change(scene) do
+    graph =
+      scene.assigns.graph
+      |> Graph.modify(:disabled_rect, &Primitive.put_style(&1, :hidden, not scene.assigns.disabled?))
 
     Scenic.Scene.assign(scene, graph: graph)
   end

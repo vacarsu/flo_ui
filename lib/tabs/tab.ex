@@ -44,15 +44,17 @@ defmodule FloUI.Tab do
 
   defcomponent(:tab, :tuple)
 
-  watch [:hovered?, :selected?, :disabled?]
+  use_effect([assigns: [hovered?: :any]],
+    run: [:on_hovered_change]
+  )
 
-  # use_effect([assigns: [hovered?: :any]],
-  #   run: [:on_hovered_change]
-  # )
+  use_effect([assigns: [selected?: :any]],
+    run: [:on_selected_change]
+  )
 
-  # use_effect([assigns: [selected?: :any]],
-  #   run: [:on_selected_change]
-  # )
+  use_effect([assigns: [disabled?: :any]],
+    run: [:on_disabled_change]
+  )
 
   @impl true
   def setup(%{assigns: %{data: {label, cmp}, opts: opts}} = scene) do
@@ -86,9 +88,8 @@ defmodule FloUI.Tab do
         width: FontMetricsHelper.get_text_width(label, 20),
         cmp: cmp,
         id: opts[:id] || "",
-        disabled?: opts[:disabled?] || scene.assigns.disabled?,
-        selected?: opts[:selected?] || scene.assigns.selected?,
-        hovered?: opts[:hovered] || scene.assigns.hovered?
+        opts: Keyword.merge(scene.assigns.opts, opts),
+        disabled?: opts[:disabled?] || false
       )
     }
   end
