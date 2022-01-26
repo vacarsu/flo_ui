@@ -8,8 +8,17 @@ defmodule Basic.Component.Page2 do
 
   defcomponent(:page_2, :any)
 
+  use_effect [assigns: [input_value: ""]], [
+    run: [:on_input_change]
+  ]
+
   def process_event({:value_changed, :text_input, value}, _, scene) do
     Logger.debug("input value changed #{inspect(value)}")
     {:noreply, assign(scene, input_value: value)}
+  end
+
+  def process_event({:cleared, :text_input, ""}, _, scene) do
+    Logger.debug("input cleared}")
+    {:noreply, assign(scene, input_value: "")}
   end
 end
