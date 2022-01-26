@@ -77,7 +77,7 @@ defmodule FloUI.TextInput do
   def process_event({:click, :btn_clear}, _, %{assigns: %{id: id}} = scene) do
     scene =
       scene
-      |> assign(value: "")
+      |> assign(data: "", value: "")
 
     {:cont, {:cleared, id, ""}, scene}
   end
