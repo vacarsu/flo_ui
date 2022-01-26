@@ -79,6 +79,6 @@ defmodule FloUI.TextInput do
       scene
       |> assign(data: "", value: "")
 
-    {:cont, {:cleared, id, ""}, scene}
+    {:cont, {:value_changed, id, ""}, scene}
   end
 end
