@@ -12,9 +12,4 @@ defmodule Basic.Component.Page2 do
     Logger.debug("input value changed #{inspect(value)}")
     {:noreply, assign(scene, input_value: value)}
   end
-
-  def process_event({:cleared, :text_input, ""}, _, scene) do
-    Logger.debug("input cleared}")
-    {:noreply, assign(scene, input_value: "")}
-  end
 end
