@@ -66,12 +66,12 @@ defmodule FloUI.TextInput do
 
   @impl true
   def process_update(data, opts, scene) do
+    put_child(scene, :text_input, data)
     {:noreply, assign(scene, data: data, value: data, opts: opts)}
   end
 
   @impl true
   def process_event({:value_changed, :text_input, value}, _, %{assigns: %{id: id}} = scene) do
-    put_child(scene, :text_input, value)
     {:cont, {:value_changed, id, value}, assign(scene, value: value)}
   end
 
