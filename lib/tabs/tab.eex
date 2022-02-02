@@ -4,6 +4,7 @@
     {@width, 40},
     id: :bg,
     fill: if(@selected? or @hovered?, do: @theme.focus, else: @theme.surface),
+    stroke: {1, @theme.border},
     input: [:cursor_button, :cursor_pos]
 %>
 

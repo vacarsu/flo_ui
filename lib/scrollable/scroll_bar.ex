@@ -129,6 +129,46 @@ defmodule FloUI.Scrollable.ScrollBar do
 
   @impl true
   def process_input(
+        {:cursor_pos, position},
+        _,
+        %{assigns: %{direction: direction, scroll_bar_state: scroll_bar_state}} = scene
+      ) do
+    {_, content_start} = Direction.from_vector_2(scroll_bar_state.drag_state.drag_start_content_position, direction)
+    {_, drag_start} = Direction.from_vector_2(scroll_bar_state.drag_state.drag_start, direction)
+    scroll_position =
+      Direction.from_vector_2(position, direction)
+      |> Direction.map_horizontal(fn pos -> pos - drag_start + content_start end)
+      |> Direction.map_vertical(fn pos -> pos - drag_start + content_start end)
+
+    scroll_position = local_to_world(scene, scroll_position)
+
+    drag_state = Drag.handle_mouse_move(scroll_bar_state.drag_state, position)
+    scroll_bar_state = %{
+      scroll_bar_state |
+      drag_state: drag_state
+    }
+
+    scene =
+      assign(scene,
+        scroll_bar_state: scroll_bar_state,
+        last_scroll_position: scene.assigns.scroll_position,
+        scroll_position: scroll_position
+      )
+
+    send_parent_event(scene, {:update_scroll_position, direction, scroll_position})
+
+    {:noreply, scene}
+  end
+
+  def process_input(
+        {:cursor_pos, _},
+        _,
+        scene
+      ) do
+    {:noreply, scene}
+  end
+
+  def process_input(
         {:cursor_button, {button, action, _, position}},
         :scroll_bar_slider_drag_control,
         %{assigns: %{direction: direction, scroll_bar_state: scroll_bar_state}} = scene
@@ -196,55 +236,6 @@ defmodule FloUI.Scrollable.ScrollBar do
   end
 
   def process_input(
-        {:cursor_pos, position},
-        _,
-        %{assigns: %{direction: direction, scroll_bar_state: scroll_bar_state}} =
-          scene
-      ) do
-    {_, content_start} = Direction.from_vector_2(scroll_bar_state.drag_state.drag_start_content_position, direction)
-    {_, drag_start} = Direction.from_vector_2(scroll_bar_state.drag_state.drag_start, direction)
-    scroll_position =
-      Direction.from_vector_2(position, direction)
-      |> Direction.map_horizontal(fn pos -> pos - drag_start + content_start end)
-      |> Direction.map_vertical(fn pos -> pos - drag_start + content_start end)
-
-    scroll_position = local_to_world(scene, scroll_position)
-
-    drag_state = Drag.handle_mouse_move(scroll_bar_state.drag_state, position)
-    scroll_bar_state = %{
-      scroll_bar_state |
-      drag_state: drag_state
-    }
-
-    scene =
-      assign(scene,
-        scroll_bar_state: scroll_bar_state,
-        last_scroll_position: scene.assigns.scroll_position,
-        scroll_position: scroll_position
-      )
-
-    send_parent_event(scene, {:update_scroll_position, direction, scroll_position})
-
-    {:noreply, scene}
-  end
-
-  def process_input(
-        {:cursor_pos, _},
-        _,
-        scene
-      ) do
-    {:noreply, scene}
-  end
-
-  def process_input(
-        {:cursor_button, {_button, 1, _, _}},
-        :scroll_bar_slider_background,
-        scene
-      ) do
-    {:noreply, scene}
-  end
-
-  def process_input(
         {:cursor_button, {_button, 0, _, position}},
         :scroll_bar_slider_background,
         %{assigns: %{direction: direction}} = scene
@@ -268,13 +259,46 @@ defmodule FloUI.Scrollable.ScrollBar do
     {:noreply, scene}
   end
 
+  def process_input({:cursor_button, {_, 1, _, _}}, nil, scene) do
+    Logger.debug("ending drag and releasing input")
+    release_input(scene, [:cursor_pos, :cursor_button])
+    {:noreply, assign(scene, scroll_bar_state: %{scene.assigns.scroll_bar_state | scrolling: :idle})}
+  end
+
+  def process_input(
+        {:cursor_button, {_, 1, _, _}},
+        button,
+        %{assigns: %{direction: direction, scroll_bar_state: scroll_bar_state}} = scene
+      ) when button == :scroll_button_1 or button == :scroll_button_2 do
+    scroll_buttons = Map.update!(scroll_bar_state.scroll_buttons, button, fn _ -> :pressed end)
+    scrolling = :scrolling
+    scroll_bar_state = %{
+      scroll_bar_state |
+      scrolling: scrolling,
+      scroll_buttons: scroll_buttons
+    }
+
+    scene =
+      scene
+      |> assign(scroll_bar_state: scroll_bar_state)
+
+    send_parent_event(scene, {:scroll_bar_state_changed, direction, scroll_bar_state})
+
+    {:noreply, scene}
+  end
+
   def process_input(
         {:cursor_button, {button, 0, _, position}},
         nil,
-        %{assigns: %{direction: direction, scroll_bar_state: scroll_bar_state}} = scene
+        %{assigns: %{direction: direction, scroll_bar_state: %{scrolling: :dragging} = scroll_bar_state}} = scene
       ) do
-    unrequest_input(scene, [:cursor_pos, :cursor_button])
+    Logger.debug("ending drag and releasing input")
+    release_input(scene, [:cursor_pos, :cursor_button])
     scrolling = :idle
+    scroll_buttons =
+      scroll_bar_state.scroll_buttons
+      |> Map.update!(:scroll_button_1, fn _ -> :released end)
+      |> Map.update!(:scroll_button_2, fn _ -> :released end)
 
     drag_state =
       Drag.handle_mouse_release(
@@ -297,12 +321,12 @@ defmodule FloUI.Scrollable.ScrollBar do
   end
 
   def process_input(
-        {:cursor_button, {_button, 1, _, _}},
+        {:cursor_button, {_, 0, _, _}},
         button,
-        %{assigns: %{direction: direction, scroll_bar_state: scroll_bar_state}} = scene
-      ) do
-    scroll_buttons = Map.update!(scroll_bar_state.scroll_buttons, button, fn _ -> :pressed end)
-    scrolling = :scrolling
+        %{assigns: %{direction: direction, scroll_bar_state: %{scrolling: :scrolling} = scroll_bar_state}} = scene
+      ) when button == :scroll_button_1 or button == :scroll_button_2 do
+    scroll_buttons = Map.update!(scroll_bar_state.scroll_buttons, button, fn _ -> :released end)
+    scrolling = :idle
     scroll_bar_state = %{
       scroll_bar_state |
       scrolling: scrolling,
@@ -318,25 +342,7 @@ defmodule FloUI.Scrollable.ScrollBar do
     {:noreply, scene}
   end
 
-  def process_input(
-        {:cursor_button, {_button, 0, _, _}},
-        button,
-        %{assigns: %{direction: direction, scroll_bar_state: scroll_bar_state}} = scene
-      ) do
-    scroll_buttons = Map.update!(scroll_bar_state.scroll_buttons, button, fn _ -> :released end)
-    scrolling = :idle
-    scroll_bar_state = %{
-      scroll_bar_state |
-      scrolling: scrolling,
-      scroll_buttons: scroll_buttons
-    }
-
-    scene =
-      scene
-      |> assign(scroll_bar_state: scroll_bar_state)
-
-    send_parent_event(scene, {:scroll_bar_state_changed, direction, scroll_bar_state})
-
+  def process_input(_event, _, scene) do
     {:noreply, scene}
   end
 

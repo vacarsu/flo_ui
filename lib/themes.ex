@@ -124,6 +124,7 @@ defmodule FloUI.Themes do
 
   @blue_dark Map.merge(@dark, %{
     surface_primary: :blue_800,
+    border: :zinc_800,
     thumb: :blue_800,
     focus: :blue_900,
     highlight: :blue_700
@@ -139,6 +140,7 @@ defmodule FloUI.Themes do
 
   @red_dark Map.merge(@dark, %{
     active_text: :white,
+    border: :zinc_800,
     surface_primary: :red_800,
     thumb: :red_800,
     focus: :red_900,
@@ -154,6 +156,7 @@ defmodule FloUI.Themes do
 
   @purple_dark Map.merge(@dark, %{
     surface_primary: :purple_600,
+    border: :zinc_800,
     thumb: :purple_600,
     focus: :purple_700,
     highlight: :purple_500
@@ -168,6 +171,7 @@ defmodule FloUI.Themes do
 
   @amber_dark Map.merge(@dark, %{
     surface_primary: :amber_300,
+    border: :zinc_800,
     thumb: :amber_300,
     focus: :amber_400,
     highlight: :amber_200
@@ -182,6 +186,7 @@ defmodule FloUI.Themes do
 
   @orange_dark Map.merge(@dark, %{
     surface_primary: :orange_300,
+    border: :zinc_800,
     thumb: :orange_300,
     focus: :orange_400,
     highlight: :orange_200
@@ -196,6 +201,7 @@ defmodule FloUI.Themes do
 
   @teal_dark Map.merge(@dark, %{
     surface_primary: :teal_600,
+    border: :zinc_800,
     thumb: :teal_500,
     focus: :teal_600,
     highlight: :teal_400
@@ -208,7 +214,7 @@ defmodule FloUI.Themes do
     thumb: :teal_600,
     active: :teal_600,
     focus: :teal_600,
-    border: :neutral_200
+    border: :zinc_800
   })
 
   @green_light Map.merge(@light, %{
@@ -221,6 +227,7 @@ defmodule FloUI.Themes do
 
   @green_dark Map.merge(@dark, %{
     active_text: :black,
+    border: :zinc_800,
     surface_primary: :green_500,
     thumb: :green_400,
     focus: :green_500,
@@ -237,6 +244,7 @@ defmodule FloUI.Themes do
 
   @cyan_dark Map.merge(@dark, %{
     active_text: :black,
+    border: :zinc_800,
     surface_primary: :cyan_500,
     thumb: :cyan_400,
     focus: :cyan_500,
@@ -253,6 +261,7 @@ defmodule FloUI.Themes do
 
   @sky_dark Map.merge(@dark, %{
     active_text: :black,
+    border: :zinc_800,
     surface_primary: :sky_500,
     thumb: :sky_400,
     focus: :sky_500,
@@ -269,6 +278,7 @@ defmodule FloUI.Themes do
 
   @emerald_dark Map.merge(@dark, %{
     active_text: :black,
+    border: :zinc_800,
     surface_primary: :emerald_500,
     thumb: :emerald_400,
     focus: :emerald_500,
@@ -286,6 +296,7 @@ defmodule FloUI.Themes do
   @yellow_dark Map.merge(@dark, %{
     active_text: :black,
     surface_primary: :yellow_300,
+    border: :zinc_800,
     thumb: :yellow_300,
     focus: :yellow_400,
     highlight: :yellow_200

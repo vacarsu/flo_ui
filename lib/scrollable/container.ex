@@ -59,72 +59,7 @@ defmodule FloUI.Scrollable.Container do
     name: :scrollable_container,
     template: "lib/scrollable/container.eex",
     controller: FloUI.Scrollable.ScrollableContainerController,
-    assigns: [],
-    opts: []
-
-  defcomponent(:scrollable_container, :map)
-
-  @default_horizontal_scroll_bar %{
-    show: false,
-    show_buttons: false,
-    thickness: 15,
-    radius: 3
-  }
-  @default_vertical_scroll_bar %{
-    show: true,
-    show_buttons: true,
-    thickness: 15,
-    radius: 3
-  }
-  @default_position {0, 0}
-  @default_fps 30
-
-  use_effect([assigns: [scroll_position: :any]],
-    run: [:on_scroll_position_change]
-  )
-
-  @impl true
-  def setup(%{assigns: %{data: data, opts: opts}} = scene) do
-    {content_width, content_height} = data.content
-    {frame_width, frame_height} = data.frame
-    {frame_x, frame_y} = opts[:translate] || @default_position
-    scroll_position = Map.get(data, :scroll_position, {0, 0})
-    theme = get_theme(opts[:theme])
-
-    scroll_bars =
-      case opts[:scroll_bars] do
-        nil ->
-          %{vertical: @default_vertical_scroll_bar, horizontal: @default_horizontal_scroll_bar}
-        scroll_bars ->
-          vertical = Map.get(scroll_bars, :vertical, @default_vertical_scroll_bar)
-          horizontal = Map.get(scroll_bars, :horizontal, @default_horizontal_scroll_bar)
-          %{
-            vertical: %{
-              show: Map.get(vertical, :show, true),
-              show_buttons: Map.get(vertical, :show_buttons, true),
-              thickness: Map.get(vertical, :thickness, 15),
-              radius: Map.get(vertical, :radius, 3),
-              theme: Map.get(vertical, :theme, theme)
-            },
-            horizontal: %{
-              show: Map.get(horizontal, :show, true),
-              show_buttons: Map.get(horizontal, :show_buttons, true),
-              thickness: Map.get(horizontal, :thickness, 15),
-              radius: Map.get(horizontal, :radius, 3),
-              theme: Map.get(horizontal, :theme, theme)
-            }
-          }
-      end
-
-    assign(scene,
-      id: opts[:id] || :scrollable,
-      theme: theme,
-      frame: %{x: frame_x, y: frame_y, width: frame_width, height: frame_height},
-      content: %{x: 0, y: 0, width: content_width, height: content_height},
-      scroll_position: scroll_position,
-      fps: opts[:scroll_fps] || @default_fps,
-      acceleration: Acceleration.init(opts[:scroll_acceleration]),
-      hotkeys: Hotkeys.init(opts[:scroll_hotkeys]),
+    assigns: [
       scroll_direction: nil,
       scroll_bars_state: %{
         vertical: %{
@@ -145,9 +80,50 @@ defmodule FloUI.Scrollable.Container do
           },
           pid: nil
         }
-      },
-      scroll_bars: scroll_bars
+      }
+    ],
+    opts: []
+
+  defcomponent(:scrollable_container, :map)
+
+  @default_horizontal_scroll_bar %{
+    show: false,
+    show_buttons: false,
+    thickness: 15,
+    radius: 3
+  }
+
+  @default_vertical_scroll_bar %{
+    show: true,
+    show_buttons: true,
+    thickness: 15,
+    radius: 3
+  }
+
+  @default_position {0, 0}
+  @default_fps 30
+
+  use_effect([assigns: [scroll_position: :any]],
+    run: [:on_scroll_position_change]
+  )
+
+  use_effect([assigns: [frame: :any]],
+    run: [:on_frame_change]
+  )
+
+  @impl true
+  def setup(%{assigns: %{data: data, opts: opts}} = scene) do
+    assign(scene,
+      id: opts[:id] || :scrollable,
+      theme: get_theme(opts[:theme]),
+      fps: opts[:scroll_fps] || @default_fps,
+      acceleration: Acceleration.init(opts[:scroll_acceleration]),
+      hotkeys: Hotkeys.init(opts[:scroll_hotkeys]),
     )
+    |> init_frame
+    |> init_content
+    |> init_scroll_position
+    |> init_scroll_bars
     |> init_position_caps
   end
 
@@ -170,12 +146,19 @@ defmodule FloUI.Scrollable.Container do
   end
 
   @impl true
-  def process_update(data, _opts, scene) do
+  def process_update(data, opts, scene) do
     scene =
       assign(scene,
+        theme: get_theme(opts[:theme] || scene.assigns.theme),
         data: data,
-        scroll_position: PositionCap.cap(scene.assigns.position_caps, Vector2.invert(data.scroll_position))
+        scroll_position: PositionCap.cap(scene.assigns.position_caps, Vector2.invert(data.scroll_position)),
+        opts: Keyword.merge(scene.assigns.opts, opts),
       )
+      |> init_frame
+      |> init_content
+      |> init_scroll_position
+      |> init_scroll_bars
+      |> init_position_caps
 
     {:noreply, scene}
   end
@@ -253,12 +236,65 @@ defmodule FloUI.Scrollable.Container do
     {:noreply, assign(scene, animating: false) |> update}
   end
 
+  @spec init_frame(Scenic.Scene.t) :: Scenic.Scene.t
+  defp init_frame(scene) do
+    {f_width, f_height} = scene.assigns.data.frame
+    {fx, fy} = scene.assigns.opts[:translate] || @default_position
+    assign(scene, frame: %{x: fx, y: fy, width: f_width, height: f_height})
+  end
+
+  @spec init_content(Scenic.Scene.t) :: Scenic.Scene.t
+  defp init_content(scene) do
+    {c_width, c_height} = scene.assigns.data.content
+    assign(scene, content: %{x: 0, y: 0, width: c_width, height: c_height})
+  end
+
+  @spec init_scroll_position(Scenic.Scene.t) :: Scenic.Scene.t
+  defp init_scroll_position(scene) do
+    assign(scene, scroll_position: scroll_position = Map.get(scene.assigns.data, :scroll_position, {0, 0}))
+  end
+
+  @spec init_scroll_bars(Scenic.Scene.t) :: Scenic.Scene.t
+  defp init_scroll_bars(%{assigns: %{theme: theme}} = scene) do
+    scroll_bars =
+      if is_nil(Map.get(scene.assigns, :scroll_bars)) do
+        case Keyword.get(scene.assigns.opts, :scroll_bars) do
+          nil ->
+            %{vertical: @default_vertical_scroll_bar, horizontal: @default_horizontal_scroll_bar}
+          scroll_bars ->
+            vertical = Map.get(scroll_bars, :vertical, @default_vertical_scroll_bar)
+            horizontal = Map.get(scroll_bars, :horizontal, @default_horizontal_scroll_bar)
+            %{
+              vertical: %{
+                show: Map.get(vertical, :show, true),
+                show_buttons: Map.get(vertical, :show_buttons, true),
+                thickness: Map.get(vertical, :thickness, 15),
+                radius: Map.get(vertical, :radius, 3),
+                theme: Map.get(vertical, :theme, theme)
+              },
+              horizontal: %{
+                show: Map.get(horizontal, :show, true),
+                show_buttons: Map.get(horizontal, :show_buttons, true),
+                thickness: Map.get(horizontal, :thickness, 15),
+                radius: Map.get(horizontal, :radius, 3),
+                theme: Map.get(horizontal, :theme, theme)
+              }
+            }
+        end
+      else
+        scene.assigns.scroll_bars
+      end
+      Logger.debug(inspect scroll_bars)
+    assign(scene, scroll_bars: scroll_bars)
+  end
+
   @spec init_position_caps(Scenic.Scene.t) :: Scenic.Scene.t
   defp init_position_caps(
          %{
            assigns: %{
              frame: %{width: frame_width, height: frame_height},
-             content: %{x: x, y: y, width: content_width, height: content_height}
+             content: %{x: x, y: y, width: content_width, height: content_height},
+             scroll_position: scroll_position
            }
          } = scene
        ) do
@@ -269,7 +305,7 @@ defmodule FloUI.Scrollable.Container do
 
     assign(scene,
       position_caps: position_cap,
-      scroll_position: PositionCap.cap(position_cap, Vector2.invert(scene.assigns.scroll_position))
+      scroll_position: PositionCap.cap(position_cap, Vector2.invert(scroll_position))
     )
   end
 
