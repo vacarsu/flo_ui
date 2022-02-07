@@ -1,6 +1,6 @@
 defmodule Basic.Component.Page1 do
   use SnapFramework.Component,
-    name: :page_1_scene,
+    name: :page_1,
     template: "lib/components/page_1.eex",
     controller: Basic.Component.Page1Controller,
     assigns: [
@@ -14,8 +14,6 @@ defmodule Basic.Component.Page1 do
       ]
     ],
     opts: []
-
-  defcomponent(:page_1, :any)
 
   use_effect([assigns: [btn_text: :any]],
     run: [:on_btn_text_change]

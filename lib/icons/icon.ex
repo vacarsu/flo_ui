@@ -16,12 +16,11 @@ defmodule FloUI.Icon do
 
   use SnapFramework.Component,
     name: :icon_clear,
+    type: :tuple,
     template: "lib/icons/icon.eex",
     controller: :none,
     assigns: [],
     opts: []
-
-  defcomponent(:icon, :tuple)
 
   @impl true
   def bounds(_data, _opts) do

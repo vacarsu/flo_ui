@@ -31,6 +31,7 @@ defmodule FloUI.Tabs do
 
   use SnapFramework.Component,
     name: :tabs,
+    type: :tuple,
     template: "lib/tabs/tabs.eex",
     controller: FloUI.TabsController,
     assigns: [
@@ -41,8 +42,6 @@ defmodule FloUI.Tabs do
       tabs: nil
     ],
     opts: []
-
-  defcomponent(:tabs, :tuple)
 
   use_effect([assigns: [active_tab: :any]],
     run: [:on_tab_change]

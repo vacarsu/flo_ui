@@ -22,12 +22,11 @@ defmodule FloUI.Dropdown.Items do
 
   use SnapFramework.Component,
     name: :dropdown_items,
+    type: :tuple,
     template: "lib/dropdown/dropdown_items/dropdown_items.eex",
     controller: :none,
     assigns: [],
     opts: []
-
-  defcomponent(:dropdown_items, :tuple)
 
   @impl true
   def setup(%{assigns: %{data: {items, selected}}} = scene) do

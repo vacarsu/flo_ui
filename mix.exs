@@ -36,7 +36,7 @@ defmodule FloUI.MixProject do
       {:scenic, git: "https://github.com/vacarsu/scenic.git", override: true},
       {:truetype_metrics, "~> 0.5"},
       {:dialyxir, "~> 1.1", only: :dev, runtime: false},
-      {:snap_framework, "~> 0.1.0-beta"},
+      {:snap_framework, git: "https://github.com/vacarsu/snap_framework.git", branch: "0.2.0", override: true},
 
       {:ex_doc, "~> 0.24", only: :dev, runtime: false}
     ]

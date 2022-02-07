@@ -3,6 +3,7 @@ defmodule FloUI.Modal.Body do
 
   use SnapFramework.Component,
     name: :modal_body,
+    type: nil,
     template: "lib/modal/body.eex",
     controller: :none,
     assigns: [
@@ -12,8 +13,6 @@ defmodule FloUI.Modal.Body do
       show_close: true
     ],
     opts: []
-
-  defcomponent(:modal_body, :any)
 
   @impl true
   def setup(%{assigns: %{opts: opts}} = scene) do

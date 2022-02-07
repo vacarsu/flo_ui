@@ -9,12 +9,11 @@ defmodule FloUI.Dropdown.Item do
 
   use SnapFramework.Component,
     name: :dropdown_item,
+    type: :tuple,
     template: "lib/dropdown/dropdown_item/dropdown_item.eex",
     controller: FloUI.Dropdown.ItemController,
     assigns: [],
     opts: []
-
-  defcomponent(:dropdown_item, :tuple)
 
   use_effect [assigns: [hovered: :any]], [
     run: [:on_hovered_change]

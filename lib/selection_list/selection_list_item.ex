@@ -20,6 +20,7 @@ defmodule FloUI.SelectionListItem do
 
   use SnapFramework.Component,
     name: :selection_list_item,
+    type: :tuple,
     template: "lib/selection_list/selection_list_item.eex",
     controller: FloUI.SelectionListItemController,
     assigns: [
@@ -28,8 +29,6 @@ defmodule FloUI.SelectionListItem do
       height: 50
     ],
     opts: []
-
-  defcomponent(:selection_list_item, :tuple)
 
   use_effect([assigns: [hovered: :any]],
     run: [:on_hovered_change]

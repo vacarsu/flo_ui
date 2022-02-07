@@ -118,6 +118,7 @@ defmodule FloUI.Themes do
   @blue_light Map.merge(@light, %{
     surface_primary: :blue_800,
     thumb: :blue_800,
+    active: :blue_900,
     focus: :blue_900,
     highlight: :blue_700
   })
@@ -126,6 +127,7 @@ defmodule FloUI.Themes do
     surface_primary: :blue_800,
     border: :zinc_800,
     thumb: :blue_800,
+    active: :blue_900,
     focus: :blue_900,
     highlight: :blue_700
   })
@@ -134,6 +136,7 @@ defmodule FloUI.Themes do
     active_text: :white,
     surface_primary: :red_800,
     thumb: :red_800,
+    active: :red_900,
     focus: :red_900,
     highlight: :red_600
   })
@@ -143,6 +146,7 @@ defmodule FloUI.Themes do
     border: :zinc_800,
     surface_primary: :red_800,
     thumb: :red_800,
+    active: :red_900,
     focus: :red_900,
     highlight: :red_600
   })
@@ -150,6 +154,7 @@ defmodule FloUI.Themes do
   @purple_light Map.merge(@light, %{
     surface_primary: :purple_600,
     thumb: :purple_600,
+    active: :purple_700,
     focus: :purple_700,
     highlight: :purple_500
   })
@@ -158,6 +163,7 @@ defmodule FloUI.Themes do
     surface_primary: :purple_600,
     border: :zinc_800,
     thumb: :purple_600,
+    active: :purple_700,
     focus: :purple_700,
     highlight: :purple_500
   })
@@ -165,6 +171,7 @@ defmodule FloUI.Themes do
   @amber_light Map.merge(@light, %{
     surface_primary: :amber_300,
     thumb: :amber_300,
+    active: :amber_400,
     focus: :amber_400,
     highlight: :amber_200
   })
@@ -173,6 +180,7 @@ defmodule FloUI.Themes do
     surface_primary: :amber_300,
     border: :zinc_800,
     thumb: :amber_300,
+    active: :amber_400,
     focus: :amber_400,
     highlight: :amber_200
   })
@@ -180,6 +188,7 @@ defmodule FloUI.Themes do
   @orange_light Map.merge(@light, %{
     surface_primary: :orange_300,
     thumb: :orange_300,
+    active: :orange_400,
     focus: :orange_400,
     highlight: :orange_200
   })
@@ -188,6 +197,7 @@ defmodule FloUI.Themes do
     surface_primary: :orange_300,
     border: :zinc_800,
     thumb: :orange_300,
+    active: :orange_400,
     focus: :orange_400,
     highlight: :orange_200
   })
@@ -196,6 +206,7 @@ defmodule FloUI.Themes do
     surface_primary: :teal_600,
     thumb: :teal_500,
     focus: :teal_600,
+    active: :teal_600,
     highlight: :teal_400
   })
 
@@ -203,24 +214,16 @@ defmodule FloUI.Themes do
     surface_primary: :teal_600,
     border: :zinc_800,
     thumb: :teal_500,
-    focus: :teal_600,
-    highlight: :teal_400
-  })
-
-  @teal_dark_scenic Map.merge(@teal_dark, %{
-    text: :white,
-    active_text: :white,
-    background: :neutral_800,
-    thumb: :teal_600,
     active: :teal_600,
     focus: :teal_600,
-    border: :zinc_800
+    highlight: :teal_400
   })
 
   @green_light Map.merge(@light, %{
     active_text: :black,
     surface_primary: :green_500,
     thumb: :green_400,
+    active: :green_500,
     focus: :green_500,
     highlight: :green_300
   })
@@ -230,6 +233,7 @@ defmodule FloUI.Themes do
     border: :zinc_800,
     surface_primary: :green_500,
     thumb: :green_400,
+    active: :green_500,
     focus: :green_500,
     highlight: :green_300
   })
@@ -238,6 +242,7 @@ defmodule FloUI.Themes do
     active_text: :black,
     surface_primary: :cyan_500,
     thumb: :cyan_400,
+    active: :cyan_500,
     focus: :cyan_500,
     highlight: :cyan_300
   })
@@ -247,6 +252,7 @@ defmodule FloUI.Themes do
     border: :zinc_800,
     surface_primary: :cyan_500,
     thumb: :cyan_400,
+    active: :cyan_500,
     focus: :cyan_500,
     highlight: :cyan_300
   })
@@ -255,6 +261,7 @@ defmodule FloUI.Themes do
     active_text: :black,
     surface_primary: :sky_500,
     thumb: :sky_400,
+    active: :sky_500,
     focus: :sky_500,
     highlight: :sky_300
   })
@@ -264,6 +271,7 @@ defmodule FloUI.Themes do
     border: :zinc_800,
     surface_primary: :sky_500,
     thumb: :sky_400,
+    active: :sky_500,
     focus: :sky_500,
     highlight: :sky_300
   })
@@ -272,6 +280,7 @@ defmodule FloUI.Themes do
     active_text: :black,
     surface_primary: :emerald_500,
     thumb: :emerald_400,
+    active: :emerald_500,
     focus: :emerald_500,
     highlight: :emerald_300
   })
@@ -281,6 +290,7 @@ defmodule FloUI.Themes do
     border: :zinc_800,
     surface_primary: :emerald_500,
     thumb: :emerald_400,
+    active: :emerald_500,
     focus: :emerald_500,
     highlight: :emerald_300
   })
@@ -289,6 +299,7 @@ defmodule FloUI.Themes do
     active_text: :black,
     surface_primary: :yellow_300,
     thumb: :yellow_300,
+    active: :yellow_400,
     focus: :yellow_400,
     highlight: :yellow_200
   })
@@ -298,6 +309,7 @@ defmodule FloUI.Themes do
     surface_primary: :yellow_300,
     border: :zinc_800,
     thumb: :yellow_300,
+    active: :yellow_400,
     focus: :yellow_400,
     highlight: :yellow_200
   })
@@ -319,7 +331,6 @@ defmodule FloUI.Themes do
     orange_dark: @orange_dark,
     teal_light: @teal_light,
     teal_dark: @teal_dark,
-    teal_dark_scenic: @teal_dark_scenic,
     green_light: @green_light,
     green_dark: @green_dark,
     cyan_light: @cyan_light,

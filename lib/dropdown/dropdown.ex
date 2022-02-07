@@ -58,12 +58,11 @@ defmodule FloUI.Dropdown do
 
   use SnapFramework.Component,
     name: :dropdown,
+    type: :tuple,
     template: "lib/dropdown/dropdown.eex",
     controller: FloUI.DropdownController,
     assigns: [],
     opts: []
-
-  defcomponent(:dropdown, :tuple)
 
   use_effect [assigns: [open?: :any]], [
     run: [:on_open_change]

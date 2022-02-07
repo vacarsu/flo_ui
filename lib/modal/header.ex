@@ -3,6 +3,7 @@ defmodule FloUI.Modal.Header do
 
   use SnapFramework.Component,
     name: :modal_header,
+    type: :string,
     template: "lib/modal/header.eex",
     controller: :none,
     assigns: [
@@ -12,8 +13,6 @@ defmodule FloUI.Modal.Header do
       show_close: true
     ],
     opts: []
-
-  defcomponent(:modal_header, :string)
 
   @impl true
   def setup(%{assigns: %{opts: opts}} = scene) do

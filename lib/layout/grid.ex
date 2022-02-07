@@ -34,6 +34,7 @@ defmodule FloUI.Grid do
 
   use SnapFramework.Component,
     name: :grid,
+    type: :map,
     template: "lib/layout/grid.eex",
     controller: :none,
     assigns: [
@@ -44,8 +45,6 @@ defmodule FloUI.Grid do
       max_xy: {0, 0}
     ],
     opts: []
-
-  defcomponent(:grid, :map)
 
   def setup(%{assigns: %{data: %{start_xy: start_xy, max_xy: max_xy}} = assigns} = scene) do
     assigns = %{

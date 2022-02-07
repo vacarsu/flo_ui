@@ -21,14 +21,13 @@ defmodule FloUI.SelectionList do
 
   use SnapFramework.Component,
     name: :selection_list,
+    type: :tuple,
     template: "lib/selection_list/selection_list.eex",
     controller: :none,
     assigns: [
       width: 500
     ],
     opts: []
-
-  defcomponent(:selection_list, :tuple)
 
   @impl true
   def setup(%{assigns: %{data: {list, selected}, opts: opts}} = scene) do

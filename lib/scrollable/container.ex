@@ -57,6 +57,7 @@ defmodule FloUI.Scrollable.Container do
 
   use SnapFramework.Component,
     name: :scrollable_container,
+    type: :map,
     template: "lib/scrollable/container.eex",
     controller: FloUI.Scrollable.ScrollableContainerController,
     assigns: [
@@ -83,8 +84,6 @@ defmodule FloUI.Scrollable.Container do
       }
     ],
     opts: []
-
-  defcomponent(:scrollable_container, :map)
 
   @default_horizontal_scroll_bar %{
     show: false,

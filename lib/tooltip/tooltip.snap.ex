@@ -16,12 +16,11 @@ defmodule FloUI.Tooltip do
 
   use SnapFramework.Component,
     name: :tooltip,
+    type: :string,
     template: "lib/tooltip/tooltip.eex",
     controller: :none,
     assigns: [width: 0, height: 0],
     opts: []
-
-  defcomponent(:tooltip, :string)
 
   @impl true
   def setup(scene) do

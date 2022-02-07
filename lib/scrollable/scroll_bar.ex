@@ -49,12 +49,11 @@ defmodule FloUI.Scrollable.ScrollBar do
 
   use SnapFramework.Component,
     name: :scroll_bar,
+    type: :map,
     template: "lib/scrollable/scroll_bar.eex",
     controller: FloUI.Scrollable.ScrollBarController,
     assigns: [],
     opts: []
-
-  defcomponent(:scroll_bar, :map)
 
   @default_drag_settings %{mouse_buttons: [:btn_left, :btn_right, :btn_middle]}
   @default_thickness 15

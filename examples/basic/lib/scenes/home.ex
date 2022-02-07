@@ -7,7 +7,6 @@ defmodule Basic.Scene.Home do
   import Basic.Component.Page3, only: [page_3: 3]
 
   use SnapFramework.Scene,
-    name: :home_scene,
     template: "lib/scenes/home.eex",
     controller: Basic.Scene.HomeController,
     assigns: [

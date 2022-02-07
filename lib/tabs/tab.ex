@@ -30,6 +30,7 @@ defmodule FloUI.Tab do
 
   use SnapFramework.Component,
     name: :tab,
+    type: :tuple,
     template: "lib/tabs/tab.eex",
     controller: FloUI.TabController,
     assigns: [
@@ -41,8 +42,6 @@ defmodule FloUI.Tab do
       hovered?: false
     ],
     opts: []
-
-  defcomponent(:tab, :tuple)
 
   use_effect([assigns: [hovered?: :any]],
     run: [:on_hovered_change]

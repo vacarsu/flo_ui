@@ -20,6 +20,7 @@ defmodule FloUI.Icon.Button do
 
   use SnapFramework.Component,
     name: :icon_button,
+    type: :string,
     template: "lib/icons/icon_button/icon_button.eex",
     controller: FloUI.Icon.ButtonController,
     assigns: [
@@ -31,8 +32,6 @@ defmodule FloUI.Icon.Button do
       showing_tooltip: false
     ],
     opts: []
-
-  defcomponent(:icon_button, :string)
 
   watch([:children])
 

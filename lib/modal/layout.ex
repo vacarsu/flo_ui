@@ -29,6 +29,7 @@ defmodule FloUI.Modal.Layout do
 
   use SnapFramework.Component,
     name: :layout,
+    type: :string,
     template: "lib/modal/layout.eex",
     controller: :none,
     assigns: [
@@ -38,8 +39,6 @@ defmodule FloUI.Modal.Layout do
       show_close: true
     ],
     opts: []
-
-  defcomponent(:layout, :string)
 
   @impl true
   def setup(%{assigns: %{opts: opts}} = scene) do

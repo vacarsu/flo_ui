@@ -23,12 +23,11 @@ defmodule FloUI.TextInput do
 
   use SnapFramework.Component,
     name: :text_input,
+    type: :string,
     template: "lib/text_input/text_input.eex",
     controller: FloUI.Component.TextInputController,
     assigns: [],
     opts: []
-
-  defcomponent(:text_input, :string)
 
   use_effect([assigns: [data: :any]],
     run: [:on_data_change]
