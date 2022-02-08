@@ -26,8 +26,7 @@ defmodule FloUI.SelectionList do
     controller: :none,
     assigns: [
       width: 500
-    ],
-    opts: []
+    ]
 
   @impl true
   def setup(%{assigns: %{data: {list, selected}, opts: opts}} = scene) do

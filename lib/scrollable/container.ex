@@ -82,8 +82,7 @@ defmodule FloUI.Scrollable.Container do
           pid: nil
         }
       }
-    ],
-    opts: []
+    ]
 
   @default_horizontal_scroll_bar %{
     show: false,
@@ -111,13 +110,13 @@ defmodule FloUI.Scrollable.Container do
   )
 
   @impl true
-  def setup(%{assigns: %{data: data, opts: opts}} = scene) do
+  def setup(%{assigns: %{opts: opts}} = scene) do
     assign(scene,
       id: opts[:id] || :scrollable,
       theme: get_theme(opts[:theme]),
       fps: opts[:scroll_fps] || @default_fps,
       acceleration: Acceleration.init(opts[:scroll_acceleration]),
-      hotkeys: Hotkeys.init(opts[:scroll_hotkeys]),
+      hotkeys: Hotkeys.init(opts[:scroll_hotkeys])
     )
     |> init_frame
     |> init_content
@@ -151,7 +150,7 @@ defmodule FloUI.Scrollable.Container do
         theme: get_theme(opts[:theme] || scene.assigns.theme),
         data: data,
         scroll_position: PositionCap.cap(scene.assigns.position_caps, Vector2.invert(data.scroll_position)),
-        opts: Keyword.merge(scene.assigns.opts, opts),
+        opts: Keyword.merge(scene.assigns.opts, opts)
       )
       |> init_frame
       |> init_content
@@ -283,7 +282,6 @@ defmodule FloUI.Scrollable.Container do
       else
         scene.assigns.scroll_bars
       end
-      Logger.debug(inspect scroll_bars)
     assign(scene, scroll_bars: scroll_bars)
   end
 

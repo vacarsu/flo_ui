@@ -259,7 +259,6 @@ defmodule FloUI.Scrollable.ScrollBar do
   end
 
   def process_input({:cursor_button, {_, 1, _, _}}, nil, scene) do
-    Logger.debug("ending drag and releasing input")
     release_input(scene, [:cursor_pos, :cursor_button])
     {:noreply, assign(scene, scroll_bar_state: %{scene.assigns.scroll_bar_state | scrolling: :idle})}
   end
@@ -291,7 +290,6 @@ defmodule FloUI.Scrollable.ScrollBar do
         nil,
         %{assigns: %{direction: direction, scroll_bar_state: %{scrolling: :dragging} = scroll_bar_state}} = scene
       ) do
-    Logger.debug("ending drag and releasing input")
     release_input(scene, [:cursor_pos, :cursor_button])
     scrolling = :idle
     scroll_buttons =
@@ -309,6 +307,7 @@ defmodule FloUI.Scrollable.ScrollBar do
     scroll_bar_state = %{
       scroll_bar_state |
       scrolling: scrolling,
+      scroll_buttons: scroll_buttons,
       drag_state: drag_state
     }
 
