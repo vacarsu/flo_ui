@@ -1,0 +1,3 @@
+<%= graph font_size: 20 %>
+
+<%= text @selected %>

@@ -6,15 +6,12 @@
     translate: {0, 0}
 %>
 
-<%= primitive Scenic.Primitive.Text,
-    @data,
-    translate: {5, 35}
-%>
+<%= text @data, translate: {5, 30} %>
 
-<%= component FloUI.Icon.Button, "done", id: :btn_check, translate: {400, 5}, hidden: !@show_check do %>
+<%= component FloUI.Icon.Button, "done", id: :btn_check, translate: if(@show_close, do: {@width - 100, 0}, else: {@width - 50, 0}), hidden: !@show_check do %>
     <%= component FloUI.Icon, {:flo_ui, "icons/check_white.png"} %>
 <% end %>
 
-<%= component FloUI.Icon.Button, "close", id: :btn_close, translate: {448, 5}, hidden: !@show_close do %>
+<%= component FloUI.Icon.Button, "close", id: :btn_close, translate: {@width - 50, 0}, hidden: !@show_close do %>
     <%= component FloUI.Icon, {:flo_ui, "icons/clear_white.png"} %>
 <% end %>

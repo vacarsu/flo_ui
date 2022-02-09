@@ -40,8 +40,7 @@ defmodule FloUI.Tab do
       disabled?: false,
       selected?: false,
       hovered?: false
-    ],
-    opts: []
+    ]
 
   use_effect([assigns: [hovered?: :any]],
     run: [:on_hovered_change]

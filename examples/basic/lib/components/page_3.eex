@@ -5,19 +5,16 @@
     id: :scroll_layout,
     width: 500,
     height: 500,
-    frame_width: 480,
-    frame_height: 500,
-    content_width: 800,
-    content_height: 800,
+    translate: {5, 5},
     show_check: true,
     show_close: true
 do %>
     <%= component FloUI.Scrollable.Container,
         %{
-            frame: {460, 470},
+            frame: {477, 470},
             content: {800, 800}
         },
-        translate: {20, 60},
+        translate: {5, 60},
         scroll_bars: %{
             vertical: %{
                 show: true,

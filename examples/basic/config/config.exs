@@ -13,7 +13,7 @@ config :scenic, :themes, module: FloUI.Themes
 # Configure the main viewport for the Scenic application
 config :basic, :viewport,
   name: :main_viewport,
-  size: {700, 600},
+  size: {800, 800},
   theme: {:flo_ui, :teal_dark},
   default_scene: Basic.Scene.Home,
   drivers: [

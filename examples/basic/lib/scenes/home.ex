@@ -21,7 +21,7 @@ defmodule Basic.Scene.Home do
       tabs: [
         {"page 1", Basic.Component.Page1, false},
         {"page 2", Basic.Component.Page2, false},
-        {"page 3", Basic.Component.Page3, true},
+        {"page 3", Basic.Component.Page3, false},
         {"page 4", Basic.Component.Page4, false}
       ],
       theme_opts: [

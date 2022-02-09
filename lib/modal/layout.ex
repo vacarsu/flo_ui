@@ -43,8 +43,8 @@ defmodule FloUI.Modal.Layout do
   @impl true
   def setup(%{assigns: %{opts: opts}} = scene) do
     assign(scene,
-      width: opts[:width] || 500,
-      height: opts[:height] || 500,
+      width: opts[:width] || scene.assigns.width,
+      height: opts[:height] || scene.assigns.width,
       show_check: opts[:show_check] || false,
       show_close: opts[:show_close] || false
     )
