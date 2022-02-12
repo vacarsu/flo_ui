@@ -21,6 +21,6 @@
   "scenic": {:git, "https://github.com/vacarsu/scenic.git", "51c79d2371f5c2a2c752bf3a20b520494f476497", []},
   "scenic_driver_glfw": {:git, "https://github.com/boydm/scenic_driver_glfw.git", "a3feebd52e9cf8329f727c2072daddda3210a3d9", [branch: "v0.11"]},
   "scenic_driver_local": {:hex, :scenic_driver_local, "0.11.0-beta.0", "da8c58b60346daf51d6c0133e7b296f851d97fe86a5d0988bff99f8ae19ff186", [:make, :mix], [{:elixir_make, "~> 0.6", [hex: :elixir_make, repo: "hexpm", optional: false]}, {:input_event, "~> 0.4", [hex: :input_event, repo: "hexpm", optional: false]}, {:scenic, "~> 0.11.0-beta.0", [hex: :scenic, repo: "hexpm", optional: false]}], "hexpm", "8812762a9721c73a5ee4c306f6ea1eafa7bd1de6997709f9e1243f734610f780"},
-  "snap_framework": {:git, "https://github.com/vacarsu/snap_framework.git", "58c468cf1ad6aa7a77e662dd1e9cac370a780588", [branch: "0.2.0"]},
+  "snap_framework": {:git, "https://github.com/vacarsu/snap_framework.git", "97a3beb76d07ebc6d307512ac47c877ac725df39", [branch: "0.2.0"]},
   "truetype_metrics": {:hex, :truetype_metrics, "0.5.2", "6f0b2e91df6e9eefc14f01a36f44fe60ac3e22bcc832e9f159927d8c011086c9", [:mix], [{:font_metrics, "~> 0.5", [hex: :font_metrics, repo: "hexpm", optional: false]}], "hexpm", "c6684dbe2d65f84e1628433f6c403b1a8d4fc6b3f73b160b496dab209940f5dc"},
 }
