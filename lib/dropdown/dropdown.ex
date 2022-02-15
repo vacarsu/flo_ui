@@ -6,6 +6,7 @@ defmodule FloUI.Dropdown do
 
   Options
   ``` elixir
+  disabled?: false,
   theme: theme,
   scroll_bar: %{
     show: true,
@@ -61,31 +62,37 @@ defmodule FloUI.Dropdown do
     type: :tuple,
     template: "lib/dropdown/dropdown.eex",
     controller: FloUI.DropdownController,
-    assigns: [],
+    assigns: [disabled?: false],
     opts: []
 
-  use_effect [assigns: [open?: :any]], [
-    run: [:on_open_change]
-  ]
+  use_effect([assigns: [disabled?: :any]],
+    run: [:on_disabled_change]
+  )
 
-  use_effect [assigns: [selected_label: :any]], [
+  use_effect([assigns: [open?: :any]],
+    run: [:on_open_change]
+  )
+
+  use_effect([assigns: [selected_label: :any]],
     run: [:on_selected_change]
-  ]
+  )
 
   @impl true
   def setup(%{assigns: %{data: {items, selected} = data, opts: opts}} = scene) do
     frame_height = get_frame_height(data, opts)
     content_height = get_content_height(items)
+    disabled? = opts[:disabled?] || scene.assigns.disabled?
     scroll_bar = opts[:scroll_bar] || @default_scroll_bar
     scroll_bar_thickness = scroll_bar[:thickness] || @default_scroll_bar[:thickness]
     show_vertical_scroll = scroll_bar[:show]
-    width = get_width(data, Keyword.merge(opts, [scroll_bar_thickness: scroll_bar_thickness]))
+    width = get_width(data, Keyword.merge(opts, scroll_bar_thickness: scroll_bar_thickness))
 
     assign(scene,
       items: items,
       selected_label: "",
       selected_key: nil,
       selected: selected,
+      disabled?: disabled?,
       open?: false,
       button_width: if(show_vertical_scroll, do: width + scroll_bar_thickness + 5, else: width),
       button_height: opts[:height] || @default_height,
@@ -108,13 +115,14 @@ defmodule FloUI.Dropdown do
   end
 
   @impl true
-  def handle_get(_from, scene) do
+  def process_get(_from, scene) do
     {:reply, scene, scene}
   end
 
   @impl true
   def process_event({:value_changed, {{label, value}, key}}, _, scene) do
-    {:cont, {:value_changed, scene.assigns.opts[:id], value}, assign(scene, selected_label: label, selected_key: key, open?: false)}
+    {:cont, {:value_changed, scene.assigns.opts[:id], value},
+     assign(scene, selected_label: label, selected_key: key, open?: false)}
   end
 
   def process_event(_, _, scene) do
@@ -122,11 +130,19 @@ defmodule FloUI.Dropdown do
   end
 
   @impl true
-  def process_input({:cursor_button, {:btn_left, 0, _, _}}, :bg, %{assigns: %{open?: open?}} = scene) do
+  def process_input(
+        {:cursor_button, {:btn_left, 0, _, _}},
+        :bg,
+        %{assigns: %{open?: open?}} = scene
+      ) do
     {:noreply, assign(scene, open?: not open?)}
   end
 
-  def process_input({:cursor_button, {:btn_left, 1, _, _}}, :clickout, %{assigns: %{open?: open?}} = scene) do
+  def process_input(
+        {:cursor_button, {:btn_left, 1, _, _}},
+        :clickout,
+        %{assigns: %{open?: open?}} = scene
+      ) do
     {:noreply, assign(scene, open?: not open?)}
   end
 
@@ -161,6 +177,7 @@ defmodule FloUI.Dropdown do
 
   def get_theme(%{assigns: %{opts: opts}} = scene) do
     schema = FloUI.Themes.get_schema()
+
     case Scenic.Themes.validate(opts[:theme], schema) do
       {:ok, theme} -> assign(scene, theme: theme)
       {:error, _msg} -> assign(scene, theme: Scenic.Themes.normalize({:flo_ui, :dark}))

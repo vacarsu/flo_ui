@@ -26,8 +26,12 @@ defmodule FloUI.TextInput do
     type: :string,
     template: "lib/text_input/text_input.eex",
     controller: FloUI.Component.TextInputController,
-    assigns: [],
+    assigns: [disabled?: false],
     opts: []
+
+  use_effect([assigns: [disabled?: :any]],
+    run: [:on_disabled_change]
+  )
 
   use_effect([assigns: [data: :any]],
     run: [:on_data_change]
@@ -44,6 +48,7 @@ defmodule FloUI.TextInput do
       value: scene.assigns.data,
       hint: opts[:hint] || "",
       hint_color: opts[:hint_color],
+      disabled?: opts[:disabled?] || scene.assigns.disabled?,
       width: opts[:width] || opts[:w] || @default_width,
       height: opts[:height] || opts[:h] || @default_height,
       type: opts[:type] || :all,
@@ -59,7 +64,7 @@ defmodule FloUI.TextInput do
   end
 
   @impl true
-  def handle_get(_from, scene) do
+  def process_get(_from, scene) do
     {:reply, scene, scene}
   end
 
@@ -78,6 +83,7 @@ defmodule FloUI.TextInput do
     scene =
       scene
       |> assign(value: "")
+
     put_child(scene, :text_input, "")
     {:cont, {:value_changed, id, ""}, scene}
   end

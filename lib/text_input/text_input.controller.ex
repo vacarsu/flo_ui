@@ -4,6 +4,14 @@ defmodule FloUI.Component.TextInputController do
   alias Scenic.Graph
   alias Scenic.Primitive
 
+  def on_disabled_change(%{assigns: %{disabled?: disabled?}} = scene) do
+    graph =
+      scene.assigns.graph
+      |> Graph.modify(:rrect_disabled, &Primitive.put_style(&1, :hidden, not disabled?))
+
+    Scenic.Scene.assign(scene, graph: graph)
+  end
+
   def on_data_change(scene) do
     graph =
       scene.assigns.graph

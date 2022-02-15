@@ -28,12 +28,16 @@ defmodule FloUI.Icon.Button do
       icon: nil,
       label: nil,
       pressed: false,
+      disabled?: false,
       showing_highlight: false,
       showing_tooltip: false
-    ],
-    opts: []
+    ]
 
   watch([:children])
+
+  use_effect([assigns: [disabled?: :any]],
+    run: [:on_disabled_change]
+  )
 
   use_effect([assigns: [showing_highlight: :any]],
     run: [:on_highlight_change]
@@ -47,7 +51,8 @@ defmodule FloUI.Icon.Button do
   def setup(%{assigns: %{data: nil}} = scene) do
     scene
     |> assign(
-      id: scene.assigns.opts[:id] || nil
+      id: scene.assigns.opts[:id] || nil,
+      disabled?: scene.assigns.opts[:disabled?] || scene.assigns.disabled?
     )
     |> get_theme
   end
@@ -57,6 +62,7 @@ defmodule FloUI.Icon.Button do
     scene
     |> assign(
       id: scene.assigns.opts[:id] || nil,
+      disabled?: scene.assigns.opts[:disabled?] || scene.assigns.disabled?,
       label: label
     )
     |> get_theme
@@ -74,7 +80,13 @@ defmodule FloUI.Icon.Button do
 
   @impl true
   def process_update(data, opts, scene) do
-    {:noreply, assign(scene, data: data, children: opts[:children], opts: opts)}
+    {:noreply,
+     assign(scene,
+       data: data,
+       children: opts[:children],
+       disabled?: scene.assigns.opts[:disabled?] || scene.assigns.disabled?,
+       opts: opts
+     )}
   end
 
   @impl true
@@ -83,7 +95,11 @@ defmodule FloUI.Icon.Button do
     {:noreply, assign(scene, pressed: true)}
   end
 
-  def process_input({:cursor_button, {:btn_left, 0, _, _}}, :btn, %{assigns: %{pressed: true}} = scene) do
+  def process_input(
+        {:cursor_button, {:btn_left, 0, _, _}},
+        :btn,
+        %{assigns: %{pressed: true}} = scene
+      ) do
     send_parent_event(scene, {:click, scene.assigns.id})
     {:noreply, assign(scene, pressed: false)}
   end

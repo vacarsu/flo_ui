@@ -3,16 +3,30 @@ defmodule FloUI.DropdownController do
   alias Scenic.Graph
   alias Scenic.Primitive
 
+  def on_disabled_change(%{assigns: %{disabled?: disabled?}} = scene) do
+    graph =
+      scene.assigns.graph
+      |> Graph.modify(:rrect_disabled, &Primitive.put_style(&1, :hidden, not disabled?))
+
+    Scenic.Scene.assign(scene, graph: graph)
+  end
+
   def on_open_change(scene) do
     graph =
       scene.assigns.graph
       |> Graph.modify(:bg, &Primitive.put_style(&1, :stroke, get_border_color(scene)))
       |> Graph.modify(:dropdown_bg, &Primitive.put_style(&1, :stroke, get_border_color(scene)))
-      |> Graph.modify(:scroll_container, &Primitive.put_style(&1, :hidden, not scene.assigns.open?))
+      |> Graph.modify(
+        :scroll_container,
+        &Primitive.put_style(&1, :hidden, not scene.assigns.open?)
+      )
       |> Graph.modify(:dropdown_bg, &Primitive.put_style(&1, :hidden, not scene.assigns.open?))
       |> Graph.modify(:border_cover, &Primitive.put_style(&1, :hidden, not scene.assigns.open?))
       |> Graph.modify(:clickout, &Primitive.put_style(&1, :hidden, not scene.assigns.open?))
-      |> Graph.modify(:icon, &Primitive.put_style(&1, :rotate, if(not scene.assigns.open?, do: 0, else: :math.pi())))
+      |> Graph.modify(
+        :icon,
+        &Primitive.put_style(&1, :rotate, if(not scene.assigns.open?, do: 0, else: :math.pi()))
+      )
 
     Scenic.Scene.assign(scene, graph: graph)
   end

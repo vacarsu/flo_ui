@@ -10,6 +10,7 @@
 <%= component FloUI.Dropdown,
     @dropdown_opts,
     id: :scroll_dropdown,
+    disabled?: true,
     translate: {5, 0},
     scroll_bar: %{
         show: true,

@@ -1,9 +1,8 @@
 <%= graph font_size: 20 %>
 
-<%= primitive Scenic.Primitive.Circle,
-    15, 
+<%= circle 15, 
     id: :bg,
-    translate: {23, 23}
+    translate: {24, 24}
 %>
 
 <%= @children %>
@@ -15,4 +14,12 @@
     id: :tooltip,
     translate: {10, 50},
     hidden: !@showing_tooltip
+%>
+
+<%= circle 15,
+    id: :circle_disabled,
+    hidden: not @disabled?,
+    fill: {:black, 100},
+    translate: {24, 24},
+    input: [:cursor_button, :cursor_pos]
 %>

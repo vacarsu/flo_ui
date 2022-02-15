@@ -6,6 +6,14 @@ defmodule FloUI.Icon.ButtonController do
   alias Scenic.Graph
   alias Scenic.Primitive
 
+  def on_disabled_change(%{assigns: %{disabled?: disabled?}} = scene) do
+    graph =
+      scene.assigns.graph
+      |> Graph.modify(:circle_disabled, &Primitive.put_style(&1, :hidden, not disabled?))
+
+    Scenic.Scene.assign(scene, graph: graph)
+  end
+
   def on_highlight_change(%{assigns: %{showing_highlight: true}} = scene) do
     graph =
       scene.assigns.graph

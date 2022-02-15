@@ -65,3 +65,10 @@ do %>
     pin: {48 / 2, 48 / 2},
     id: :icon
 %>
+
+<%= rrect {@button_width, @button_height, 3},
+    hidden: not @disabled?,
+    id: :rrect_disabled,
+    fill: {:black, 100},
+    input: [:cursor_button]
+%>
