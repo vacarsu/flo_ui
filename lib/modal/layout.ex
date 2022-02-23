@@ -46,7 +46,7 @@ defmodule FloUI.Modal.Layout do
   def setup(%{assigns: %{opts: opts}} = scene) do
     assign(scene,
       width: opts[:width] || scene.assigns.width,
-      height: opts[:height] || scene.assigns.width,
+      height: opts[:height] || scene.assigns.height,
       show_check: opts[:show_check] || false,
       show_close: opts[:show_close] || false
     )
@@ -59,14 +59,16 @@ defmodule FloUI.Modal.Layout do
 
   @impl true
   def process_update(data, opts, scene) do
+    IO.puts("modal layout updating")
+
     {
       :noreply,
       assign(scene,
         data: data,
         width: opts[:width] || scene.assigns.width,
-        height: opts[:height] || scene.assigns.width,
-        show_check: opts[:show_check] || false,
-        show_close: opts[:show_close] || false,
+        height: opts[:height] || scene.assigns.height,
+        show_check: opts[:show_check] || scene.assigns.show_check,
+        show_close: opts[:show_close] || scene.assigns.show_close,
         children: opts[:children] || scene.assigns.children
       )
     }
