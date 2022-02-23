@@ -40,6 +40,8 @@ defmodule FloUI.Modal.Layout do
     ],
     opts: []
 
+  watch([:children])
+
   @impl true
   def setup(%{assigns: %{opts: opts}} = scene) do
     assign(scene,
@@ -53,6 +55,21 @@ defmodule FloUI.Modal.Layout do
   @impl true
   def handle_get(_from, scene) do
     {:reply, scene, scene}
+  end
+
+  @impl true
+  def process_update(data, opts, scene) do
+    {
+      :noreply,
+      assign(scene,
+        data: data,
+        width: opts[:width] || scene.assigns.width,
+        height: opts[:height] || scene.assigns.width,
+        show_check: opts[:show_check] || false,
+        show_close: opts[:show_close] || false,
+        children: opts[:children] || scene.assigns.children
+      )
+    }
   end
 
   @impl true
