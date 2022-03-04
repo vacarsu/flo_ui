@@ -62,8 +62,9 @@ defmodule FloUI.Dropdown do
     type: :tuple,
     template: "lib/dropdown/dropdown.eex",
     controller: FloUI.DropdownController,
-    assigns: [disabled?: false],
-    opts: []
+    assigns: [disabled?: false]
+
+  watch([:items])
 
   use_effect([assigns: [disabled?: :any]],
     run: [:on_disabled_change]
@@ -100,7 +101,7 @@ defmodule FloUI.Dropdown do
       scroll_bar_thickness: scroll_bar_thickness,
       frame_width: width,
       frame_height: frame_height,
-      content_width: width,
+      content_width: width - 1,
       content_height: content_height,
       scroll_bar: scroll_bar,
       show_vertical_scroll: show_vertical_scroll
@@ -112,6 +113,40 @@ defmodule FloUI.Dropdown do
   @impl true
   def bounds(data, opts) do
     {0.0, 0.0, get_width(data, opts), opts[:height] || @default_height}
+  end
+
+  @impl true
+  def process_update({items, selected} = data, opts, scene) do
+    IO.puts("dropdown update hit, #{inspect(opts[:disabled?])}")
+    frame_height = get_frame_height(data, opts)
+    content_height = get_content_height(items)
+    disabled? = opts[:disabled?] || scene.assigns.disabled?
+    scroll_bar = opts[:scroll_bar] || scene.assigns.scroll_bar
+    scroll_bar_thickness = scroll_bar[:thickness] || scene.assigns.thickness
+    show_vertical_scroll = scroll_bar[:show] || scene.assigns.show_vertical_scroll
+    width = get_width(data, Keyword.merge(opts, scroll_bar_thickness: scroll_bar_thickness))
+
+    {
+      :noreply,
+      assign(scene,
+        items: items,
+        selected: selected,
+        disabled?: disabled?,
+        open?: scene.assigns.open?,
+        button_width: if(show_vertical_scroll, do: width + scroll_bar_thickness + 5, else: width),
+        button_height: opts[:height] || scene.assigns.button_height,
+        background_height: frame_height + 20,
+        scroll_bar_thickness: scroll_bar_thickness,
+        frame_width: width,
+        frame_height: frame_height,
+        content_width: width,
+        content_height: content_height,
+        scroll_bar: scroll_bar,
+        show_vertical_scroll: show_vertical_scroll
+      )
+      |> get_selected
+      |> get_theme
+    }
   end
 
   @impl true
